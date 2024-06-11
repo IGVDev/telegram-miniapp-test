@@ -5,19 +5,20 @@ import WebApp from "@twa-dev/sdk";
 
 function App() {
   const [count, setCount] = useState(0);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     WebApp.CloudStorage.getItem("count", (err, count) => {
       if (err || !count) {
         return 0;
       } else {
-        setCount(Number(count));
+        setBalance(Number(count));
       }
     });
   }, []);
 
   const saveCount = (num: number) => {
-    WebApp.CloudStorage.setItem("count", num.toString());
+    WebApp.CloudStorage.setItem("count", (num + balance).toString());
     setCount(0);
   };
 
