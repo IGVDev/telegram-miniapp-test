@@ -25,43 +25,23 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://ton.org/dev" target="_blank">
-          <img src={twaLogo} className="logo" alt="TWA logo" />
-        </a>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>TWA + Vite + React</h1>
+      <h1>Money Printer</h1>
+      <div className="card">Cash: ${count}</div>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-      {/*  */}
-      <div className="card">
-        <button
-          onClick={() =>
-            WebApp.showAlert(`Hello World! Current count is ${count}`)
-          }
-        >
-          Show Alert
+          Print bill
         </button>
       </div>
       <div className="card">
-        <button onClick={() => saveCount(count)}>Save count to cloud</button>
+        <button onClick={() => saveCount(count)}>Deposit in bank</button>
       </div>
       <div className="card">
         <button
           onClick={() =>
-            WebApp.showAlert(`Hello! Current cloud count is ${count}`)
+            WebApp.showAlert(`Hello! Current balance is $${count}`)
           }
         >
-          Show Cloud Count
+          Show balance
         </button>
       </div>
     </>
