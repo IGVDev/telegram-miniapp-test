@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import twaLogo from "./assets/tapps.png";
 import viteLogo from "/vite.svg";
@@ -9,13 +9,15 @@ import WebApp from "@twa-dev/sdk";
 function App() {
   const [count, setCount] = useState(0);
 
-  WebApp.CloudStorage.getItem("count", (err, count) => {
-    if (err || !count) {
-      return 0;
-    } else {
-      setCount(Number(count));
-    }
-  });
+  useEffect(() => {
+    WebApp.CloudStorage.getItem("count", (err, count) => {
+      if (err || !count) {
+        return 0;
+      } else {
+        setCount(Number(count));
+      }
+    });
+  }, []);
 
   const saveCount = (num: number) => {
     WebApp.CloudStorage.setItem("count", num.toString());
