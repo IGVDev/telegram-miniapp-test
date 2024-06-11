@@ -8,14 +8,19 @@ function App() {
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
+    const resp = getBalance();
+    setBalance(resp);
+  }, []);
+
+  const getBalance = () => {
     WebApp.CloudStorage.getItem("count", (err, count) => {
       if (err || !count) {
         return 0;
       } else {
-        setBalance(Number(count));
+        return count;
       }
     });
-  }, []);
+  };
 
   const saveCount = (num: number) => {
     WebApp.CloudStorage.setItem("count", (num + balance).toString());
@@ -36,9 +41,10 @@ function App() {
       </div>
       <div className="card">
         <button
-          onClick={() =>
-            WebApp.showAlert(`Hello! Current balance is $${balance}`)
-          }
+          onClick={() => {
+            getBalance();
+            WebApp.showAlert(`Hello! Current balance is $${balance}`);
+          }}
         >
           Show bank balance
         </button>
