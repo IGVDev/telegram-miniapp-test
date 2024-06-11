@@ -7,7 +7,7 @@ import "./App.css";
 import WebApp from "@twa-dev/sdk";
 
 function App() {
-  const initialCount = Number(WebApp.CloudStorage.getItem("count"));
+  const initialCount = Number(WebApp.CloudStorage.getItem("count")) || 0;
 
   const [count, setCount] = useState(initialCount);
 
