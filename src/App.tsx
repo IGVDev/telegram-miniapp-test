@@ -35,12 +35,23 @@ function App() {
       return balance;
     } catch (error) {
       console.error("Error fetching balance:", error);
+      return undefined;
     }
   };
 
   const saveCount = (num: number) => {
-    WebApp.CloudStorage.setItem("count", (num + balance).toString());
+    const newBalance = num + balance;
+    WebApp.CloudStorage.setItem("count", newBalance.toString());
     setCount(0);
+    setBalance(newBalance);
+  };
+
+  const handleShowBalance = async () => {
+    const bal = await fetchBalance();
+    if (bal !== undefined) {
+      setBalance(bal);
+      WebApp.showAlert(`Hello! Current balance is $${bal}`);
+    }
   };
 
   return (
@@ -56,14 +67,7 @@ function App() {
         <button onClick={() => saveCount(count)}>Deposit in bank</button>
       </div>
       <div className="card">
-        <button
-          onClick={() => {
-            getBalance();
-            WebApp.showAlert(`Hello! Current balance is $${balance}`);
-          }}
-        >
-          Show bank balance
-        </button>
+        <button onClick={handleShowBalance}>Show bank balance</button>
       </div>
     </>
   );
