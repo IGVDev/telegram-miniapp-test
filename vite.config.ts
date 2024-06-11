@@ -8,5 +8,5 @@ export default defineConfig({
   build: {
     outDir: './docs'
   },
-  base: '/vite-boilerplate/'
+  base: 'https://igvdev.github.io/telegram-miniapp-test/'
 });
