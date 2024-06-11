@@ -7,13 +7,18 @@ import "./App.css";
 import WebApp from "@twa-dev/sdk";
 
 function App() {
-  const initialCount = Number(WebApp.CloudStorage.getItem("count")) || 0;
+  const [count, setCount] = useState(0);
 
-  const [count, setCount] = useState(initialCount);
+  WebApp.CloudStorage.getItem("count", (err, count) => {
+    if (err || !count) {
+      return 0;
+    } else {
+      setCount(Number(count));
+    }
+  });
 
-  const handleMainButtonClick = () => {
-    setCount((count) => count + 1);
-    WebApp.CloudStorage.setItem("count", count.toString());
+  const saveCount = (num: number) => {
+    WebApp.CloudStorage.setItem("count", num.toString());
   };
 
   return (
@@ -31,7 +36,10 @@ function App() {
       </div>
       <h1>TWA + Vite + React</h1>
       <div className="card">
-        <button onClick={() => handleMainButtonClick}>count is {count}</button>
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <button onClick={() => saveCount(count)}>Save count to cloud</button>
       </div>
       {/*  */}
       <div className="card">
