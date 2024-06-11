@@ -8,18 +8,34 @@ function App() {
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
-    const resp = getBalance();
-    setBalance(resp);
+    async function fetch() {
+      const bal = await fetchBalance();
+      if (bal) {
+        setBalance(bal);
+      }
+    }
+    fetch();
   }, []);
 
-  const getBalance = () => {
-    WebApp.CloudStorage.getItem("count", (err, count) => {
-      if (err || !count) {
-        return 0;
-      } else {
-        return count;
-      }
+  const getBalance = async (): Promise<number> => {
+    return new Promise((resolve, reject) => {
+      WebApp.CloudStorage.getItem("count", (err, count) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(count ? parseInt(count) : 0);
+        }
+      });
     });
+  };
+
+  const fetchBalance = async () => {
+    try {
+      const balance = await getBalance();
+      return balance;
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+    }
   };
 
   const saveCount = (num: number) => {
