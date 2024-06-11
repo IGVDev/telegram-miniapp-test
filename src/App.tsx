@@ -39,7 +39,6 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
-        <button onClick={() => saveCount(count)}>Save count to cloud</button>
       </div>
       {/*  */}
       <div className="card">
@@ -49,6 +48,18 @@ function App() {
           }
         >
           Show Alert
+        </button>
+      </div>
+      <div className="card">
+        <button onClick={() => saveCount(count)}>Save count to cloud</button>
+      </div>
+      <div className="card">
+        <button
+          onClick={() =>
+            WebApp.showAlert(`Hello! Current cloud count is ${count}`)
+          }
+        >
+          Show Cloud Count
         </button>
       </div>
     </>
