@@ -6,6 +6,8 @@ import "./index.css";
 import WebApp from "@twa-dev/sdk";
 
 WebApp.ready();
+WebApp.BackButton.show();
+WebApp.enableClosingConfirmation();
 WebApp.expand();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
