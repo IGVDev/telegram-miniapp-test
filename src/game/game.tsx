@@ -37,6 +37,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
           gravity: { y: 2600, x: 0 },
         },
       },
+      pixelArt: true
     };
 
     gameRef.current = new Phaser.Game(config);
