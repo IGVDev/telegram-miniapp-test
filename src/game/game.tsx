@@ -69,11 +69,17 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
 
       pipes = this.physics.add.staticGroup({ classType: Pipe });
 
-      const handleJump = () => {
+      const handlePointerDown = () => {
         bird.setVelocityY(-500);
+        this.tweens.add({
+          targets: bird,
+          props: { angle: -20 },
+          duration: 150,
+          ease: "Power0",
+        });
       };
 
-      this.input.on("pointerdown", handleJump);
+      this.input.on("pointerdown", handlePointerDown);
 
       this.physics.add.collider(bird, pipes, () => {
         this.scene.restart();
@@ -97,20 +103,13 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
       });
 
       pipes.getChildren().forEach((pipe: Phaser.GameObjects.GameObject) => {
-        pipe.setData("scored", false); // Reset scored status for each pipe
+        pipe.setData("scored", false);
       });
     }
 
     const addNewRowOfPipes = (scene: Phaser.Scene): void => {
-      // update the score
-      // const score = this.registry.get('score') + 1;
-      // this.registry.set('score', score);
-      // this.scoreText.setText('Score: ' + score);
-
-      // randomly pick a number between 1 and 5
       const hole = Math.floor(Math.random() * 5) + 1;
 
-      // add 6 pipes with one big hole at position hole and hole + 1
       for (let i = 0; i < 10; i++) {
         if (i !== hole && i !== hole + 1 && i !== hole + 2) {
           if (i === hole - 1) {
@@ -134,7 +133,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
     };
 
     function update(this: Phaser.Scene) {
-      const scrollSpeed = 3; // Adjust scroll speed as needed
+      const scrollSpeed = 3;
 
       const background = this.children.getByName(
         "background"
@@ -148,7 +147,6 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         pipeSprite.x -= scrollSpeed;
 
         if (bird.x > pipeSprite.x && !pipe.getData("scored")) {
-          // Mark the pipe as scored to avoid double scoring
           pipe.setData("scored", true);
 
           // Increase score
@@ -168,7 +166,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
             pipeSprite.getBounds()
           )
         ) {
-          this.scene.restart(); // Restart scene upon overlap
+          this.scene.restart();
         }
       });
 
