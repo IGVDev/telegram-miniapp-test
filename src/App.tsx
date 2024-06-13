@@ -9,8 +9,8 @@ function App() {
   return (
     <div className="App">
       <FlappyBirdGame
-        width={390}
-        height={600}
+        width={400}
+        height={400}
         birdImage={birdImage}
         pipeImage={pipeImage}
         backgroundImage={bgImage}

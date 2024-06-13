@@ -64,7 +64,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         .setOrigin(0, 0);
       background.setName("background");
 
-      bird = this.physics.add.sprite(100, height / 2, "bird").setScale(3);
+      bird = this.physics.add.sprite(100, height / 2, "bird").setScale(2.5);
       bird.setCollideWorldBounds(true);
 
       pipes = this.physics.add.staticGroup({ classType: Pipe });
@@ -99,7 +99,9 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
 
       this.time.addEvent({
         delay: 1200,
-        callback: () => addNewRowOfPipes(this),
+        callback: () => {
+          addNewRowOfPipes(this);
+        },
         callbackScope: this,
         loop: true,
       });
@@ -115,11 +117,11 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
       for (let i = 0; i < 10; i++) {
         if (i !== hole && i !== hole + 1 && i !== hole + 2) {
           if (i === hole - 1) {
-            addPipe(scene, 400, i * 60, 0);
+            addPipe(scene, 400, i * 40, 0);
           } else if (i === hole + 3) {
-            addPipe(scene, 400, i * 60, 1);
+            addPipe(scene, 400, i * 40, 1);
           } else {
-            addPipe(scene, 400, i * 60, 2);
+            addPipe(scene, 400, i * 40, 2);
           }
         }
       }
