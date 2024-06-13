@@ -1,0 +1,168 @@
+import Phaser from "phaser";
+import { Pipe } from "../pipe";
+import bgImage from "../../assets/bg.png";
+import birdImage from "../../assets/bird.png";
+import pipeImage from "../../assets/pipe.png";
+
+export default class MainScene extends Phaser.Scene {
+  private bird!: Phaser.Physics.Arcade.Sprite;
+  private pipes!: Phaser.Physics.Arcade.StaticGroup;
+  private score: number = 0;
+  private scoreText!: Phaser.GameObjects.Text;
+
+  constructor() {
+    super({ key: "MainScene" });
+  }
+
+  preload() {
+    this.load.image("background", bgImage);
+    this.load.image("bird", birdImage);
+    this.load.spritesheet("pipe", pipeImage, {
+      frameWidth: 20,
+      frameHeight: 20,
+    });
+  }
+
+  create() {
+    this.bird = this.physics.add
+      .sprite(100, this.scale.height / 2, "bird")
+      .setScale(2.5);
+
+    this.bird.setCollideWorldBounds(true);
+    this.bird.setDepth(1);
+
+    this.pipes = this.physics.add.staticGroup({ classType: Pipe });
+    const background = this.add
+      .tileSprite(0, 0, this.scale.width, this.scale.height, "background")
+      .setOrigin(0, 0);
+    background.setName("background");
+
+    this.input.on("pointerdown", () => {
+      this.bird.setVelocityY(-500);
+      this.tweens.add({
+        targets: this.bird,
+        props: { angle: -20 },
+        duration: 150,
+        ease: "Power0",
+      });
+    });
+
+    this.physics.add.collider(this.bird, this.pipes, () => {
+      this.scene.start("GameOverScene");
+    });
+
+    this.scoreText = this.add
+      .text(16, 16, "Score: 0", {
+        fontSize: "32px",
+        color: "#000",
+      })
+      .setDepth(1);
+
+    this.score = 0;
+    this.scoreText.setText("Score: " + this.score);
+
+    this.addNewRowOfPipes();
+    this.time.addEvent({
+      delay: 1200,
+      callback: this.addNewRowOfPipes,
+      callbackScope: this,
+      loop: true,
+    });
+  }
+
+  update() {
+    const scrollSpeed = 3;
+
+    const background = this.children.getByName(
+      "background"
+    ) as Phaser.GameObjects.TileSprite;
+    if (background) {
+      background.tilePositionX += scrollSpeed;
+    }
+
+    this.pipes.getChildren().forEach((pipe: Phaser.GameObjects.GameObject) => {
+      const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
+      pipeSprite.x -= scrollSpeed;
+
+      if (
+        this.bird.x > pipeSprite.x &&
+        !pipeSprite.getData("scored") &&
+        !this.pipes
+          .getChildren()
+          .some(
+            (p) =>
+              p.getData("rowId") === pipeSprite.getData("rowId") &&
+              p.getData("scored")
+          )
+      ) {
+        // Mark all pipes in the row as scored
+        this.pipes.getChildren().forEach((p) => {
+          if (p.getData("rowId") === pipeSprite.getData("rowId")) {
+            p.setData("scored", true);
+          }
+        });
+
+        // Increase score
+        this.score += 1;
+        this.scoreText.setText("Score: " + this.score);
+      }
+
+      // Remove pipes that go out of bounds
+      if (pipeSprite.x + pipeSprite.displayWidth < 0) {
+        this.pipes.killAndHide(pipeSprite);
+        this.pipes.remove(pipeSprite);
+      }
+
+      if (
+        Phaser.Geom.Intersects.RectangleToRectangle(
+          this.bird.getBounds(),
+          pipeSprite.getBounds()
+        )
+      ) {
+        this.scene.start("GameOverScene");
+      }
+    });
+
+    if (this.bird && this.bird.y >= this.scale.height - 18) {
+      this.saveHighScore();
+      this.scene.start("GameOverScene");
+    }
+
+    if (this.bird && this.bird.angle < 20) {
+      this.bird.angle += 1;
+    }
+  }
+
+  private addNewRowOfPipes() {
+    const hole = Math.floor(Math.random() * 5) + 1;
+    const rowId = Date.now();
+    for (let i = 0; i < 10; i++) {
+      if (i !== hole && i !== hole + 1 && i !== hole + 2) {
+        this.addPipe(
+          400,
+          i * 40,
+          i === hole - 1 ? 0 : i === hole + 3 ? 1 : 2,
+          rowId
+        );
+      }
+    }
+  }
+
+  private addPipe(x: number, y: number, frame: number, rowId: number) {
+    const pipe = new Pipe({ scene: this, x, y, frame, key: "pipe" });
+    pipe.setData("rowId", rowId);
+    this.pipes.add(pipe);
+  }
+
+  private saveHighScore() {
+    const highScore = Number(localStorage.getItem("highScore")) || 0;
+
+    if (highScore) {
+      if (this.score > highScore) {
+        localStorage.setItem("highScore", this.score.toString());
+      }
+    } else {
+      localStorage.setItem("highScore", this.score.toString());
+    }
+  }
+}
