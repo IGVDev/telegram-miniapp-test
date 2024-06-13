@@ -106,7 +106,7 @@ export default class MainScene extends Phaser.Scene {
       // Remove pipes that go out of bounds
       if (pipeSprite.x + pipeSprite.displayWidth < 0) {
         this.pipes.killAndHide(pipeSprite);
-        this.pipes.remove(pipeSprite);
+        // this.pipes.remove(pipeSprite);
       }
 
       // Pipe collision
