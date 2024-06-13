@@ -153,7 +153,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
 
           // Increase score
           score += 1;
-          scoreText.setText("Score: " + score / 7);
+          scoreText.setText("Score: " + Math.floor(score / 7));
         }
 
         // Remove pipes that go out of bounds
