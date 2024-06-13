@@ -34,7 +34,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
       physics: {
         default: "arcade",
         arcade: {
-          gravity: { y: 3000, x: 0 },
+          gravity: { y: 2600, x: 0 },
         },
       },
     };
