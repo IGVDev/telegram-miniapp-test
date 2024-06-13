@@ -26,7 +26,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
     if (gameRef.current) return;
 
     const config: Phaser.Types.Core.GameConfig = {
-      type: Phaser.CANVAS,
+      type: Phaser.AUTO,
       width,
       height,
       parent: domId,
