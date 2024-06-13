@@ -49,6 +49,31 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
 
     gameRef.current = new Phaser.Game(config);
 
+    const addNewRowOfPipes = (scene: Phaser.Scene): void => {
+      const hole = Math.floor(Math.random() * 5) + 1;
+
+      for (let i = 0; i < 10; i++) {
+        if (i !== hole && i !== hole + 1 && i !== hole + 2) {
+          if (i === hole - 1) {
+            addPipe(scene, 400, i * 40, 0);
+          } else if (i === hole + 3) {
+            addPipe(scene, 400, i * 40, 1);
+          } else {
+            addPipe(scene, 400, i * 40, 2);
+          }
+        }
+      }
+    };
+
+    const addPipe = (
+      scene: Phaser.Scene,
+      x: number,
+      y: number,
+      frame: number
+    ): void => {
+      pipes.add(new Pipe({ scene, x, y, frame, key: "pipe" }));
+    };
+
     function preload(this: Phaser.Scene) {
       this.load.image("background", backgroundImage);
       this.load.image("bird", birdImage);
@@ -110,31 +135,6 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         pipe.setData("scored", false);
       });
     }
-
-    const addNewRowOfPipes = (scene: Phaser.Scene): void => {
-      const hole = Math.floor(Math.random() * 5) + 1;
-
-      for (let i = 0; i < 10; i++) {
-        if (i !== hole && i !== hole + 1 && i !== hole + 2) {
-          if (i === hole - 1) {
-            addPipe(scene, 400, i * 40, 0);
-          } else if (i === hole + 3) {
-            addPipe(scene, 400, i * 40, 1);
-          } else {
-            addPipe(scene, 400, i * 40, 2);
-          }
-        }
-      }
-    };
-
-    const addPipe = (
-      scene: Phaser.Scene,
-      x: number,
-      y: number,
-      frame: number
-    ): void => {
-      pipes.add(new Pipe({ scene, x, y, frame, key: "pipe" }));
-    };
 
     function update(this: Phaser.Scene) {
       const scrollSpeed = 3;
