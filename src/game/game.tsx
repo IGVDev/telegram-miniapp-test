@@ -85,10 +85,12 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         this.scene.restart();
       });
 
-      scoreText = this.add.text(16, 16, "Score: 0", {
-        fontSize: "32px",
-        color: "#000",
-      });
+      scoreText = this.add
+        .text(16, 16, "Score: 0", {
+          fontSize: "32px",
+          color: "#000",
+        })
+        .setDepth(1);
 
       score = 0;
       scoreText.setText("Score: " + score);
