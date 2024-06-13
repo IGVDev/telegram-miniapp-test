@@ -90,7 +90,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
       addNewRowOfPipes(this);
 
       this.time.addEvent({
-        delay: 1100,
+        delay: 1200,
         callback: () => addNewRowOfPipes(this),
         callbackScope: this,
         loop: true,
