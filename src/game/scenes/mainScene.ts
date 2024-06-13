@@ -47,10 +47,6 @@ export default class MainScene extends Phaser.Scene {
       });
     });
 
-    this.physics.add.collider(this.bird, this.pipes, () => {
-      this.scene.start("GameOverScene");
-    });
-
     this.scoreText = this.add
       .text(16, 16, "Score: 0", {
         fontSize: "32px",
@@ -113,6 +109,7 @@ export default class MainScene extends Phaser.Scene {
         this.pipes.remove(pipeSprite);
       }
 
+      // Pipe collision
       if (
         Phaser.Geom.Intersects.RectangleToRectangle(
           this.bird.getBounds(),
@@ -123,6 +120,7 @@ export default class MainScene extends Phaser.Scene {
       }
     });
 
+    // Ground collision
     if (this.bird && this.bird.y >= this.scale.height - 18) {
       this.saveHighScore();
       this.scene.start("GameOverScene");
@@ -138,12 +136,15 @@ export default class MainScene extends Phaser.Scene {
     const rowId = Date.now();
     for (let i = 0; i < 10; i++) {
       if (i !== hole && i !== hole + 1 && i !== hole + 2) {
-        this.addPipe(
-          400,
-          i * 40,
-          i === hole - 1 ? 0 : i === hole + 3 ? 1 : 2,
-          rowId
-        );
+        let frame;
+        if (i === hole - 1) {
+          frame = 0;
+        } else if (i === hole + 3) {
+          frame = 1;
+        } else {
+          frame = 2;
+        }
+        this.addPipe(400, i * 40, frame, rowId);
       }
     }
   }

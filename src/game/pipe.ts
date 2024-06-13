@@ -12,7 +12,7 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite {
 
     params.scene.physics.world.enable(this, Phaser.Physics.Arcade.STATIC_BODY);
 
-    this.setScale(3);
+    this.setScale(2);
     this.setOrigin(0, 0);
 
     const body = this.body as Phaser.Physics.Arcade.StaticBody;
