@@ -14,12 +14,14 @@ import {
 } from "react-icons/ri";
 import { Flex, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
 import { useState } from "react";
+import WebApp from "@twa-dev/sdk";
 
 function App() {
   const [coins, setCoins] = useState(0);
 
   const handleScoreUpdate = () => {
     setCoins(prevCoins => prevCoins + 1);
+    WebApp.CloudStorage.setItem("coins", coins.toString());
   };
 
   return (
