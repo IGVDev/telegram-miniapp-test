@@ -21,9 +21,11 @@ function App() {
 
   const handleScoreUpdate = () => {
     setCoins((prevCoins) => prevCoins + 1);
-    WebApp.CloudStorage.setItem("coins", coins.toString(), (error) => {
+    WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
       if (error) {
         console.error(error);
+      } else {
+        console.log(result);
       }
     });
   };
