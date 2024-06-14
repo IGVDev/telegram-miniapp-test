@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import React, { useEffect, useRef } from "react";
 import { GameOverScene } from "./scenes/gameOver";
 import MainScene from "./scenes/mainScene";
+import { StartScene } from "./scenes/startScene";
 
 interface FlappyBirdGameProps {
   width: number;
@@ -30,7 +31,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
       width,
       height,
       parent: domId,
-      scene: [MainScene, GameOverScene],
+      scene: [StartScene, MainScene, GameOverScene],
       physics: {
         default: "arcade",
         arcade: {
