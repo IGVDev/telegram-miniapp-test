@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 
 import WebApp from "@twa-dev/sdk";
+import { ChakraProvider } from "@chakra-ui/react";
 
 WebApp.ready();
 WebApp.enableClosingConfirmation();
@@ -11,6 +12,8 @@ WebApp.expand();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <ChakraProvider>
+      <App />
+    </ChakraProvider>
   </React.StrictMode>
 );
