@@ -21,6 +21,7 @@ function App() {
 
   const handleScoreUpdate = () => {
     setCoins((prevCoins) => prevCoins + 1);
+    console.log('COINS SAVED', coins)
     WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
       if (error) {
         console.error(error);
