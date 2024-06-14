@@ -21,14 +21,6 @@ function App() {
 
   const handleScoreUpdate = () => {
     setCoins((prevCoins) => prevCoins + 1);
-    console.log('COINS SAVED', coins)
-    WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log(result);
-      }
-    });
   };
 
   useEffect(() => {
@@ -40,6 +32,16 @@ function App() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log(result);
+      }
+    });
+  }, [coins]);
 
   return (
     <Flex
