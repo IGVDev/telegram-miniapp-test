@@ -3,6 +3,7 @@ import { Pipe } from "../pipe";
 import bgImage from "../../assets/bg.png";
 import birdImage from "../../assets/bird.png";
 import pipeImage from "../../assets/pipe.png";
+import WebApp from "@twa-dev/sdk";
 
 interface MainSceneConfig {
   onScoreUpdate?: (score: number) => void;
@@ -162,15 +163,15 @@ export default class MainScene extends Phaser.Scene {
     this.pipes.add(pipe);
   }
 
-  private saveHighScore() {
-    const highScore = Number(localStorage.getItem("highScore")) || 0;
+  private async saveHighScore() {
+    const highScore = Number(WebApp.CloudStorage.getItem("highScore")) || 0;
 
     if (highScore) {
       if (this.score > highScore) {
-        localStorage.setItem("highScore", this.score.toString());
+        WebApp.CloudStorage.setItem("highScore", this.score.toString());
       }
     } else {
-      localStorage.setItem("highScore", this.score.toString());
+      WebApp.CloudStorage.setItem("highScore", this.score.toString());
     }
   }
 }
