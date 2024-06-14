@@ -13,7 +13,7 @@ import {
   RiHeartsFill,
 } from "react-icons/ri";
 import { Flex, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WebApp from "@twa-dev/sdk";
 
 function App() {
@@ -23,6 +23,11 @@ function App() {
     setCoins(prevCoins => prevCoins + 1);
     WebApp.CloudStorage.setItem("coins", coins.toString());
   };
+
+  useEffect(() => {
+    const coins = Number(WebApp.CloudStorage.getItem("coins")) || 0;
+    setCoins(coins);
+  }, []);
 
   return (
     <Flex
