@@ -4,6 +4,7 @@ import FlappyBirdGame from "./game/game";
 import bgImage from "./assets/bg.png";
 import pipeImage from "./assets/pipe.png";
 import birdImage from "./assets/bird.png";
+import appBg from "./assets/background.webp";
 import {
   RiBarChartFill,
   RiCheckboxCircleFill,
@@ -22,7 +23,13 @@ function App() {
   };
 
   return (
-    <Flex className="App">
+    <Flex
+      className="App"
+      bgImage={appBg}
+      bgSize="cover"
+      bgPosition="center"
+      height="100vh"
+    >
       <Flex
         className="mainContainer"
         flexDir="column"
