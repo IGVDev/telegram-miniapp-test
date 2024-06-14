@@ -21,7 +21,11 @@ function App() {
 
   const handleScoreUpdate = () => {
     setCoins((prevCoins) => prevCoins + 1);
-    WebApp.CloudStorage.setItem("coins", coins.toString());
+    WebApp.CloudStorage.setItem("coins", coins.toString(), (error) => {
+      if (error) {
+        console.error(error);
+      }
+    });
   };
 
   useEffect(() => {
@@ -29,7 +33,6 @@ function App() {
       if (error) {
         console.error(error);
       } else {
-        console.log(result)
         setCoins(Number(result));
       }
     });
