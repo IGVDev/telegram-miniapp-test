@@ -29,6 +29,7 @@ function App() {
       if (error) {
         console.error(error);
       } else {
+        console.log(result)
         setCoins(Number(result));
       }
     });
