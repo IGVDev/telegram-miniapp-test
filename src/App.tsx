@@ -28,10 +28,12 @@ function App() {
         flexDir="column"
         alignItems="center"
         w="100%"
+        gap={4}
+        mt={2}
       >
-        <Flex className="coinContainer" align="center" gap={1} bgColor="red">
+        <Flex className="coinContainer" align="center" gap={1}>
           <RiCopperCoinFill size="50px" />
-          <Flex align="center" bgColor="yellow">
+          <Flex align="center">
             <Text fontSize="40px" fontWeight="bold">
               {coins}
             </Text>
