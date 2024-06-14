@@ -25,7 +25,7 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     this.bird = this.physics.add
-      .sprite(100, this.scale.height / 2, "bird")
+      .sprite(100, this.scale.height / 4, "bird")
       .setScale(2.5);
 
     this.bird.setCollideWorldBounds(true);
