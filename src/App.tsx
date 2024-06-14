@@ -38,10 +38,10 @@ function App() {
         gap={4}
         mt={2}
       >
-        <Flex className="coinContainer" align="center" gap={1}>
-          <RiCopperCoinFill size="50px" />
+        <Flex className="coinContainer" align="center" gap={1} >
+          <RiCopperCoinFill size="50px" color="orange"/>
           <Flex align="center">
-            <Text fontSize="40px" fontWeight="bold">
+            <Text fontSize="40px" fontWeight="bold" color="white">
               {coins}
             </Text>
           </Flex>
@@ -58,34 +58,34 @@ function App() {
           />
         </Flex>
         <Flex className="tabsContainer">
-          <Tabs variant="soft-rounded" defaultIndex={2}>
-            <TabList gap="20px" height="80px">
-              <Tab isDisabled>
-                <Flex flexDir="column" align="center" gap={1}>
+          <Tabs variant="soft-rounded" colorScheme="yellow" defaultIndex={2}>
+            <TabList gap="12px" height="80px">
+              <Tab isDisabled borderRadius={16} border="1px solid gray" bgColor="whiteAlpha.300">
+                <Flex flexDir="column" align="center" gap={1} color="white">
                   <RiHeartsFill size="30px" />
                   <Text fontSize="xs">Ref</Text>
                 </Flex>
               </Tab>
-              <Tab isDisabled>
-                <Flex flexDir="column" align="center" gap={1}>
+              <Tab isDisabled borderRadius={16} border="1px solid gray" bgColor="whiteAlpha.300">
+                <Flex flexDir="column" align="center" gap={1} color="white">
                   <RiCheckboxCircleFill size="30px" />
                   <Text fontSize="xs">Task</Text>
                 </Flex>
               </Tab>
-              <Tab borderRadius={16}>
-                <Flex flexDir="column" align="center" gap={1}>
+              <Tab borderRadius={16} _selected={{border: "1px solid orange", pointerEvents: "none", bgColor: "rgba(255, 255, 0, 0.15)"}} bgColor="whiteAlpha.300">
+                <Flex flexDir="column" align="center" gap={1} color="white">
                   <RiCopperCoinFill size="30px" />
                   <Text fontSize="xs">Tap</Text>
                 </Flex>
               </Tab>
-              <Tab isDisabled>
-                <Flex flexDir="column" align="center" gap={1}>
+              <Tab isDisabled borderRadius={16} border="1px solid gray" bgColor="whiteAlpha.300">
+                  <Flex flexDir="column" align="center" gap={1} color="white">
                   <RiFireFill size="30px" />
                   <Text fontSize="xs">Boost</Text>
                 </Flex>
               </Tab>
-              <Tab isDisabled>
-                <Flex flexDir="column" align="center" gap={1}>
+              <Tab isDisabled borderRadius={16} border="1px solid gray" bgColor="whiteAlpha.300">
+                <Flex flexDir="column" align="center" gap={1} color="white">
                   <RiBarChartFill size="30px" />
                   <Text fontSize="xs">Stats</Text>
                 </Flex>
