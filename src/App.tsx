@@ -15,10 +15,10 @@ import { Flex, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
 function App() {
-  let [coins, setCoins] = useState(0);
+  const [coins, setCoins] = useState(0);
 
-  const handleGameOver = (score: number) => {
-    console.log("Game Over! Score:", score);
+  const handleScoreUpdate = () => {
+    setCoins(prevCoins => prevCoins + 1);
   };
 
   return (
@@ -44,7 +44,7 @@ function App() {
             birdImage={birdImage}
             pipeImage={pipeImage}
             backgroundImage={bgImage}
-            onGameOver={handleGameOver}
+            onScoreUpdate={handleScoreUpdate}
             domId="flappy-bird-game"
           />
         </Flex>

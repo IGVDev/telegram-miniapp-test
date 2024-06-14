@@ -4,14 +4,20 @@ import bgImage from "../../assets/bg.png";
 import birdImage from "../../assets/bird.png";
 import pipeImage from "../../assets/pipe.png";
 
+interface MainSceneConfig {
+  onScoreUpdate?: (score: number) => void;
+}
+
 export default class MainScene extends Phaser.Scene {
   private bird!: Phaser.Physics.Arcade.Sprite;
   private pipes!: Phaser.Physics.Arcade.StaticGroup;
   private score: number = 0;
   private scoreText!: Phaser.GameObjects.Text;
+  private onScoreUpdate?: (score: number) => void;
 
-  constructor() {
-    super({ key: "MainScene" });
+  constructor(config: MainSceneConfig) {
+    super('MainScene');
+    this.onScoreUpdate = config.onScoreUpdate;
   }
 
   preload() {
@@ -101,6 +107,7 @@ export default class MainScene extends Phaser.Scene {
         // Increase score
         this.score += 1;
         this.scoreText.setText("Score: " + this.score);
+        this.onScoreUpdate?.(1);
       }
 
       // Remove pipes that go out of bounds

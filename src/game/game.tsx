@@ -11,6 +11,7 @@ interface FlappyBirdGameProps {
   pipeImage: string;
   backgroundImage: string;
   domId: string;
+  onScoreUpdate?: (score: number) => void;
 }
 
 const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
@@ -20,6 +21,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
   pipeImage,
   backgroundImage,
   domId,
+  onScoreUpdate,
 }) => {
   const gameRef = useRef<Phaser.Game | null>(null);
 
@@ -31,7 +33,11 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
       width,
       height,
       parent: domId,
-      scene: [StartScene, MainScene, GameOverScene],
+      scene: [
+        new StartScene(),
+        new MainScene({ onScoreUpdate: onScoreUpdate }),
+        new GameOverScene(),
+      ],
       physics: {
         default: "arcade",
         arcade: {
