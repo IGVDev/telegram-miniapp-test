@@ -1,8 +1,8 @@
 import Phaser from "phaser";
 import React, { useEffect, useRef } from "react";
-import { GameOverScene } from "./scenes/gameOver";
+import GameOverScene from "./scenes/gameOver";
 import MainScene from "./scenes/mainScene";
-import { StartScene } from "./scenes/startScene";
+import StartScene from "./scenes/startScene";
 
 interface FlappyBirdGameProps {
   width: number;
@@ -38,7 +38,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
           gravity: { y: 2600, x: 0 },
         },
       },
-      pixelArt: true
+      pixelArt: true,
     };
 
     gameRef.current = new Phaser.Game(config);
