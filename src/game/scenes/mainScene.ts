@@ -67,7 +67,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    const scrollSpeed = 3;
+    const scrollSpeed = 1;
 
     const background = this.children.getByName(
       "background"
