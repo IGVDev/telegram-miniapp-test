@@ -23,15 +23,11 @@ function App() {
       bgImage={appBg}
       bgSize="cover"
       bgPosition="center"
-      height="100vh"
+      bgAttachment={"fixed"}
     >
       <Flex
         className="mainContainer"
-        flexDir="column"
-        w="100%"
-        alignItems="center"
-        gap={4}
-        mt={2}
+        flexDir={"column"}
       >
         {activeTab === TabIndex.Ref && <Ref />}
         {activeTab === TabIndex.Tap && <Tap />}
