@@ -48,8 +48,6 @@ export const Ref = () => {
       gap={2}
       color="white"
       align="center"
-      height="100vh"
-      px={2}
     >
       <Text fontSize="40px" fontWeight="bold" color="white" align="center">
         {refCount} Referrals
