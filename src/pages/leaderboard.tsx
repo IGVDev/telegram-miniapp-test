@@ -1,4 +1,12 @@
-import { Flex, Text, Table, Tr, Td, Tbody, Thead } from "@chakra-ui/react";
+import {
+  Flex,
+  Text,
+  Table,
+  Tr,
+  Td,
+  Tbody,
+  Thead,
+} from "@chakra-ui/react";
 import { GiTrophy } from "react-icons/gi";
 import { useState } from "react";
 
@@ -44,7 +52,7 @@ export const Leaderboard = () => {
       </Text>
 
       <Flex className="tableContainer">
-        <Table size="md" >
+        <Table size="sm" variant="unstyled" w="90vw">
           <Thead color="gray.500">
             <Tr>
               <Td>Ranking</Td>
@@ -54,17 +62,19 @@ export const Leaderboard = () => {
           </Thead>
           <Tbody w="">
             {leaderboard.map((user, index) => (
-              <Tr key={index}>
-                <Td>
-                  {index < 3 ? (
-                    <GiTrophy color={TrophyColor[index]} />
-                  ) : (
-                    index + 1
-                  )}
-                </Td>
-                <Td>{user.username}</Td>
-                <Td>{user.score}</Td>
-              </Tr>
+              <>
+                <Tr key={index} borderBottom={"1px solid"} borderColor={"gray.600"}>
+                  <Td>
+                    {index < 3 ? (
+                      <GiTrophy color={TrophyColor[index]} />
+                    ) : (
+                      index + 1
+                    )}
+                  </Td>
+                  <Td>{user.username}</Td>
+                  <Td>{user.score}</Td>
+                </Tr>
+              </>
             ))}
             <Tr bgColor="purple.900">
               <Td></Td>
