@@ -1,4 +1,4 @@
-import { Flex, Text, Button, Divider, Image } from "@chakra-ui/react";
+import { Flex, Text, Button, Divider } from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
 import { extractUserId, verifyTelegramWebAppData } from "../utils";
