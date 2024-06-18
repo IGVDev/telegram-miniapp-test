@@ -37,7 +37,7 @@ function App() {
         {activeTab === TabIndex.Tap && <Tap />}
         {activeTab === TabIndex.Leaderboard && <Leaderboard />}
         <Flex flex="1" align="end">
-          <Flex className="tabsContainer" justify="center" mb={4}>
+          <Flex className="tabsContainer" justify="center" mb={2}>
             <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
           </Flex>
         </Flex>
