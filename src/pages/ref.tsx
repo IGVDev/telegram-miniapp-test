@@ -69,7 +69,7 @@ export const Ref = () => {
         </Button>
       </Flex>
       <Divider w="98%" alignSelf="center" borderColor="gray.600" mt={2} />
-      <Flex className="referralListContainer" flexDir="column" gap={2} p={4}>
+      <Flex className="referralListContainer" flexDir="column" gap={2} p={0} w="100%">
         <Text fontWeight="bold">My Referrals:</Text>
         {referralList.length > 0 ? (
           referralList.map((referral) => (
@@ -78,7 +78,7 @@ export const Ref = () => {
             </Flex>
           ))
         ) : (
-          <Flex p={8}>
+          <Flex p={4} alignSelf="center">
             <Image h="200px" w="200px" src={noReferrals} alt="No referrals" />
           </Flex>
         )}
