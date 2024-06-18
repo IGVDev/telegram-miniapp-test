@@ -79,7 +79,7 @@ export const Ref = () => {
           ))
         ) : (
           <Flex p={8}>
-            <Image src={noReferrals} alt="No referrals" />
+            <Image h="200px" w="200px" src={noReferrals} alt="No referrals" />
           </Flex>
         )}
       </Flex>
