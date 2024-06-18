@@ -1,4 +1,4 @@
-import { Flex, Text, Button, Divider, Image } from "@chakra-ui/react";
+import { Flex, Text, Button, Divider, Image, useToast } from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
 import { extractUserId, verifyTelegramWebAppData } from "../utils";
@@ -8,6 +8,25 @@ export const Ref = () => {
   const [refCount] = useState(0);
   const [userId, setUserId] = useState("");
   const [referralList] = useState([]);
+
+  const toast = useToast();
+
+  const handleCopy = () => {
+    if (toast.isActive("copied")) {
+      return;
+    }
+    toast({
+      id: "copied",
+      title: "Copied to clipboard",
+      status: "success",
+      position: "top",
+      duration: 2000,
+      isClosable: true,
+    });
+    navigator.clipboard.writeText(
+      `https://t.me/testatrbot?ref=${userId}`
+    );
+  };
 
   useEffect(() => {
     if (WebApp.initData) {
@@ -59,11 +78,7 @@ export const Ref = () => {
             color: "black",
             bgGradient: "linear(to-bl, purple.600 0%, white 40%)",
           }}
-          onClick={() =>
-            navigator.clipboard.writeText(
-              `https://t.me/testatrbot?ref=${userId}`
-            )
-          }
+          onClick={() => handleCopy()}
         >
           Copy
         </Button>
