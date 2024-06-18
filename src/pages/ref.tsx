@@ -2,7 +2,7 @@ import { Flex, Text, Button, Divider, Image } from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
 import { extractUserId, verifyTelegramWebAppData } from "../utils";
-import noReferrals from "../assets/noreferrals.webp";
+// import noReferrals from "../assets/noreferrals.webp";
 
 export const Ref = () => {
   const [refCount] = useState(0);
@@ -79,7 +79,8 @@ export const Ref = () => {
           ))
         ) : (
           <Flex p={4} alignSelf="center">
-            <Image h="200px" w="200px" src={noReferrals} alt="No referrals" />
+            {/* <Image h="200px" w="200px" src={noReferrals} alt="No referrals" /> */}
+            <Text>No referrals yet</Text>
           </Flex>
         )}
       </Flex>
