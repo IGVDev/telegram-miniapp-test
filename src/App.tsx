@@ -23,7 +23,7 @@ function App() {
       bgImage={appBg}
       bgSize="cover"
       bgPosition="center"
-      height="100%"
+      height="100vh"
     >
       <Flex
         className="mainContainer"
@@ -32,8 +32,6 @@ function App() {
         alignItems="center"
         gap={4}
         mt={2}
-        minH="98.8vh"
-        height="100%"
       >
         {activeTab === TabIndex.Ref && <Ref />}
         {activeTab === TabIndex.Tap && <Tap />}
