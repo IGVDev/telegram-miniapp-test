@@ -23,7 +23,6 @@ function App() {
       bgImage={appBg}
       bgSize="cover"
       bgPosition="center"
-      height="100vh"
     >
       <Flex
         className="mainContainer"
