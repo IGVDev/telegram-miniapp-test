@@ -37,6 +37,7 @@ export const Leaderboard = () => {
       color="white"
       align="center"
       w="100%"
+      overflowX="hidden"
     >
       <Text fontSize="40px" fontWeight="bold">
         Leaderboard
