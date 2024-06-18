@@ -6,7 +6,7 @@ import pipeImage from "./assets/pipe.png";
 import birdImage from "./assets/bird.png";
 import appBg from "./assets/background.webp";
 import { RiBarChartFill, RiCopperCoinFill, RiHeartsFill } from "react-icons/ri";
-import { Button, Flex, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
+import { Flex, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import WebApp from "@twa-dev/sdk";
 
@@ -21,8 +21,8 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
 
   //Refs
-  const [refCount, setRefCount] = useState(0);
-  const [userId, setUserId] = useState("");
+  const [refCount] = useState(0);
+  const [,] = useState("");
 
   const handleScoreUpdate = () => {
     setCoins((prevCoins) => prevCoins + 1);
