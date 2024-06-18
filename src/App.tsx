@@ -23,7 +23,7 @@ function App() {
 
   //Refs
   const [refCount] = useState(0);
-  const [, setUserId] = useState("");
+  const [userId, setUserId] = useState("");
 
   const handleScoreUpdate = () => {
     setCoins((prevCoins) => prevCoins + 1);
@@ -122,7 +122,9 @@ function App() {
               flexDir="column"
             >
               <Text>My invite link:</Text>
-              <Text>https://t.me/testatrbot</Text>
+              <Text>
+                https://t.me/testatrbot?ref={userId}
+              </Text>
             </Flex>
           </Flex>
         )}
