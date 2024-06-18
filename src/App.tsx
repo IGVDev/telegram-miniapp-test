@@ -9,6 +9,7 @@ import { RiBarChartFill, RiCopperCoinFill, RiHeartsFill } from "react-icons/ri";
 import { Flex, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import WebApp from "@twa-dev/sdk";
+import CryptoJS from "crypto-js";
 
 enum TabIndex {
   Ref = 0,
@@ -22,7 +23,7 @@ function App() {
 
   //Refs
   const [refCount] = useState(0);
-  const [,] = useState("");
+  const [, setUserId] = useState("");
 
   const handleScoreUpdate = () => {
     setCoins((prevCoins) => prevCoins + 1);
@@ -50,13 +51,41 @@ function App() {
 
   useEffect(() => {
     WebApp.ready();
-    WebApp.MainButton.show();
 
-    WebApp.onEvent("mainButtonClicked", () => {
-      if (WebApp.initData) {
-        console.log(WebApp.initData);
+    const validateData = (data) => {
+      const secretKey = CryptoJS.SHA256(
+        import.meta.env.VITE_BOT_TOKEN
+      ).toString();
+      const checkString = Object.keys(data)
+        .filter((key) => key !== "hash")
+        .sort()
+        .map((key) => `${key}=${data[key]}`)
+        .join("\n");
+
+      const hash = CryptoJS.HmacSHA256(checkString, secretKey).toString();
+
+      return hash === data.hash;
+    };
+
+    const extractUserId = (initData) => {
+      if (!initData) return;
+
+      const params = new URLSearchParams(initData);
+      const user = params.get("user");
+      if (!user) return;
+      const userData = JSON.parse(user);
+      return userData.id;
+    };
+
+    if (WebApp.initData) {
+      const data = WebApp.initData;
+      if (validateData(data)) {
+        const id = extractUserId(data);
+        setUserId(id);
+      } else {
+        console.error("Invalid initData signature.");
       }
-    });
+    }
   }, []);
 
   return (
