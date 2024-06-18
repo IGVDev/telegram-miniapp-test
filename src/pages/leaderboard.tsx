@@ -77,7 +77,7 @@ export const Leaderboard = () => {
               </>
             ))}
             <Tr bgColor="purple.900">
-              <Td></Td>
+              <Td fontWeight="bold">840</Td>
               <Td fontWeight="bold">You</Td>
               <Td fontWeight="bold">0</Td>
             </Tr>
