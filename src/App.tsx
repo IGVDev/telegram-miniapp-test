@@ -5,19 +5,24 @@ import bgImage from "./assets/bg.png";
 import pipeImage from "./assets/pipe.png";
 import birdImage from "./assets/bird.png";
 import appBg from "./assets/background.webp";
-import {
-  RiBarChartFill,
-  RiCheckboxCircleFill,
-  RiCopperCoinFill,
-  RiFireFill,
-  RiHeartsFill,
-} from "react-icons/ri";
-import { Flex, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
+import { RiBarChartFill, RiCopperCoinFill, RiHeartsFill } from "react-icons/ri";
+import { Button, Flex, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import WebApp from "@twa-dev/sdk";
 
+enum TabIndex {
+  Ref = 0,
+  Tap = 1,
+  Leaderboard = 2,
+}
+
 function App() {
   const [coins, setCoins] = useState(0);
+  const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
+
+  //Refs
+  const [refCount, setRefCount] = useState(0);
+  const [userId, setUserId] = useState("");
 
   const handleScoreUpdate = () => {
     setCoins((prevCoins) => prevCoins + 1);
@@ -43,6 +48,17 @@ function App() {
     });
   }, [coins]);
 
+  useEffect(() => {
+    WebApp.ready();
+    WebApp.MainButton.show();
+
+    WebApp.onEvent("mainButtonClicked", () => {
+      if (WebApp.initData) {
+        console.log(WebApp.initData);
+      }
+    });
+  }, []);
+
   return (
     <Flex
       className="App"
@@ -59,48 +75,74 @@ function App() {
         gap={4}
         mt={2}
       >
-        <Flex className="coinContainer" align="center" gap={1}>
-          <RiCopperCoinFill size="50px" color="orange" />
-          <Flex align="center">
+        {activeTab === TabIndex.Ref && (
+          <Flex
+            className="refContainer"
+            flexDir="column"
+            align="center"
+            gap={2}
+          >
             <Text fontSize="40px" fontWeight="bold" color="white">
-              {coins}
+              {refCount} Referrals
             </Text>
+
+            <Flex
+              bgColor="whiteAlpha.300"
+              w="100%"
+              position="relative"
+              flexDir="column"
+            >
+              <Text>My invite link:</Text>
+              <Text>https://t.me/testatrbot</Text>
+            </Flex>
           </Flex>
-        </Flex>
-        <Flex className="gameContainer">
-          <FlappyBirdGame
-            width={400}
-            height={400}
-            birdImage={birdImage}
-            pipeImage={pipeImage}
-            backgroundImage={bgImage}
-            onScoreUpdate={handleScoreUpdate}
-            domId="flappy-bird-game"
-          />
-        </Flex>
+        )}
+        {activeTab === TabIndex.Tap && (
+          <>
+            <Flex className="coinContainer" align="center" gap={1}>
+              <RiCopperCoinFill size="50px" color="orange" />
+              <Flex align="center">
+                <Text fontSize="40px" fontWeight="bold" color="white">
+                  {coins}
+                </Text>
+              </Flex>
+            </Flex>
+            <Flex className="gameContainer">
+              <FlappyBirdGame
+                width={400}
+                height={400}
+                birdImage={birdImage}
+                pipeImage={pipeImage}
+                backgroundImage={bgImage}
+                onScoreUpdate={handleScoreUpdate}
+                domId="flappy-bird-game"
+              />
+            </Flex>
+          </>
+        )}
+        {activeTab === TabIndex.Leaderboard && <div>Leaderboard</div>}
         <Flex className="tabsContainer">
-          <Tabs variant="soft-rounded" colorScheme="yellow" defaultIndex={2}>
+          <Tabs
+            variant="soft-rounded"
+            isFitted
+            colorScheme="yellow"
+            defaultIndex={1}
+            onChange={(index) => setActiveTab(index as TabIndex)}
+          >
             <TabList gap="12px" height="80px">
               <Tab
-                isDisabled
                 borderRadius={16}
                 border="1px solid gray"
+                _selected={{
+                  border: "1px solid orange",
+                  pointerEvents: "none",
+                  bgColor: "rgba(255, 255, 0, 0.15)",
+                }}
                 bgColor="whiteAlpha.300"
               >
                 <Flex flexDir="column" align="center" gap={1} color="white">
                   <RiHeartsFill size="30px" />
                   <Text fontSize="xs">Ref</Text>
-                </Flex>
-              </Tab>
-              <Tab
-                isDisabled
-                borderRadius={16}
-                border="1px solid gray"
-                bgColor="whiteAlpha.300"
-              >
-                <Flex flexDir="column" align="center" gap={1} color="white">
-                  <RiCheckboxCircleFill size="30px" />
-                  <Text fontSize="xs">Task</Text>
                 </Flex>
               </Tab>
               <Tab
@@ -118,25 +160,18 @@ function App() {
                 </Flex>
               </Tab>
               <Tab
-                isDisabled
                 borderRadius={16}
                 border="1px solid gray"
-                bgColor="whiteAlpha.300"
-              >
-                <Flex flexDir="column" align="center" gap={1} color="white">
-                  <RiFireFill size="30px" />
-                  <Text fontSize="xs">Boost</Text>
-                </Flex>
-              </Tab>
-              <Tab
-                isDisabled
-                borderRadius={16}
-                border="1px solid gray"
+                _selected={{
+                  border: "1px solid orange",
+                  pointerEvents: "none",
+                  bgColor: "rgba(255, 255, 0, 0.15)",
+                }}
                 bgColor="whiteAlpha.300"
               >
                 <Flex flexDir="column" align="center" gap={1} color="white">
                   <RiBarChartFill size="30px" />
-                  <Text fontSize="xs">Stats</Text>
+                  <Text fontSize="xs">Scores</Text>
                 </Flex>
               </Tab>
             </TabList>
