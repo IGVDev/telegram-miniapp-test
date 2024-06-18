@@ -50,8 +50,6 @@ function App() {
   }, [coins]);
 
   useEffect(() => {
-    WebApp.ready();
-
     const verifyTelegramWebAppData = async (
       telegramInitData: string
     ): Promise<boolean> => {
@@ -87,7 +85,6 @@ function App() {
     };
 
     if (WebApp.initData) {
-      console.log("initData", WebApp.initData);
       const data = WebApp.initData;
 
       if (verifyTelegramWebAppData(data)) {
