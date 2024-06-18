@@ -52,21 +52,28 @@ function App() {
   useEffect(() => {
     WebApp.ready();
 
-    const validateData = (data) => {
-      console.log("validating");
-      const secretKey = CryptoJS.SHA256(
-        import.meta.env.VITE_BOT_TOKEN
-      ).toString();
-      const checkString = Object.keys(data)
-        .filter((key) => key !== "hash")
-        .sort()
-        .map((key) => `${key}=${data[key]}`)
-        .join("\n");
+    const verifyTelegramWebAppData = async (
+      telegramInitData: string
+    ): Promise<boolean> => {
+      const initData = new URLSearchParams(telegramInitData);
+      const hash = initData.get("hash");
+      const dataToCheck: string[] = [];
 
-      const hash = CryptoJS.HmacSHA256(checkString, secretKey).toString();
+      initData.sort();
+      initData.forEach(
+        (val, key) => key !== "hash" && dataToCheck.push(`${key}=${val}`)
+      );
 
-      console.log("validated");
-      return hash === data.hash;
+      const secret = CryptoJS.HmacSHA256(
+        import.meta.env.VITE_BOT_TOKEN,
+        "WebAppData"
+      );
+      const _hash = CryptoJS.HmacSHA256(
+        dataToCheck.join("\n"),
+        secret
+      ).toString(CryptoJS.enc.Hex);
+
+      return _hash === hash;
     };
 
     const extractUserId = (initData) => {
@@ -82,7 +89,8 @@ function App() {
     if (WebApp.initData) {
       console.log("initData", WebApp.initData);
       const data = WebApp.initData;
-      if (validateData(data)) {
+
+      if (verifyTelegramWebAppData(data)) {
         const id = extractUserId(data);
         setUserId(id);
       } else {
