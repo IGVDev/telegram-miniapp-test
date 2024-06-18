@@ -53,6 +53,7 @@ function App() {
     WebApp.ready();
 
     const validateData = (data) => {
+      console.log("validating");
       const secretKey = CryptoJS.SHA256(
         import.meta.env.VITE_BOT_TOKEN
       ).toString();
@@ -64,6 +65,7 @@ function App() {
 
       const hash = CryptoJS.HmacSHA256(checkString, secretKey).toString();
 
+      console.log("validated");
       return hash === data.hash;
     };
 
@@ -78,6 +80,7 @@ function App() {
     };
 
     if (WebApp.initData) {
+      console.log("initData", WebApp.initData);
       const data = WebApp.initData;
       if (validateData(data)) {
         const id = extractUserId(data);
@@ -122,9 +125,7 @@ function App() {
               flexDir="column"
             >
               <Text>My invite link:</Text>
-              <Text>
-                https://t.me/testatrbot?ref={userId}
-              </Text>
+              <Text>https://t.me/testatrbot?ref={userId}</Text>
             </Flex>
           </Flex>
         )}
