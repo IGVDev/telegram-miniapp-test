@@ -3,13 +3,13 @@ import React, { useEffect, useRef } from "react";
 import GameOverScene from "./scenes/gameOver";
 import MainScene from "./scenes/mainScene";
 import StartScene from "./scenes/startScene";
+import backgroundImage from "../assets/bg.png";
+import pipeImage from "../assets/pipe.png";
+import birdImage from "../assets/bird.png";
 
 interface FlappyBirdGameProps {
   width: number;
   height: number;
-  birdImage: string;
-  pipeImage: string;
-  backgroundImage: string;
   domId: string;
   onScoreUpdate?: (score: number) => void;
 }
@@ -17,9 +17,6 @@ interface FlappyBirdGameProps {
 const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
   width,
   height,
-  birdImage,
-  pipeImage,
-  backgroundImage,
   domId,
   onScoreUpdate,
 }) => {
