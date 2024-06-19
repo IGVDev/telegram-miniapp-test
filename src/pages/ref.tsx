@@ -65,7 +65,7 @@ export const Ref = () => {
       >
         <Text fontWeight="bold">My invite link:</Text>
         <Text fontSize="xs" color="gray.400">
-          https://t.me/testatrbot?ref={userId}
+          https://t.me/testatrbot?start={userId}
         </Text>
         <Button
           position="absolute"
