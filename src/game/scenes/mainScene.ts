@@ -19,6 +19,11 @@ export default class MainScene extends Phaser.Scene {
   private scoreText!: Phaser.GameObjects.Text;
   private onScoreUpdate?: (score: number) => void;
   private pipeCounter: number = 0;
+  private isPaused: boolean = false;
+  private clickCount: number = 0;
+  private countdownValue: number = 3;
+  private countdownText!: Phaser.GameObjects.Text;
+  private savedVelocityY: number = 0;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
@@ -51,13 +56,15 @@ export default class MainScene extends Phaser.Scene {
     background.setName("background");
 
     this.input.on("pointerdown", () => {
-      this.bird.setVelocityY(-500);
-      this.tweens.add({
-        targets: this.bird,
-        props: { angle: -20 },
-        duration: 150,
-        ease: "Power0",
-      });
+      if (!this.isPaused) {
+        this.bird.setVelocityY(-500);
+        this.tweens.add({
+          targets: this.bird,
+          props: { angle: -20 },
+          duration: 150,
+          ease: "Power0",
+        });
+      }
     });
 
     this.scoreText = this.add
@@ -73,15 +80,39 @@ export default class MainScene extends Phaser.Scene {
     this.pipeCounter = 0;
 
     this.addNewRowOfPipes();
+
+    this.countdownText = this.add
+      .text(this.scale.width / 2, this.scale.height / 2, "", {
+        fontSize: "40px",
+        color: "#FF0000",
+      })
+      .setOrigin(0.5)
+      .setDepth(2)
+      .setVisible(false);
+
+    this.time.addEvent({
+      delay: 5000, // every X amount of time
+      callback: this.pauseForClicks,
+      callbackScope: this,
+      loop: true,
+    });
+
     this.time.addEvent({
       delay: 1200,
-      callback: this.addNewRowOfPipes,
+      callback: () => {
+        if (!this.isPaused) {
+          this.addNewRowOfPipes();
+        }
+      },
       callbackScope: this,
       loop: true,
     });
   }
 
   update(_time, delta) {
+    if (this.isPaused) {
+      return;
+    }
     const scrollSpeed = 0.2;
 
     const pixelsPerFrame = scrollSpeed * delta;
@@ -161,6 +192,59 @@ export default class MainScene extends Phaser.Scene {
     if (this.bird && this.bird.angle < 20) {
       this.bird.angle += 1;
     }
+  }
+
+  private pauseForClicks() {
+    this.savedVelocityY = this.bird.body.velocity.y;
+    this.physics.world.gravity.y = 0;
+    this.bird.setVelocityY(0);
+    this.bird.setAngle(0);
+
+    this.isPaused = true;
+    this.clickCount = 0;
+    this.input.on("pointerdown", this.countClick, this);
+
+    this.time.delayedCall(5000, this.startCountdown, [], this);
+  }
+
+  private countClick() {
+    if (this.isPaused) {
+      this.clickCount++;
+    }
+  }
+
+  private startCountdown() {
+    this.input.off("pointerdown", this.countClick, this);
+    this.countdownValue = 3;
+    this.countdownText.setVisible(true);
+    this.countdown();
+  }
+
+  private countdown() {
+    this.countdownText.setText(this.countdownValue.toString());
+    if (this.countdownValue > 0) {
+      this.time.delayedCall(
+        1000,
+        () => {
+          this.countdownValue--;
+          this.countdown();
+        },
+        [],
+        this
+      );
+    } else {
+      this.resumeGame();
+    }
+  }
+
+  private resumeGame() {
+    // Restore normal world gravity when the game resumes
+    this.isPaused = false;
+    this.physics.world.gravity.y = 2600; // Adjust this value to your game's normal gravity
+    this.bird.setVelocityY(this.savedVelocityY);
+    this.countdownText.setVisible(false);
+    // Optionally save the click count or do something with it here
+    console.log("Clicks during pause:", this.clickCount);
   }
 
   private collectCoin(coin: Phaser.Physics.Arcade.Sprite) {
