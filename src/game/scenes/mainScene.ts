@@ -73,7 +73,7 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
-  update(time, delta) {
+  update(delta) {
     const scrollSpeed = 0.2;
 
     const pixelsPerFrame = scrollSpeed * delta;
