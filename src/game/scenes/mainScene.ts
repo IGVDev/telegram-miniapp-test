@@ -23,7 +23,9 @@ export default class MainScene extends Phaser.Scene {
   private clickCount: number = 0;
   private countdownValue: number = 3;
   private countdownText!: Phaser.GameObjects.Text;
+  private clickCountText!: Phaser.GameObjects.Text;
   private savedVelocityY: number = 0;
+  private lastPauseScore: number = 0;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
@@ -41,6 +43,15 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    this.clickCountText = this.add
+      .text(this.scale.width / 2, this.scale.height / 2, "", {
+        fontSize: "28px",
+        color: "#FF0000",
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setVisible(false).setDepth(3);
+
     this.bird = this.physics.add
       .sprite(100, this.scale.height / 4, "bird")
       .setScale(2.5);
@@ -89,13 +100,6 @@ export default class MainScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(2)
       .setVisible(false);
-
-    this.time.addEvent({
-      delay: 5000, // every X amount of time
-      callback: this.pauseForClicks,
-      callbackScope: this,
-      loop: true,
-    });
 
     this.time.addEvent({
       delay: 1200,
@@ -167,6 +171,10 @@ export default class MainScene extends Phaser.Scene {
       ) {
         this.scene.start("GameOverScene");
       }
+
+      if (this.canPauseGame()) {
+        this.pauseForClicks();
+      }
     });
 
     this.coins.getChildren().forEach((coin) => {
@@ -194,6 +202,30 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
+  private canPauseGame(): boolean {
+    if (
+      this.score % 5 === 0 &&
+      this.score > 5 &&
+      this.score - this.lastPauseScore >= 5
+    ) {
+      const safeDistance = 100; // Define a safe distance from the nearest pipe
+      const nearestPipe = this.pipes.getChildren().reduce((nearest, pipe) => {
+        const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
+        const nearestSprite = nearest as Phaser.Physics.Arcade.Sprite; // Cast nearest to Sprite
+        return Math.abs(this.bird.x - pipeSprite.x) <
+          Math.abs(this.bird.x - nearestSprite.x)
+          ? pipeSprite
+          : nearestSprite;
+      }, this.pipes.getFirstAlive() as Phaser.Physics.Arcade.Sprite) as Phaser.Physics.Arcade.Sprite;
+
+      if (Math.abs(this.bird.x - nearestPipe.x) > safeDistance) {
+        this.lastPauseScore = this.score; // Update the score at last pause
+        return true;
+      }
+    }
+    return false;
+  }
+
   private pauseForClicks() {
     this.savedVelocityY = this.bird.body.velocity.y;
     this.physics.world.gravity.y = 0;
@@ -204,16 +236,22 @@ export default class MainScene extends Phaser.Scene {
     this.clickCount = 0;
     this.input.on("pointerdown", this.countClick, this);
 
+    // Display the click count and instructions
+    this.clickCountText.setText("Touch the screen!\nClicks: 0");
+    this.clickCountText.setVisible(true);
+
     this.time.delayedCall(5000, this.startCountdown, [], this);
   }
 
   private countClick() {
     if (this.isPaused) {
       this.clickCount++;
+      this.clickCountText.setText(`Touch the screen!\nClicks: ${this.clickCount}`);
     }
   }
 
   private startCountdown() {
+    this.clickCountText.setVisible(false);
     this.input.off("pointerdown", this.countClick, this);
     this.countdownValue = 3;
     this.countdownText.setVisible(true);
