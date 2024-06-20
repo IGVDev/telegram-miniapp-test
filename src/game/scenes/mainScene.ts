@@ -43,6 +43,9 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    this.isPaused = false;
+    this.clickCount = 0;
+    this.lastPauseScore = 0;
     this.clickCountText = this.add
       .text(this.scale.width / 2, this.scale.height / 2, "", {
         fontSize: "28px",
@@ -50,7 +53,8 @@ export default class MainScene extends Phaser.Scene {
         align: "center",
       })
       .setOrigin(0.5)
-      .setVisible(false).setDepth(3);
+      .setVisible(false)
+      .setDepth(3);
 
     this.bird = this.physics.add
       .sprite(100, this.scale.height / 4, "bird")
@@ -246,7 +250,9 @@ export default class MainScene extends Phaser.Scene {
   private countClick() {
     if (this.isPaused) {
       this.clickCount++;
-      this.clickCountText.setText(`SUPERCOIN!!!\nClick to collect!\nClicks: ${this.clickCount}`);
+      this.clickCountText.setText(
+        `SUPERCOIN!!!\nClick to collect!\nClicks: ${this.clickCount}`
+      );
     }
   }
 
