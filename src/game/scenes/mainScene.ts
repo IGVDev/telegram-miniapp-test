@@ -1,8 +1,10 @@
 import Phaser from "phaser";
 import { Pipe } from "../pipe";
+import { Coin } from "../coin";
 import bgImage from "../../assets/bg.png";
 import birdImage from "../../assets/bird.png";
 import pipeImage from "../../assets/pipe.png";
+import coinImage from "../../assets/coin.png";
 import WebApp from "@twa-dev/sdk";
 
 interface MainSceneConfig {
@@ -12,9 +14,11 @@ interface MainSceneConfig {
 export default class MainScene extends Phaser.Scene {
   private bird!: Phaser.Physics.Arcade.Sprite;
   private pipes!: Phaser.Physics.Arcade.StaticGroup;
+  private coins!: Phaser.Physics.Arcade.StaticGroup;
   private score: number = 0;
   private scoreText!: Phaser.GameObjects.Text;
   private onScoreUpdate?: (score: number) => void;
+  private pipeCounter: number = 0;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
@@ -24,6 +28,7 @@ export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.image("background", bgImage);
     this.load.image("bird", birdImage);
+    this.load.image("coin", coinImage);
     this.load.spritesheet("pipe", pipeImage, {
       frameWidth: 20,
       frameHeight: 20,
@@ -38,6 +43,7 @@ export default class MainScene extends Phaser.Scene {
     this.bird.setCollideWorldBounds(true);
     this.bird.setDepth(1);
 
+    this.coins = this.physics.add.staticGroup({ classType: Coin });
     this.pipes = this.physics.add.staticGroup({ classType: Pipe });
     const background = this.add
       .tileSprite(0, 0, this.scale.width, this.scale.height, "background")
@@ -63,6 +69,8 @@ export default class MainScene extends Phaser.Scene {
 
     this.score = 0;
     this.scoreText.setText("Score: " + this.score);
+
+    this.pipeCounter = 0;
 
     this.addNewRowOfPipes();
     this.time.addEvent({
@@ -130,6 +138,20 @@ export default class MainScene extends Phaser.Scene {
       }
     });
 
+    this.coins.getChildren().forEach((coin) => {
+      const coinSprite = coin as Phaser.Physics.Arcade.Sprite;
+      coinSprite.x -= pixelsPerFrame;
+
+      if (
+        Phaser.Geom.Intersects.RectangleToRectangle(
+          this.bird.getBounds(),
+          coinSprite.getBounds()
+        )
+      ) {
+        this.collectCoin(coinSprite);
+      }
+    });
+
     // Ground collision
     if (this.bird && this.bird.y >= this.scale.height - 18) {
       this.saveHighScore();
@@ -139,6 +161,20 @@ export default class MainScene extends Phaser.Scene {
     if (this.bird && this.bird.angle < 20) {
       this.bird.angle += 1;
     }
+  }
+
+  private collectCoin(coin: Phaser.Physics.Arcade.Sprite) {
+    this.score += 30;
+    this.scoreText.setText("Score: " + this.score);
+    if (this.onScoreUpdate) {
+      this.onScoreUpdate(this.score);
+    }
+    coin.destroy();
+  }
+
+  private spawnCoin(x: number, y: number) {
+    const coin = new Coin({ scene: this, x, y });
+    this.coins.add(coin);
   }
 
   private addNewRowOfPipes() {
@@ -157,6 +193,11 @@ export default class MainScene extends Phaser.Scene {
         this.addPipe(400, i * 40, frame, rowId);
       }
     }
+    this.pipeCounter++;
+
+    if (this.pipeCounter % 5 === 0) {
+      this.spawnCoin(400, (hole + 1) * 40); // Spawn the coin in the middle of the hole
+    }
   }
 
   private addPipe(x: number, y: number, frame: number, rowId: number) {
@@ -167,7 +208,6 @@ export default class MainScene extends Phaser.Scene {
 
   private async saveHighScore() {
     const highScore = Number(WebApp.CloudStorage.getItem("highScore")) || 0;
-
     if (highScore) {
       if (this.score > highScore) {
         WebApp.CloudStorage.setItem("highScore", this.score.toString());
