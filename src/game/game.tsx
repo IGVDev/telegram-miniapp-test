@@ -54,7 +54,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
     };
   }, [width, height, birdImage, pipeImage, backgroundImage, domId]);
 
-  return <div id={domId} />;
+  return <div id={domId} style={{ borderRadius: '20px', overflow: 'hidden' }}/>;
 };
 
 export default FlappyBirdGame;
