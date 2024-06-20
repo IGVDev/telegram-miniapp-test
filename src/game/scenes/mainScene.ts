@@ -237,7 +237,7 @@ export default class MainScene extends Phaser.Scene {
     this.input.on("pointerdown", this.countClick, this);
 
     // Display the click count and instructions
-    this.clickCountText.setText("Touch the screen!\nClicks: 0");
+    this.clickCountText.setText("SUPERCOIN!!!\nClick to collect!\nClicks: 0");
     this.clickCountText.setVisible(true);
 
     this.time.delayedCall(5000, this.startCountdown, [], this);
@@ -246,7 +246,7 @@ export default class MainScene extends Phaser.Scene {
   private countClick() {
     if (this.isPaused) {
       this.clickCount++;
-      this.clickCountText.setText(`Touch the screen!\nClicks: ${this.clickCount}`);
+      this.clickCountText.setText(`SUPERCOIN!!!\nClick to collect!\nClicks: ${this.clickCount}`);
     }
   }
 
