@@ -17,7 +17,7 @@ export default class MainScene extends Phaser.Scene {
   private onScoreUpdate?: (score: number) => void;
 
   constructor(config: MainSceneConfig) {
-    super('MainScene');
+    super("MainScene");
     this.onScoreUpdate = config.onScoreUpdate;
   }
 
@@ -73,19 +73,21 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
-  update() {
-    const scrollSpeed = 2;
+  update(time, delta) {
+    const scrollSpeed = 0.2;
+
+    const pixelsPerFrame = scrollSpeed * delta;
 
     const background = this.children.getByName(
       "background"
     ) as Phaser.GameObjects.TileSprite;
     if (background) {
-      background.tilePositionX += scrollSpeed;
+      background.tilePositionX += pixelsPerFrame;
     }
 
     this.pipes.getChildren().forEach((pipe: Phaser.GameObjects.GameObject) => {
       const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
-      pipeSprite.x -= scrollSpeed;
+      pipeSprite.x -= pixelsPerFrame;
 
       if (
         this.bird.x > pipeSprite.x &&
