@@ -1,14 +1,15 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { RiCopperCoinFill } from "react-icons/ri";
 import FlappyBirdGame from "../game/game";
+import coinImg from "../assets/coin.png";
 import WebApp from "@twa-dev/sdk";
 
 export const Tap = () => {
   const [coins, setCoins] = useState(0);
 
-  const handleScoreUpdate = () => {
-    setCoins((prevCoins) => prevCoins + 1);
+  const handleScoreUpdate = (x: number) => {
+    setCoins((prevCoins) => prevCoins + x);
   };
 
   useEffect(() => {
@@ -33,15 +34,22 @@ export const Tap = () => {
 
   return (
     <>
-      <Flex className="coinContainer" align="center" gap={1}>
-        <RiCopperCoinFill size="50px" color="orange" />
-        <Flex align="center">
-          <Text fontSize="40px" fontWeight="bold" color="white">
-            {coins}
-          </Text>
+      <Flex className="gameContainer" position={"relative"} w={400} h={400}>
+        <Flex
+          className="coinContainer"
+          align="center"
+          position={"absolute"}
+          right={2}
+          gap={1}
+        >
+          {/* <RiCopperCoinFill size="50px" color="orange" /> */}
+          <Image src={coinImg} height={12} width={8} />
+          <Flex align="center">
+            <Text fontSize="40px" fontWeight="bold" color="white">
+              {coins}
+            </Text>
+          </Flex>
         </Flex>
-      </Flex>
-      <Flex className="gameContainer">
         <FlappyBirdGame
           width={400}
           height={400}
