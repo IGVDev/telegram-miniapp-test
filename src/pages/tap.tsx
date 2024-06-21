@@ -1,6 +1,5 @@
 import { Flex, Image, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { RiCopperCoinFill } from "react-icons/ri";
 import FlappyBirdGame from "../game/game";
 import coinImg from "../assets/coin.png";
 import WebApp from "@twa-dev/sdk";
