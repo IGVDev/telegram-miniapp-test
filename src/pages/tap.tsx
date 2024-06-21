@@ -11,25 +11,25 @@ export const Tap = () => {
     setCoins((prevCoins) => prevCoins + x);
   };
 
-  useEffect(() => {
-    WebApp.CloudStorage.getItem("coins", (error, result) => {
-      if (error) {
-        console.error(error);
-      } else {
-        setCoins(Number(result));
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   WebApp.CloudStorage.getItem("coins", (error, result) => {
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       setCoins(Number(result));
+  //     }
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log(result);
-      }
-    });
-  }, [coins]);
+  // useEffect(() => {
+  //   WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       console.log(result);
+  //     }
+  //   });
+  // }, [coins]);
 
   return (
     <>
@@ -38,13 +38,18 @@ export const Tap = () => {
           className="coinContainer"
           align="center"
           position={"absolute"}
-          right={2}
+          right={0}
           gap={1}
+          bgColor="white"
+          borderRadius={18}
+          borderTopLeftRadius={0}
+          borderBottomRightRadius={0}
+          p={2}
         >
           {/* <RiCopperCoinFill size="50px" color="orange" /> */}
-          <Image src={coinImg} height={12} width={8} />
+          <Image src={coinImg} height={8} width={6} />
           <Flex align="center">
-            <Text fontSize="40px" fontWeight="bold" color="white">
+            <Text fontSize="20px" fontWeight="bold" color="black">
               {coins}
             </Text>
           </Flex>
