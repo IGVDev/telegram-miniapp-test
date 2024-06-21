@@ -5,6 +5,7 @@ import bgImage from "../../assets/bg.png";
 import birdImage from "../../assets/bird.png";
 import pipeImage from "../../assets/pipe.png";
 import coinImage from "../../assets/coin.png";
+import openMouthBirdImage from "../../assets/open-mouth-birdpng.png";
 import WebApp from "@twa-dev/sdk";
 
 interface MainSceneConfig {
@@ -34,6 +35,7 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     this.load.image("background", bgImage);
+    this.load.image("openMouthBird", openMouthBirdImage);
     this.load.image("bird", birdImage);
     this.load.image("coin", coinImage);
     this.load.spritesheet("pipe", pipeImage, {
@@ -121,7 +123,7 @@ export default class MainScene extends Phaser.Scene {
     if (this.isPaused) {
       return;
     }
-    const scrollSpeed = 0.2;
+    const scrollSpeed = 0.25;
 
     const pixelsPerFrame = scrollSpeed * delta;
 
@@ -177,7 +179,7 @@ export default class MainScene extends Phaser.Scene {
       }
 
       if (this.canPauseGame()) {
-        this.pauseForClicks();
+        this.superClickScene();
       }
     });
 
@@ -206,11 +208,31 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
+  private handleCoinSpawn = () => {
+    const coinX = this.input.activePointer.worldX;
+    const coinY = this.input.activePointer.worldY;
+    const coin = this.physics.add
+      .sprite(coinX, coinY, "coin")
+      .setScale(8)
+      .setDepth(4);
+    this.tweens.add({
+      targets: coin,
+      x: 140,
+      y: 360,
+      scale: 0,
+      duration: 500,
+      ease: "Power2",
+      onComplete: () => {
+        coin.destroy();
+      },
+    });
+  };
+
   private canPauseGame(): boolean {
     if (
       this.score % 5 === 0 &&
-      this.score > 5 &&
-      this.score - this.lastPauseScore >= 5
+      this.score > 30 &&
+      this.score - this.lastPauseScore >= 50
     ) {
       const safeDistance = 100; // Define a safe distance from the nearest pipe
       const nearestPipe = this.pipes.getChildren().reduce((nearest, pipe) => {
@@ -230,29 +252,53 @@ export default class MainScene extends Phaser.Scene {
     return false;
   }
 
-  private pauseForClicks() {
+  private superClickScene() {
     this.savedVelocityY = this.bird.body.velocity.y;
     this.physics.world.gravity.y = 0;
     this.bird.setVelocityY(0);
     this.bird.setAngle(0);
 
-    this.isPaused = true;
-    this.clickCount = 0;
     this.input.on("pointerdown", this.countClick, this);
 
-    // Display the click count and instructions
-    this.clickCountText.setText("SUPERCOIN!!!\nClick to collect!\nClicks: 0");
+    this.clickCountText
+      .setText(`Click to eat coins!!!\nClicks: ${this.clickCount}`)
+      .setDepth(5)
+      .setPosition(200, 100);
     this.clickCountText.setVisible(true);
 
-    this.time.delayedCall(5000, this.startCountdown, [], this);
+    this.isPaused = true;
+
+    const background = this.children.getByName(
+      "background"
+    ) as Phaser.GameObjects.TileSprite;
+    background.setAlpha(0.5);
+
+    const openMouthBird = this.physics.add
+      .sprite(80, 360, "openMouthBird")
+      .setScale(20)
+      .setAngle(-45);
+    openMouthBird.setDepth(2);
+
+    this.input.on("pointerdown", this.handleCoinSpawn);
+
+    this.time.delayedCall(
+      5000,
+      () => {
+        this.startCountdown();
+        openMouthBird.destroy();
+        this.input.off("pointerdown", this.handleCoinSpawn);
+      },
+      [],
+      this
+    );
   }
 
   private countClick() {
     if (this.isPaused) {
+      this.score++;
+      this.onScoreUpdate(1);
       this.clickCount++;
-      this.clickCountText.setText(
-        `SUPERCOIN!!!\nClick to collect!\nClicks: ${this.clickCount}`
-      );
+      this.clickCountText.setText(`Click \n to eat coins!!!`).setScale(1.5);
     }
   }
 
@@ -287,17 +333,43 @@ export default class MainScene extends Phaser.Scene {
     this.physics.world.gravity.y = 2600; // Adjust this value to your game's normal gravity
     this.bird.setVelocityY(this.savedVelocityY);
     this.countdownText.setVisible(false);
-    // Optionally save the click count or do something with it here
     console.log("Clicks during pause:", this.clickCount);
+
+    // Restore the background opacity
+    const background = this.children.getByName(
+      "background"
+    ) as Phaser.GameObjects.TileSprite;
+    background.setAlpha(1);
   }
 
   private collectCoin(coin: Phaser.Physics.Arcade.Sprite) {
     this.score += 30;
     this.scoreText.setText("Score: " + this.score);
     if (this.onScoreUpdate) {
-      this.onScoreUpdate(this.score);
+      this.onScoreUpdate(30);
     }
+
+    this.animateCoinCollection(coin.x, coin.y);
+
     coin.destroy();
+  }
+
+  private animateCoinCollection(startX: number, startY: number) {
+    const endX = 260;
+    const endY = 38;
+    const coinSprite = this.add.sprite(startX, startY, "coin").setScale(4);
+
+    this.tweens.add({
+      targets: coinSprite,
+      x: endX,
+      y: endY,
+      scale: 1,
+      duration: 800,
+      ease: "Power3",
+      onComplete: () => {
+        coinSprite.destroy(); // Clean up the sprite after animation
+      },
+    });
   }
 
   private spawnCoin(x: number, y: number) {
@@ -323,8 +395,9 @@ export default class MainScene extends Phaser.Scene {
     }
     this.pipeCounter++;
 
-    if (this.pipeCounter % 5 === 0) {
-      this.spawnCoin(400, (hole + 1) * 40); // Spawn the coin in the middle of the hole
+    const spawnChance = 0.2;
+    if (this.pipeCounter % 3 === 0 && Math.random() < spawnChance) {
+      this.spawnCoin(400, (hole + 1) * 40);
     }
   }
 
