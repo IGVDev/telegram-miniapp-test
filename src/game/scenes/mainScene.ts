@@ -355,8 +355,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private animateCoinCollection(startX: number, startY: number) {
-    const endX = 260;
-    const endY = 38;
+    const endX = 350;
+    const endY = 34;
     const coinSprite = this.add.sprite(startX, startY, "coin").setScale(4);
 
     this.tweens.add({
