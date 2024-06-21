@@ -2,8 +2,8 @@ import Phaser from "phaser";
 import { Pipe } from "../pipe";
 import { Coin } from "../coin";
 import bgImage from "../../assets/bg.png";
-import birdImage from "../../assets/bird.png";
-import pipeImage from "../../assets/pipe.png";
+import birdImage from "../../assets/newBird.png";
+import pipeImage from "../../assets/newPipe.png";
 import coinImage from "../../assets/coin.png";
 import openMouthBirdImage from "../../assets/open-mouth-birdpng.png";
 import WebApp from "@twa-dev/sdk";
@@ -60,7 +60,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.bird = this.physics.add
       .sprite(100, this.scale.height / 4, "bird")
-      .setScale(2.5);
+      .setScale(0.35);
 
     this.bird.setCollideWorldBounds(true);
     this.bird.setDepth(1);
@@ -87,7 +87,7 @@ export default class MainScene extends Phaser.Scene {
     this.scoreText = this.add
       .text(16, 16, "Score: 0", {
         fontSize: "32px",
-        color: "#000",
+        color: "#FFF",
       })
       .setDepth(1);
 
@@ -217,7 +217,7 @@ export default class MainScene extends Phaser.Scene {
       .setDepth(4);
     this.tweens.add({
       targets: coin,
-      x: 140,
+      x: 200,
       y: 360,
       scale: 0,
       duration: 500,
@@ -275,7 +275,7 @@ export default class MainScene extends Phaser.Scene {
 
     const openMouthBird = this.physics.add
       .sprite(80, 360, "openMouthBird")
-      .setScale(20)
+      .setScale(3)
       .setAngle(-45);
     openMouthBird.setDepth(2);
 
@@ -356,7 +356,7 @@ export default class MainScene extends Phaser.Scene {
 
   private animateCoinCollection(startX: number, startY: number) {
     const endX = 350;
-    const endY = 34;
+    const endY = 20;
     const coinSprite = this.add.sprite(startX, startY, "coin").setScale(4);
 
     this.tweens.add({
@@ -395,7 +395,7 @@ export default class MainScene extends Phaser.Scene {
     }
     this.pipeCounter++;
 
-    const spawnChance = 0.2;
+    const spawnChance = 1;
     if (this.pipeCounter % 3 === 0 && Math.random() < spawnChance) {
       this.spawnCoin(400, (hole + 1) * 40);
     }
