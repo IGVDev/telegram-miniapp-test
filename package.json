@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.11.5",
     "@twa-dev/sdk": "^7.0.0",
     "@vitejs/plugin-basic-ssl": "^1.0.1",
+    "axios": "^1.7.2",
     "crypto-js": "^4.2.0",
     "framer-motion": "^11.2.10",
     "phaser": "^3.80.1",
