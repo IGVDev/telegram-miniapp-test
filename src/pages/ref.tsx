@@ -36,6 +36,7 @@ export const Ref = () => {
     });
   };
 
+
   useEffect(() => {
     if (WebApp.initData) {
       const data = WebApp.initData;
@@ -46,11 +47,11 @@ export const Ref = () => {
         const params = new URLSearchParams(data);
         const hash = params.get("hash");
 
+
         fetch(
           "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
           {
             method: "GET",
-            body: JSON.stringify({ userId, score: 1 }),
             headers: {
               Authorization: "Bearer " + hash,
             },
