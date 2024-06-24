@@ -37,7 +37,6 @@ export const Ref = () => {
     });
   };
 
-
   useEffect(() => {
     if (WebApp.initData) {
       const data = WebApp.initData;
@@ -47,14 +46,19 @@ export const Ref = () => {
 
         const params = new URLSearchParams(data);
         const hash = params.get("hash");
-        axios.get(
-          "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
-          {
-            headers: {
-              Authorization: "Bearer " + hash,
+        axios
+          .post(
+            "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
+            {
+              foo: "bar",
             },
-          }
-        ).then((res) => {
+            {
+              headers: {
+                Authorization: "Bearer " + hash,
+              },
+            }
+          )
+          .then((res) => {
             console.log(res);
           })
           .catch((err) => {
