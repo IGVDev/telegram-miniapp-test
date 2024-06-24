@@ -441,21 +441,21 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  private resetPipeTimer() {
-    if (this.pipeTimer) {
-      this.pipeTimer.remove(false);
-    }
-    this.pipeTimer = this.time.addEvent({
-      delay: 1500 - this.scrollSpeed * 100, // Adjust delay based on scroll speed
-      callback: () => {
-        if (!this.isPaused) {
-          this.addNewRowOfPipes();
-        }
-      },
-      callbackScope: this,
-      loop: true,
-    });
-  }
+  // private resetPipeTimer() {
+  //   if (this.pipeTimer) {
+  //     this.pipeTimer.remove(false);
+  //   }
+  //   this.pipeTimer = this.time.addEvent({
+  //     delay: 1500 - this.scrollSpeed * 100, // Adjust delay based on scroll speed
+  //     callback: () => {
+  //       if (!this.isPaused) {
+  //         this.addNewRowOfPipes();
+  //       }
+  //     },
+  //     callbackScope: this,
+  //     loop: true,
+  //   });
+  // }
 
   private addPipe(x: number, y: number, frame: number, rowId: number) {
     const pipe = new Pipe({ scene: this, x, y, frame, key: "pipe" });
