@@ -33,7 +33,7 @@ export const Tap = () => {
 
   return (
     <>
-      <Flex className="gameContainer" position={"relative"} w={400} h={400}>
+      <Flex className="gameContainer" position={"relative"} w={400} h={400} minH={400}>
         <Flex
           className="coinContainer"
           align="center"
