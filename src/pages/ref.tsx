@@ -4,10 +4,22 @@ import { useEffect, useState } from "react";
 import { extractUserId, verifyTelegramWebAppData } from "../utils";
 import noReferrals from "../assets/noreferrals.webp";
 
+
 export const Ref = () => {
   const [refCount] = useState(0);
   const [userId, setUserId] = useState("");
   const [referralList] = useState([]);
+
+  const [, setToken] = useState("");
+
+  useEffect(() => {
+    const initData = WebApp.initData;
+    console.log(initData);
+    if (initData) {
+      const token = initData;
+      setToken(token);
+    }
+  }, []);
 
   const toast = useToast();
 
@@ -23,9 +35,19 @@ export const Ref = () => {
       duration: 2000,
       isClosable: true,
     });
-    navigator.clipboard.writeText(
-      `https://t.me/testatrbot?ref=${userId}`
-    );
+    // navigator.clipboard.writeText(
+    //   `https://t.me/testatrbot?ref=${userId}`
+    // );
+    // fetch(
+    //   "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
+    //   {
+    //     method: "POST",
+    //     body: JSON.stringify({ userId, score: 1 }),
+    //     headers: {
+    //       "Authorization": "Bearer ",
+    //     },
+    //   }
+    // );
   };
 
   useEffect(() => {
