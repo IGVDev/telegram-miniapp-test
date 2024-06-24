@@ -3,6 +3,7 @@ import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
 import { extractUserId, verifyTelegramWebAppData } from "../utils";
 import noReferrals from "../assets/noreferrals.webp";
+import axios from "axios";
 
 export const Ref = () => {
   const [refCount] = useState(0);
@@ -46,17 +47,19 @@ export const Ref = () => {
 
         const params = new URLSearchParams(data);
         const hash = params.get("hash");
-
-
-        fetch(
+        axios.get(
           "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
           {
-            method: "GET",
             headers: {
               Authorization: "Bearer " + hash,
             },
           }
-        );
+        ).then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         setUserId(id);
       } else {
         console.error("Invalid initData signature.");
