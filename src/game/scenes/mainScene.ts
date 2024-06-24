@@ -27,6 +27,9 @@ export default class MainScene extends Phaser.Scene {
   private clickCountText!: Phaser.GameObjects.Text;
   private savedVelocityY: number = 0;
   private lastPauseScore: number = 0;
+  private scoreMultiplier: number = 1;
+  private scoreMultiplierText!: Phaser.GameObjects.Text;
+  private totalPipesCleared: number = 0;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
@@ -46,6 +49,8 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     this.isPaused = false;
+    this.scoreMultiplier = 1;
+    this.totalPipesCleared = 0;
     this.clickCount = 0;
     this.lastPauseScore = 0;
     this.clickCountText = this.add
@@ -90,6 +95,14 @@ export default class MainScene extends Phaser.Scene {
         color: "#FFF",
       })
       .setDepth(1);
+
+    this.scoreMultiplierText = this.add
+      .text(16, 48, "", {
+        fontSize: "28px",
+        color: "#FFF",
+        align: "center",
+      })
+      .setDepth(3);
 
     this.score = 0;
     this.scoreText.setText("Score: " + this.score);
@@ -157,9 +170,14 @@ export default class MainScene extends Phaser.Scene {
         });
 
         // Increase score
-        this.score += 1;
-        this.scoreText.setText("Score: " + this.score);
+        this.score += 1 * this.scoreMultiplier;
+        this.totalPipesCleared++;
+        this.scoreText.setText(`Score: ${this.formatScore(this.score)}`);
         this.onScoreUpdate?.(1);
+
+        if (this.totalPipesCleared % 2 === 0) {
+          this.scoreMultiplier += 0.1;
+        }
       }
 
       // Remove pipes that go out of bounds
@@ -206,6 +224,14 @@ export default class MainScene extends Phaser.Scene {
     if (this.bird && this.bird.angle < 20) {
       this.bird.angle += 1;
     }
+
+    this.scoreMultiplierText.setText(
+      this.formatScore(this.scoreMultiplier) + "x"
+    );
+  }
+
+  private formatScore(score: number): string {
+    return score % 1 === 0 ? score.toString() : score.toFixed(1);
   }
 
   private handleCoinSpawn = () => {
@@ -344,7 +370,7 @@ export default class MainScene extends Phaser.Scene {
 
   private collectCoin(coin: Phaser.Physics.Arcade.Sprite) {
     this.score += 30;
-    this.scoreText.setText("Score: " + this.score);
+    this.scoreText.setText(`Score: ${this.formatScore(this.score)}`);
     if (this.onScoreUpdate) {
       this.onScoreUpdate(30);
     }
