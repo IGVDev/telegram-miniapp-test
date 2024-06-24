@@ -36,7 +36,7 @@ export default class MainScene extends Phaser.Scene {
   private gameGravity: number;
   private jumpStrength: number;
   private scrollSpeed: number;
-  private pipeTimer!: Phaser.Time.TimerEvent;
+  // private pipeTimer!: Phaser.Time.TimerEvent;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
