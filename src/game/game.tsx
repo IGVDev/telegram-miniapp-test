@@ -21,6 +21,9 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
   onScoreUpdate,
 }) => {
   const gameRef = useRef<Phaser.Game | null>(null);
+  const gameGravity = 1000;
+  const jumpStrength = 0.35;
+  const scrollSpeed = 0.15;
 
   useEffect(() => {
     if (gameRef.current) return;
@@ -32,13 +35,18 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
       parent: domId,
       scene: [
         new StartScene(),
-        new MainScene({ onScoreUpdate: onScoreUpdate }),
+        new MainScene({
+          onScoreUpdate,
+          gameGravity,
+          jumpStrength,
+          scrollSpeed,
+        }),
         new GameOverScene(),
       ],
       physics: {
         default: "arcade",
         arcade: {
-          gravity: { y: 2400, x: 0 },
+          gravity: { y: gameGravity, x: 0 },
         },
       },
       pixelArt: true,
@@ -54,7 +62,9 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
     };
   }, [width, height, birdImage, pipeImage, backgroundImage, domId]);
 
-  return <div id={domId} style={{ borderRadius: '20px', overflow: 'hidden' }}/>;
+  return (
+    <div id={domId} style={{ borderRadius: "20px", overflow: "hidden" }} />
+  );
 };
 
 export default FlappyBirdGame;

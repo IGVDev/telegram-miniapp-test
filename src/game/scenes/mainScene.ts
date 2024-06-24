@@ -10,6 +10,9 @@ import WebApp from "@twa-dev/sdk";
 
 interface MainSceneConfig {
   onScoreUpdate?: (score: number) => void;
+  gameGravity: number;
+  jumpStrength: number;
+  scrollSpeed: number;
 }
 
 export default class MainScene extends Phaser.Scene {
@@ -30,10 +33,17 @@ export default class MainScene extends Phaser.Scene {
   private scoreMultiplier: number = 1;
   private scoreMultiplierText!: Phaser.GameObjects.Text;
   private totalPipesCleared: number = 0;
+  private gameGravity: number;
+  private jumpStrength: number;
+  private scrollSpeed: number;
+  private pipeTimer!: Phaser.Time.TimerEvent;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
     this.onScoreUpdate = config.onScoreUpdate;
+    this.gameGravity = config.gameGravity;
+    this.jumpStrength = config.jumpStrength;
+    this.scrollSpeed = config.scrollSpeed;
   }
 
   preload() {
@@ -53,6 +63,9 @@ export default class MainScene extends Phaser.Scene {
     this.totalPipesCleared = 0;
     this.clickCount = 0;
     this.lastPauseScore = 0;
+    this.pipeCounter = 0;
+    this.scrollSpeed = 0.15;
+
     this.clickCountText = this.add
       .text(this.scale.width / 2, this.scale.height / 2, "", {
         fontSize: "28px",
@@ -65,7 +78,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.bird = this.physics.add
       .sprite(100, this.scale.height / 4, "bird")
-      .setScale(0.35);
+      .setScale(0.3);
 
     this.bird.setCollideWorldBounds(true);
     this.bird.setDepth(1);
@@ -79,7 +92,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.input.on("pointerdown", () => {
       if (!this.isPaused) {
-        this.bird.setVelocityY(-500);
+        this.bird.setVelocityY(-this.gameGravity * this.jumpStrength);
         this.tweens.add({
           targets: this.bird,
           props: { angle: -20 },
@@ -121,7 +134,7 @@ export default class MainScene extends Phaser.Scene {
       .setVisible(false);
 
     this.time.addEvent({
-      delay: 1200,
+      delay: 1500,
       callback: () => {
         if (!this.isPaused) {
           this.addNewRowOfPipes();
@@ -136,9 +149,8 @@ export default class MainScene extends Phaser.Scene {
     if (this.isPaused) {
       return;
     }
-    const scrollSpeed = 0.25;
 
-    const pixelsPerFrame = scrollSpeed * delta;
+    const pixelsPerFrame = this.scrollSpeed * delta;
 
     const background = this.children.getByName(
       "background"
@@ -171,6 +183,10 @@ export default class MainScene extends Phaser.Scene {
 
         // Increase score
         this.score += 1 * this.scoreMultiplier;
+        if (this.pipeCounter % 5 === 0) {
+          this.scrollSpeed += 0.02; // Increase scroll speed
+          // this.resetPipeTimer(); // Reset the timer with new delay
+        }
         this.totalPipesCleared++;
         this.scoreText.setText(`Score: ${this.formatScore(this.score)}`);
         this.onScoreUpdate?.(1);
@@ -354,14 +370,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private resumeGame() {
-    // Restore normal world gravity when the game resumes
     this.isPaused = false;
-    this.physics.world.gravity.y = 2600; // Adjust this value to your game's normal gravity
+    this.physics.world.gravity.y = this.gameGravity;
     this.bird.setVelocityY(this.savedVelocityY);
     this.countdownText.setVisible(false);
     console.log("Clicks during pause:", this.clickCount);
 
-    // Restore the background opacity
     const background = this.children.getByName(
       "background"
     ) as Phaser.GameObjects.TileSprite;
@@ -425,6 +439,22 @@ export default class MainScene extends Phaser.Scene {
     if (this.pipeCounter % 3 === 0 && Math.random() < spawnChance) {
       this.spawnCoin(400, (hole + 1) * 40);
     }
+  }
+
+  private resetPipeTimer() {
+    if (this.pipeTimer) {
+      this.pipeTimer.remove(false);
+    }
+    this.pipeTimer = this.time.addEvent({
+      delay: 1500 - this.scrollSpeed * 100, // Adjust delay based on scroll speed
+      callback: () => {
+        if (!this.isPaused) {
+          this.addNewRowOfPipes();
+        }
+      },
+      callbackScope: this,
+      loop: true,
+    });
   }
 
   private addPipe(x: number, y: number, frame: number, rowId: number) {
