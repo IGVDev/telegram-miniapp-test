@@ -49,7 +49,7 @@ export const Ref = () => {
         fetch(
           "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
           {
-            method: "POST",
+            method: "GET",
             body: JSON.stringify({ userId, score: 1 }),
             headers: {
               Authorization: "Bearer " + hash,
