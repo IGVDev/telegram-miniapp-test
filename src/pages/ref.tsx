@@ -50,7 +50,7 @@ export const Ref = () => {
           .post(
             "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
             {
-              initData: params,
+              initData: { ...params },
               foo: "bar",
             },
             {
