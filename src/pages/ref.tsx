@@ -46,13 +46,14 @@ export const Ref = () => {
 
         const params = new URLSearchParams(data);
         const hash = params.get("hash");
+        const paramsJson = Object.fromEntries(params.entries());
         console.log("DATA", data);
-        console.log("PARAMS", params);
+        console.log("PARAMS", paramsJson);
         axios
           .post(
             "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
             {
-              initData: data,
+              initData: paramsJson,
               foo: "bar",
             },
             {
