@@ -40,7 +40,7 @@ export const Tap = () => {
       const params = new URLSearchParams(data);
       // const id = extractUserId(data);
       const hash = params.get("hash");
-      const start_param = params.get("start_param");
+      const start_param = params.get("start");
       // axios.post(
       //   `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_login`,
       //   {
