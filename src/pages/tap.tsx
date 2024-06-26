@@ -39,7 +39,6 @@ export const Tap = () => {
     if (loggedIn) return;
     const data = WebApp.initData;
 
-    
     if (verifyTelegramWebAppData(data)) {
       const params = new URLSearchParams(data);
       const hash = params.get("hash");
@@ -53,7 +52,7 @@ export const Tap = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${hash}`,
+            Authorization: "Bearer " + hash,
           },
         }
       );
