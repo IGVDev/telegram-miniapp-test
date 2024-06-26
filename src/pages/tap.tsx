@@ -39,6 +39,7 @@ export const Tap = () => {
     if (verifyTelegramWebAppData(data)) {
       const params = new URLSearchParams(data);
       // const id = extractUserId(data);
+      console.log(params);
       const hash = params.get("hash");
       const start_param = params.get("start");
       // axios.post(
