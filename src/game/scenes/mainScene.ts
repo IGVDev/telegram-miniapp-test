@@ -7,12 +7,14 @@ import pipeImage from "../../assets/newPipe.png";
 import coinImage from "../../assets/coin.png";
 import openMouthBirdImage from "../../assets/open-mouth-birdpng.png";
 import WebApp from "@twa-dev/sdk";
+import axios from "axios";
 
 interface MainSceneConfig {
   onScoreUpdate?: (score: number) => void;
   gameGravity: number;
   jumpStrength: number;
   scrollSpeed: number;
+  onGameOver?: () => void;
 }
 
 export default class MainScene extends Phaser.Scene {
@@ -44,6 +46,7 @@ export default class MainScene extends Phaser.Scene {
     this.gameGravity = config.gameGravity;
     this.jumpStrength = config.jumpStrength;
     this.scrollSpeed = config.scrollSpeed;
+    this.onGameOver = config.onGameOver;
   }
 
   preload() {
@@ -209,7 +212,7 @@ export default class MainScene extends Phaser.Scene {
           pipeSprite.getBounds()
         )
       ) {
-        this.scene.start("GameOverScene");
+        this.endGame(this.score);
       }
 
       if (this.canPauseGame()) {
@@ -234,7 +237,7 @@ export default class MainScene extends Phaser.Scene {
     // Ground collision
     if (this.bird && this.bird.y >= this.scale.height - 18) {
       this.saveHighScore();
-      this.scene.start("GameOverScene");
+      this.endGame(this.score);
     }
 
     if (this.bird && this.bird.angle < 20) {
@@ -244,6 +247,31 @@ export default class MainScene extends Phaser.Scene {
     this.scoreMultiplierText.setText(
       this.formatScore(this.scoreMultiplier) + "x"
     );
+  }
+
+  private onGameOver(amount: number) {
+    const data = WebApp.initData;
+    const params = new URLSearchParams(data);
+    const hash = params.get("hash");
+    const paramsJson = Object.fromEntries(params.entries());
+
+    axios.post(
+      "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
+      {
+        initData: paramsJson,
+        tokens: amount,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${hash}`,
+        },
+      }
+    );
+  }
+
+  private endGame(coinAmount: number) {
+    this.onGameOver(coinAmount);
+    this.scene.start("GameOverScene");
   }
 
   private formatScore(score: number): string {

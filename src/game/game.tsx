@@ -12,6 +12,7 @@ interface FlappyBirdGameProps {
   height: number;
   domId: string;
   onScoreUpdate?: (score: number) => void;
+  onGameOver?: () => void;
 }
 
 const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
