@@ -35,11 +35,14 @@ export const Tap = () => {
 
   useEffect(() => {
     const data = WebApp.initData;
+    const unsafeData = WebApp.initData;
 
     if (verifyTelegramWebAppData(data)) {
       const params = new URLSearchParams(data);
+      const unsafeParams = new URLSearchParams(unsafeData);
       // const id = extractUserId(data);
       console.log(params);
+      console.log(unsafeParams);
       const hash = params.get("hash");
       const start_param = params.get("start");
       // axios.post(
