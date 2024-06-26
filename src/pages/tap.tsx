@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import FlappyBirdGame from "../game/game";
 import coinImg from "../assets/coin.png";
 import WebApp from "@twa-dev/sdk";
+import { verifyTelegramWebAppData } from "../utils";
+// import axios from "axios";
 
 export const Tap = () => {
   const [coins, setCoins] = useState(0);
@@ -11,29 +13,53 @@ export const Tap = () => {
     setCoins((prevCoins) => prevCoins + x);
   };
 
-  useEffect(() => {
-    WebApp.CloudStorage.getItem("coins", (error, result) => {
-      if (error) {
-        console.error(error);
-      } else {
-        setCoins(Number(result));
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   WebApp.CloudStorage.getItem("coins", (error, result) => {
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       setCoins(Number(result));
+  //     }
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       console.log(result);
+  //     }
+  //   });
+  // }, [coins]);
 
   useEffect(() => {
-    WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log(result);
-      }
-    });
-  }, [coins]);
+    const data = WebApp.initData;
+
+    if (verifyTelegramWebAppData(data)) {
+      const params = new URLSearchParams(data);
+      // const id = extractUserId(data);
+      const hash = params.get("hash");
+      const start_param = params.get("start_param");
+      // axios.post(
+      //   `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_login`,
+      //   {
+      //     referrer_uid:
+      //   }
+      // );
+      console.log(start_param, hash);
+    }
+  }, []);
 
   return (
     <>
-      <Flex className="gameContainer" position={"relative"} w={400} h={400} minH={400}>
+      <Flex
+        className="gameContainer"
+        position={"relative"}
+        w={400}
+        h={400}
+        minH={400}
+      >
         <Flex
           className="coinContainer"
           align="center"
