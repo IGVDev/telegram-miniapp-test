@@ -46,7 +46,6 @@ export default class MainScene extends Phaser.Scene {
     this.gameGravity = config.gameGravity;
     this.jumpStrength = config.jumpStrength;
     this.scrollSpeed = config.scrollSpeed;
-    this.onGameOver = config.onGameOver;
   }
 
   preload() {
