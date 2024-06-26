@@ -14,7 +14,6 @@ interface MainSceneConfig {
   gameGravity: number;
   jumpStrength: number;
   scrollSpeed: number;
-  onGameOver?: () => void;
 }
 
 export default class MainScene extends Phaser.Scene {
@@ -248,6 +247,11 @@ export default class MainScene extends Phaser.Scene {
     );
   }
 
+  private endGame(coinAmount: number) {
+    this.onGameOver(coinAmount);
+    this.scene.start("GameOverScene");
+  }
+
   private onGameOver(amount: number) {
     const data = WebApp.initData;
     const params = new URLSearchParams(data);
@@ -266,11 +270,6 @@ export default class MainScene extends Phaser.Scene {
         },
       }
     );
-  }
-
-  private endGame(coinAmount: number) {
-    this.onGameOver(coinAmount);
-    this.scene.start("GameOverScene");
   }
 
   private formatScore(score: number): string {
