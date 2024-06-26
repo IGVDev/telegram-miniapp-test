@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { extractUserId, verifyTelegramWebAppData } from "../utils";
 import noReferrals from "../assets/noreferrals.webp";
 import axios from "axios";
+// import axios from "axios";
 
 export const Ref = () => {
   const [refCount] = useState(0);
