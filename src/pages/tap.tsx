@@ -39,17 +39,18 @@ export const Tap = () => {
     if (loggedIn) return;
     const data = WebApp.initData;
 
+    
     if (verifyTelegramWebAppData(data)) {
       const params = new URLSearchParams(data);
       const hash = params.get("hash");
       const start_param = params.get("start_param");
+      const paramsJson = Object.fromEntries(params.entries());
       axios.post(
         `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_login`,
-        start_param
-          ? {
-              referrer_uid: start_param,
-            }
-          : {},
+        {
+          initData: paramsJson,
+          referrer_uid: start_param,
+        },
         {
           headers: {
             Authorization: `Bearer ${hash}`,
