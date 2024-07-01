@@ -37,6 +37,8 @@ export default class MainScene extends Phaser.Scene {
   private gameGravity: number;
   private jumpStrength: number;
   private scrollSpeed: number;
+  private distanceMoved: number = 0;
+  private distanceThreshold: number = 300;
   // private pipeTimer!: Phaser.Time.TimerEvent;
 
   constructor(config: MainSceneConfig) {
@@ -66,6 +68,7 @@ export default class MainScene extends Phaser.Scene {
     this.lastPauseScore = 0;
     this.pipeCounter = 0;
     this.scrollSpeed = 0.15;
+    this.distanceMoved = 0;
 
     this.clickCountText = this.add
       .text(this.scale.width / 2, this.scale.height / 2, "", {
@@ -133,17 +136,6 @@ export default class MainScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(2)
       .setVisible(false);
-
-    this.time.addEvent({
-      delay: 1500,
-      callback: () => {
-        if (!this.isPaused) {
-          this.addNewRowOfPipes();
-        }
-      },
-      callbackScope: this,
-      loop: true,
-    });
   }
 
   update(_time, delta) {
@@ -152,6 +144,12 @@ export default class MainScene extends Phaser.Scene {
     }
 
     const pixelsPerFrame = this.scrollSpeed * delta;
+    this.distanceMoved += pixelsPerFrame;
+
+    if (this.distanceMoved >= this.distanceThreshold) {
+      this.addNewRowOfPipes();
+      this.distanceMoved = 0; // Reset the distance moved
+    }
 
     const background = this.children.getByName(
       "background"
@@ -185,8 +183,8 @@ export default class MainScene extends Phaser.Scene {
         // Increase score
         this.score += 1 * this.scoreMultiplier;
         if (this.pipeCounter % 5 === 0) {
-          this.scrollSpeed += 0.02; // Increase scroll speed
-          // this.resetPipeTimer(); // Reset the timer with new delay
+          this.scrollSpeed += 0.025; 
+          this.distanceThreshold += 8;
         }
         this.totalPipesCleared++;
         this.scoreText.setText(`Score: ${this.formatScore(this.score)}`);
@@ -466,22 +464,6 @@ export default class MainScene extends Phaser.Scene {
       this.spawnCoin(400, (hole + 1) * 40);
     }
   }
-
-  // private resetPipeTimer() {
-  //   if (this.pipeTimer) {
-  //     this.pipeTimer.remove(false);
-  //   }
-  //   this.pipeTimer = this.time.addEvent({
-  //     delay: 1500 - this.scrollSpeed * 100, // Adjust delay based on scroll speed
-  //     callback: () => {
-  //       if (!this.isPaused) {
-  //         this.addNewRowOfPipes();
-  //       }
-  //     },
-  //     callbackScope: this,
-  //     loop: true,
-  //   });
-  // }
 
   private addPipe(x: number, y: number, frame: number, rowId: number) {
     const pipe = new Pipe({ scene: this, x, y, frame, key: "pipe" });

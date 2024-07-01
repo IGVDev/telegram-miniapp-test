@@ -22,7 +22,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
 }) => {
   const gameRef = useRef<Phaser.Game | null>(null);
   const gameGravity = 1000;
-  const jumpStrength = 0.35;
+  const jumpStrength = 0.33;
   const scrollSpeed = 0.15;
 
   useEffect(() => {
