@@ -24,7 +24,7 @@ function App() {
       bgSize="cover"
       bgPosition="center"
       height="100vh"
-      overflowY="scroll"
+      overflowY="auto"
     >
       <Flex
         className="mainContainer"
