@@ -41,6 +41,8 @@ export default class MainScene extends Phaser.Scene {
   private distanceThreshold: number = 300;
   private fixedTimeStep: number = 16.67;
   private accumulator: number = 0;
+  private pipePool: Phaser.Physics.Arcade.StaticGroup;
+  private coinPool: Phaser.Physics.Arcade.StaticGroup;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
@@ -70,6 +72,28 @@ export default class MainScene extends Phaser.Scene {
     this.pipeCounter = 0;
     this.scrollSpeed = 0.15;
     this.distanceMoved = 0;
+
+    this.pipePool = this.physics.add.staticGroup({ classType: Pipe });
+    this.coinPool = this.physics.add.staticGroup({ classType: Coin });
+
+    // Pre-create some pipes and coins
+    for (let i = 0; i < 20; i++) {
+      const pipe = new Pipe({
+        scene: this,
+        x: -100,
+        y: -100,
+        frame: 2,
+        key: "pipe",
+      });
+      this.pipePool.add(pipe);
+      pipe.setActive(false).setVisible(false);
+    }
+
+    for (let i = 0; i < 10; i++) {
+      const coin = new Coin({ scene: this, x: -100, y: -100 });
+      this.coinPool.add(coin);
+      coin.setActive(false).setVisible(false);
+    }
 
     this.clickCountText = this.add
       .text(this.scale.width / 2, this.scale.height / 2, "", {
@@ -141,119 +165,122 @@ export default class MainScene extends Phaser.Scene {
 
   update(_time: number, delta: number) {
     if (this.isPaused) {
-        return;
+      return;
     }
 
     this.accumulator += delta;
 
     while (this.accumulator >= this.fixedTimeStep) {
-        this.fixedUpdate(this.fixedTimeStep);
-        this.accumulator -= this.fixedTimeStep;
+      this.fixedUpdate(this.fixedTimeStep);
+      this.accumulator -= this.fixedTimeStep;
     }
-}
+  }
 
   private fixedUpdate(delta: number) {
-        const pixelsPerFrame = this.scrollSpeed * delta;
-        this.distanceMoved += pixelsPerFrame;
+    const pixelsPerFrame = this.scrollSpeed * delta;
+    this.distanceMoved += pixelsPerFrame;
 
-        if (this.distanceMoved >= this.distanceThreshold) {
-            this.addNewRowOfPipes();
-            this.distanceMoved = 0; // Reset the distance moved
-        }
-
-        const background = this.children.getByName(
-            "background"
-        ) as Phaser.GameObjects.TileSprite;
-        if (background) {
-            background.tilePositionX += pixelsPerFrame;
-        }
-
-        this.pipes.getChildren().forEach((pipe: Phaser.GameObjects.GameObject) => {
-            const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
-            pipeSprite.x -= pixelsPerFrame;
-
-            if (
-                this.bird.x > pipeSprite.x &&
-                !pipeSprite.getData("scored") &&
-                !this.pipes
-                    .getChildren()
-                    .some(
-                        (p) =>
-                            p.getData("rowId") === pipeSprite.getData("rowId") &&
-                            p.getData("scored")
-                    )
-            ) {
-                // Mark all pipes in the row as scored
-                this.pipes.getChildren().forEach((p) => {
-                    if (p.getData("rowId") === pipeSprite.getData("rowId")) {
-                        p.setData("scored", true);
-                    }
-                });
-
-                // Increase score
-                this.score += 1 * this.scoreMultiplier;
-                if (this.pipeCounter % 5 === 0) {
-                    this.scrollSpeed += 0.025; 
-                    this.distanceThreshold += 8;
-                }
-                this.totalPipesCleared++;
-                this.scoreText.setText(`Score: ${this.formatScore(this.score)}`);
-                this.onScoreUpdate?.(1);
-
-                if (this.totalPipesCleared % 2 === 0) {
-                    this.scoreMultiplier += 0.1;
-                }
-            }
-
-            // Remove pipes that go out of bounds
-            if (pipeSprite.x + pipeSprite.displayWidth < 0) {
-                this.pipes.killAndHide(pipeSprite);
-                // this.pipes.remove(pipeSprite);
-            }
-
-            // Pipe collision
-            if (
-                Phaser.Geom.Intersects.RectangleToRectangle(
-                    this.bird.getBounds(),
-                    pipeSprite.getBounds()
-                )
-            ) {
-                this.endGame(this.score);
-            }
-
-            if (this.canPauseGame()) {
-                this.superClickScene();
-            }
-        });
-
-        this.coins.getChildren().forEach((coin) => {
-            const coinSprite = coin as Phaser.Physics.Arcade.Sprite;
-            coinSprite.x -= pixelsPerFrame;
-
-            if (
-                Phaser.Geom.Intersects.RectangleToRectangle(
-                    this.bird.getBounds(),
-                    coinSprite.getBounds()
-                )
-            ) {
-                this.collectCoin(coinSprite);
-            }
-        });
-
-        // Ground collision
-        if (this.bird && this.bird.y >= this.scale.height - 18) {
-            this.saveHighScore();
-            this.endGame(this.score);
-        }
-
-        if (this.bird && this.bird.angle < 20) {
-            this.bird.angle += 1;
-        }
-
-        this.scoreMultiplierText.setText(
-            this.formatScore(this.scoreMultiplier) + "x"
-        );
+    if (this.distanceMoved >= this.distanceThreshold) {
+      this.addNewRowOfPipes();
+      this.distanceMoved = 0; // Reset the distance moved
     }
+
+    const background = this.children.getByName(
+      "background"
+    ) as Phaser.GameObjects.TileSprite;
+    if (background) {
+      background.tilePositionX += pixelsPerFrame;
+    }
+
+    this.pipes.getChildren().forEach((pipe: Phaser.GameObjects.GameObject) => {
+      const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
+      pipeSprite.x -= pixelsPerFrame;
+
+      if (
+        this.bird.x > pipeSprite.x &&
+        !pipeSprite.getData("scored") &&
+        !this.pipes
+          .getChildren()
+          .some(
+            (p) =>
+              p.getData("rowId") === pipeSprite.getData("rowId") &&
+              p.getData("scored")
+          )
+      ) {
+        // Mark all pipes in the row as scored
+        this.pipes.getChildren().forEach((p) => {
+          if (p.getData("rowId") === pipeSprite.getData("rowId")) {
+            p.setData("scored", true);
+          }
+        });
+
+        // Increase score
+        this.score += 1 * this.scoreMultiplier;
+        if (this.pipeCounter % 5 === 0) {
+          this.scrollSpeed += 0.025;
+          this.distanceThreshold += 8;
+        }
+        this.totalPipesCleared++;
+        this.scoreText.setText(`Score: ${this.formatScore(this.score)}`);
+        this.onScoreUpdate?.(1);
+
+        if (this.totalPipesCleared % 2 === 0) {
+          this.scoreMultiplier += 0.1;
+        }
+      }
+
+      // Remove pipes that go out of bounds
+      if (pipeSprite.x + pipeSprite.displayWidth < 0) {
+        pipeSprite.setActive(false).setVisible(false);
+      }
+
+      // Pipe collision
+      if (
+        Phaser.Geom.Intersects.RectangleToRectangle(
+          this.bird.getBounds(),
+          pipeSprite.getBounds()
+        )
+      ) {
+        this.endGame(this.score);
+      }
+
+      if (this.canPauseGame()) {
+        this.superClickScene();
+      }
+    });
+
+    this.coins.getChildren().forEach((coin) => {
+      const coinSprite = coin as Phaser.Physics.Arcade.Sprite;
+      coinSprite.x -= pixelsPerFrame;
+
+      if (
+        Phaser.Geom.Intersects.RectangleToRectangle(
+          this.bird.getBounds(),
+          coinSprite.getBounds()
+        )
+      ) {
+        this.collectCoin(coinSprite);
+      }
+
+      if (coinSprite.x + coinSprite.displayWidth < 0) {
+        coinSprite.setActive(false).setVisible(false);
+      }
+    });
+
+    // Ground collision
+    if (this.bird && this.bird.y >= this.scale.height - 18) {
+      this.saveHighScore();
+      this.endGame(this.score);
+    }
+
+    if (this.bird && this.bird.angle < 20) {
+      this.bird.angle += 1;
+    }
+
+    this.scoreMultiplierText.setText(
+      this.formatScore(this.scoreMultiplier) + "x"
+    );
+  }
 
   private endGame(coinAmount: number) {
     this.onGameOver(coinAmount);
@@ -447,8 +474,10 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private spawnCoin(x: number, y: number) {
-    const coin = new Coin({ scene: this, x, y });
-    this.coins.add(coin);
+    const coin = this.coinPool.getFirstDead(false, x, y, "coin");
+    if (coin) {
+      coin.setActive(true).setVisible(true);
+    }
   }
 
   private addNewRowOfPipes() {
@@ -476,9 +505,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private addPipe(x: number, y: number, frame: number, rowId: number) {
-    const pipe = new Pipe({ scene: this, x, y, frame, key: "pipe" });
-    pipe.setData("rowId", rowId);
-    this.pipes.add(pipe);
+    const pipe = this.pipePool.getFirstDead(false, x, y, "pipe", frame);
+    if (pipe) {
+      pipe.setActive(true).setVisible(true);
+      pipe.setData("rowId", rowId);
+    }
   }
 
   private async saveHighScore() {
