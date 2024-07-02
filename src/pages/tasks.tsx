@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 export const Tasks = () => {
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [, ] = useState<string[]>([]);
 
   const data = WebApp.initData;
   const params = new URLSearchParams(data);
