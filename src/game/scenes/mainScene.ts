@@ -188,6 +188,12 @@ export default class MainScene extends Phaser.Scene {
       const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
       pipeSprite.x -= pixelsPerFrame;
 
+      if (pipeSprite.x + pipeSprite.displayWidth < 0) {
+        this.pipes.killAndHide(pipeSprite);
+        pipeSprite.setActive(false);
+        pipeSprite.setVisible(false);
+      }
+
       if (
         this.bird.x > pipeSprite.x &&
         !pipeSprite.getData("scored") &&
@@ -220,10 +226,6 @@ export default class MainScene extends Phaser.Scene {
             this.formatScore(this.scoreMultiplier) + "x"
           );
         }
-      }
-
-      if (pipeSprite.x + pipeSprite.displayWidth < 0) {
-        this.pipes.killAndHide(pipeSprite);
       }
 
       if (
