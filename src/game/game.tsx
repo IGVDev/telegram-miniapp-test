@@ -43,16 +43,12 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         }),
         new GameOverScene(),
       ],
-      fps: {
-        forceSetTimeOut: false,
-        target: 60,
-        panicMax: 0,
-        smoothStep: true,
-      },
       physics: {
         default: "arcade",
         arcade: {
           gravity: { y: gameGravity, x: 0 },
+          fixedStep: false,
+          fps: 300
         },
       },
       pixelArt: true,
