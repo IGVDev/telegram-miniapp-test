@@ -1,5 +1,6 @@
 import { Flex, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
-import { RiBarChartFill, RiCopperCoinFill, RiHeartsFill } from "react-icons/ri";
+import { RiBarChartFill, RiCheckboxFill, RiCopperCoinFill, RiHeartsFill } from "react-icons/ri";
+
 
 export const Navigation = ({
   activeTab,
@@ -44,6 +45,21 @@ export const Navigation = ({
           bgColor="whiteAlpha.300"
         >
           <Flex flexDir="column" align="center" gap={1} color="white">
+            <RiCheckboxFill size="30px" />
+            <Text fontSize="xs">Tasks</Text>
+          </Flex>
+        </Tab>
+        <Tab
+          borderRadius={16}
+          border="1px solid gray"
+          _selected={{
+            border: "1px solid orange",
+            pointerEvents: "none",
+            bgColor: "rgba(255, 255, 0, 0.15)",
+          }}
+          bgColor="whiteAlpha.300"
+        >
+          <Flex flexDir="column" align="center" gap={1} color="white">
             <RiCopperCoinFill size="30px" />
             <Text fontSize="xs">Tap</Text>
           </Flex>
@@ -60,7 +76,7 @@ export const Navigation = ({
         >
           <Flex flexDir="column" align="center" gap={1} color="white">
             <RiBarChartFill size="30px" />
-            <Text fontSize="xs">Leaderboard</Text>
+            <Text fontSize="xs">Leader<br />board</Text>
           </Flex>
         </Tab>
       </TabList>

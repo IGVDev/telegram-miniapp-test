@@ -7,23 +7,21 @@ import { Ref } from "./pages/ref";
 import { Tap } from "./pages/tap";
 import { Navigation } from "./components/navigation";
 import { Leaderboard } from "./pages/leaderboard";
-
+import { Tasks } from "./pages/tasks";
 enum TabIndex {
   Ref = 0,
-  Tap = 1,
-  Leaderboard = 2,
+  Tasks = 1,
+  Tap = 2,
+  Leaderboard = 3,
 }
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor;
-    if (
-      /android/i.test(userAgent) ||
-      (/iPad|iPhone|iPod/.test(userAgent))
-    ) {
+    if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent)) {
       setIsMobile(true);
     }
   }, []);
@@ -52,6 +50,7 @@ function App() {
         ) : (
           <>
             {activeTab === TabIndex.Ref && <Ref />}
+            {activeTab === TabIndex.Tasks && <Tasks />}
             {activeTab === TabIndex.Tap && <Tap />}
             {activeTab === TabIndex.Leaderboard && <Leaderboard />}
             <Flex flex="1" align="end">
