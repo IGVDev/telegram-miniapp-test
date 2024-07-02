@@ -146,10 +146,10 @@ export default class MainScene extends Phaser.Scene {
 
     this.accumulator += delta;
 
-    while (this.accumulator >= this.fixedTimeStep) {
-      this.fixedUpdate(this.fixedTimeStep);
-      this.accumulator -= this.fixedTimeStep;
-    }
+    // while (this.accumulator >= this.fixedTimeStep) {
+    this.fixedUpdate(this.fixedTimeStep);
+    //   this.accumulator -= this.fixedTimeStep;
+    // }
 
     // Frame-by-frame updates
     if (this.bird && this.bird.angle < 20) {
