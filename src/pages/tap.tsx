@@ -15,25 +15,25 @@ export const Tap = () => {
     setCoins((prevCoins) => prevCoins + x);
   };
 
-  useEffect(() => {
-    WebApp.CloudStorage.getItem("coins", (error, result) => {
-      if (error) {
-        console.error(error);
-      } else {
-        setCoins(Number(result));
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   WebApp.CloudStorage.getItem("coins", (error, result) => {
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       setCoins(Number(result));
+  //     }
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log(result);
-      }
-    });
-  }, [coins]);
+  // useEffect(() => {
+  //   WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       console.log(result);
+  //     }
+  //   });
+  // }, [coins]);
 
   useEffect(() => {
     if (loggedIn) return;
@@ -65,9 +65,9 @@ export const Tap = () => {
       <Flex
         className="gameContainer"
         position={"relative"}
-        w={400}
-        h={400}
-        minH={400}
+        w={window.outerWidth}
+        h={window.innerHeight - 150}
+        minH={window.innerHeight - 150}
       >
         <Flex
           className="coinContainer"
@@ -90,8 +90,8 @@ export const Tap = () => {
           </Flex>
         </Flex>
         <FlappyBirdGame
-          width={400}
-          height={400}
+          width={window.outerWidth}
+          height={window.innerHeight - 150}
           onScoreUpdate={handleScoreUpdate}
           domId="flappy-bird-game"
         />
