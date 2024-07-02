@@ -6,7 +6,7 @@ import WebApp from "@twa-dev/sdk";
 
 type LeaderboardType = {
   username: string;
-  score: number;
+  tokens: number;
 };
 
 enum TrophyColor {
@@ -16,40 +16,29 @@ enum TrophyColor {
 }
 
 export const Leaderboard = () => {
-  const mockLeaderboard = [
-    { username: "John", score: 100 },
-    { username: "Jane", score: 90 },
-    { username: "Bob", score: 80 },
-    { username: "Alice", score: 70 },
-    { username: "Charlie", score: 60 },
-    { username: "Dave", score: 50 },
-    { username: "Eve", score: 40 },
-    { username: "Frank", score: 30 },
-    { username: "Grace", score: 20 },
-    { username: "Henry", score: 10 },
-  ];
-
   const data = WebApp.initData;
   const params = new URLSearchParams(data);
   const hash = params.get("hash");
   const paramsJson = Object.fromEntries(params.entries());
 
-  const [leaderboard] = useState<LeaderboardType[]>(mockLeaderboard);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardType[]>([]);
 
   useEffect(() => {
-    axios.post(
-      `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
-      {
-        initData: paramsJson,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${hash}`,
+    axios
+      .post(
+        `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
+        {
+          initData: paramsJson,
         },
-      }
-    ).then((res) => {
-      console.log(res.data);
-    });
+        {
+          headers: {
+            Authorization: `Bearer ${hash}`,
+          },
+        }
+      )
+      .then((res) => {
+        setLeaderboard(res.data.top_users);
+      });
   }, []);
 
   return (
@@ -90,8 +79,8 @@ export const Leaderboard = () => {
                       index + 1
                     )}
                   </Td>
-                  <Td>{user.username}</Td>
-                  <Td>{user.score}</Td>
+                  <Td>@{user.username}</Td>
+                  <Td>{user.tokens}</Td>
                 </Tr>
               </>
             ))}
