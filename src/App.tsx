@@ -2,7 +2,7 @@ import "./App.css";
 
 import appBg from "./assets/background.webp";
 import { Flex } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Ref } from "./pages/ref";
 import { Tap } from "./pages/tap";
 import { Navigation } from "./components/navigation";
@@ -16,6 +16,17 @@ enum TabIndex {
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if (
+      /android/i.test(userAgent) ||
+      (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
+    ) {
+      setIsMobile(true);
+    }
+  }, []);
 
   return (
     <Flex
@@ -34,14 +45,22 @@ function App() {
         gap={4}
         // mt={2}
       >
-        {activeTab === TabIndex.Ref && <Ref />}
-        {activeTab === TabIndex.Tap && <Tap />}
-        {activeTab === TabIndex.Leaderboard && <Leaderboard />}
-        <Flex flex="1" align="end">
-          <Flex className="tabsContainer" justify="center" mb={2}>
-            <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+        {!isMobile ? (
+          <Flex flex="1" align="center" justify="center" color="white">
+            Please use a mobile device to access this application.
           </Flex>
-        </Flex>
+        ) : (
+          <>
+            {activeTab === TabIndex.Ref && <Ref />}
+            {activeTab === TabIndex.Tap && <Tap />}
+            {activeTab === TabIndex.Leaderboard && <Leaderboard />}
+            <Flex flex="1" align="end">
+              <Flex className="tabsContainer" justify="center" mb={2}>
+                <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+              </Flex>
+            </Flex>
+          </>
+        )}
       </Flex>
     </Flex>
   );
