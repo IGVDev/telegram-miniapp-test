@@ -80,7 +80,7 @@ export const Leaderboard = () => {
                     )}
                   </Td>
                   <Td>@{user.username}</Td>
-                  <Td>{user.tokens}</Td>
+                  <Td>{user.tokens.toFixed(1)}</Td>
                 </Tr>
               </>
             ))}
