@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
 
@@ -42,7 +42,7 @@ export const Tasks = () => {
         Tasks
       </Text>
       {Object.keys(tasks).map((key) => (
-        <Box
+        <Flex
           key={key}
           p={4}
           borderWidth="1px"
@@ -55,10 +55,12 @@ export const Tasks = () => {
             alt={tasks[key].title.en}
             boxSize="50px"
           />
-          <Text fontWeight="bold">{tasks[key].title.en}</Text>
-          <Text>{tasks[key].instructions[0].en}</Text>
-          <Text>Reward: {tasks[key].reward}</Text>
-        </Box>
+          <Stack>
+            <Text fontWeight="bold">{tasks[key].title.en}</Text>
+            <Text>{tasks[key].instructions[0].en}</Text>
+            <Text>Reward: {tasks[key].reward}</Text>
+          </Stack>
+        </Flex>
       ))}
     </Flex>
   );
