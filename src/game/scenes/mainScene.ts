@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { Pipe } from "../pipe";
 import { Coin } from "../coin";
-import bgImage from "../../assets/bg.png";
+import bgImage from "../../assets/blackBg.png";
 import birdImage from "../../assets/newBird.png";
 import pipeImage from "../../assets/newPipe.png";
 import coinImage from "../../assets/coin.png";
@@ -51,7 +51,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("background", bgImage);
+    this.load.image("background", bgImage);   
     this.load.image("openMouthBird", openMouthBirdImage);
     this.load.image("bird", birdImage);
     this.load.image("coin", coinImage);
@@ -310,10 +310,10 @@ export default class MainScene extends Phaser.Scene {
       this.score > 30 &&
       this.score - this.lastPauseScore >= 50
     ) {
-      const safeDistance = 100; // Define a safe distance from the nearest pipe
+      const safeDistance = 100;
       const nearestPipe = this.pipes.getChildren().reduce((nearest, pipe) => {
         const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
-        const nearestSprite = nearest as Phaser.Physics.Arcade.Sprite; // Cast nearest to Sprite
+        const nearestSprite = nearest as Phaser.Physics.Arcade.Sprite;
         return Math.abs(this.bird.x - pipeSprite.x) <
           Math.abs(this.bird.x - nearestSprite.x)
           ? pipeSprite
@@ -321,7 +321,7 @@ export default class MainScene extends Phaser.Scene {
       }, this.pipes.getFirstAlive() as Phaser.Physics.Arcade.Sprite) as Phaser.Physics.Arcade.Sprite;
 
       if (Math.abs(this.bird.x - nearestPipe.x) > safeDistance) {
-        this.lastPauseScore = this.score; // Update the score at last pause
+        this.lastPauseScore = this.score;
         return true;
       }
     }
@@ -454,6 +454,7 @@ export default class MainScene extends Phaser.Scene {
   private addNewRowOfPipes() {
     const hole = Math.floor(Math.random() * 5) + 1;
     const rowId = Date.now();
+    const pipeHeight = this.scale.height / 10;
     for (let i = 0; i < 10; i++) {
       if (i !== hole && i !== hole + 1 && i !== hole + 2) {
         let frame;
@@ -464,20 +465,21 @@ export default class MainScene extends Phaser.Scene {
         } else {
           frame = 2;
         }
-        this.addPipe(400, i * 40, frame, rowId);
+        this.addPipe(400, i * pipeHeight, frame, rowId);
       }
     }
     this.pipeCounter++;
 
     const spawnChance = 1;
     if (this.pipeCounter % 3 === 0 && Math.random() < spawnChance) {
-      this.spawnCoin(400, (hole + 1) * 40);
+      this.spawnCoin(400, (hole + 1) * pipeHeight);
     }
   }
 
   private addPipe(x: number, y: number, frame: number, rowId: number) {
     const pipe = new Pipe({ scene: this, x, y, frame, key: "pipe" });
     pipe.setData("rowId", rowId);
+    pipe.setScale(2, this.scale.height / 200);
     this.pipes.add(pipe);
   }
 
