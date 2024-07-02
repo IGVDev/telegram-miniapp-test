@@ -38,7 +38,7 @@ export default class MainScene extends Phaser.Scene {
   private jumpStrength: number;
   private scrollSpeed: number;
   private distanceMoved: number = 0;
-  private distanceThreshold: number = 300;
+  private distanceThreshold: number = window.outerWidth;
   private fixedTimeStep: number = 16.67;
   private accumulator: number = 0;
 
@@ -158,7 +158,7 @@ export default class MainScene extends Phaser.Scene {
 
         if (this.distanceMoved >= this.distanceThreshold) {
             this.addNewRowOfPipes();
-            this.distanceMoved = 0; // Reset the distance moved
+            this.distanceMoved = 0;
         }
 
         const background = this.children.getByName(
@@ -194,7 +194,7 @@ export default class MainScene extends Phaser.Scene {
                 this.score += 1 * this.scoreMultiplier;
                 if (this.pipeCounter % 5 === 0) {
                     this.scrollSpeed += 0.025; 
-                    this.distanceThreshold += 8;
+                    this.distanceThreshold -= 8;
                 }
                 this.totalPipesCleared++;
                 this.scoreText.setText(`Score: ${this.formatScore(this.score)}`);
@@ -294,7 +294,7 @@ export default class MainScene extends Phaser.Scene {
     this.tweens.add({
       targets: coin,
       x: 200,
-      y: 360,
+      y: window.innerHeight - 200,
       scale: 0,
       duration: 500,
       ease: "Power2",
@@ -350,7 +350,7 @@ export default class MainScene extends Phaser.Scene {
     background.setAlpha(0.5);
 
     const openMouthBird = this.physics.add
-      .sprite(80, 360, "openMouthBird")
+      .sprite(80, window.innerHeight - 200, "openMouthBird")
       .setScale(3)
       .setAngle(-45);
     openMouthBird.setDepth(2);
