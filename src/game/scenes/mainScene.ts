@@ -51,7 +51,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("background", bgImage);   
+    this.load.image("background", bgImage);
     this.load.image("openMouthBird", openMouthBirdImage);
     this.load.image("bird", birdImage);
     this.load.image("coin", coinImage);
@@ -141,34 +141,36 @@ export default class MainScene extends Phaser.Scene {
 
   update(_time: number, delta: number) {
     if (this.isPaused) {
-        return;
+      return;
     }
 
     this.accumulator += delta;
 
     while (this.accumulator >= this.fixedTimeStep) {
-        this.fixedUpdate(this.fixedTimeStep);
-        this.accumulator -= this.fixedTimeStep;
+      this.fixedUpdate(this.fixedTimeStep);
+      this.accumulator -= this.fixedTimeStep;
     }
 
     // Frame-by-frame updates
     if (this.bird && this.bird.angle < 20) {
-        this.bird.angle += 1;
+      this.bird.angle += 1;
     }
-}
+  }
 
-private fixedUpdate(delta: number) {
+  private fixedUpdate(delta: number) {
     const pixelsPerFrame = this.scrollSpeed * delta;
     this.distanceMoved += pixelsPerFrame;
 
     if (this.distanceMoved >= this.distanceThreshold) {
-        this.addNewRowOfPipes();
-        this.distanceMoved = 0;
+      this.addNewRowOfPipes();
+      this.distanceMoved = 0;
     }
 
-    const background = this.children.getByName("background") as Phaser.GameObjects.TileSprite;
+    const background = this.children.getByName(
+      "background"
+    ) as Phaser.GameObjects.TileSprite;
     if (background) {
-        background.tilePositionX += pixelsPerFrame;
+      background.tilePositionX += pixelsPerFrame;
     }
 
     this.updatePipes(pixelsPerFrame);
@@ -176,64 +178,84 @@ private fixedUpdate(delta: number) {
 
     // Ground collision
     if (this.bird && this.bird.y >= this.scale.height - 18) {
-        this.saveHighScore();
-        this.endGame(this.score);
+      this.saveHighScore();
+      this.endGame(this.score);
     }
+  }
 
-    this.scoreMultiplierText.setText(this.formatScore(this.scoreMultiplier) + "x");
-}
-
-private updatePipes(pixelsPerFrame: number) {
+  private updatePipes(pixelsPerFrame: number) {
     this.pipes.getChildren().forEach((pipe: Phaser.GameObjects.GameObject) => {
-        const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
-        pipeSprite.x -= pixelsPerFrame;
+      const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
+      pipeSprite.x -= pixelsPerFrame;
 
-        if (this.bird.x > pipeSprite.x && !pipeSprite.getData("scored") &&
-            !this.pipes.getChildren().some((p) => p.getData("rowId") === pipeSprite.getData("rowId") && p.getData("scored"))) {
-            this.pipes.getChildren().forEach((p) => {
-                if (p.getData("rowId") === pipeSprite.getData("rowId")) {
-                    p.setData("scored", true);
-                }
-            });
+      if (
+        this.bird.x > pipeSprite.x &&
+        !pipeSprite.getData("scored") &&
+        !this.pipes
+          .getChildren()
+          .some(
+            (p) =>
+              p.getData("rowId") === pipeSprite.getData("rowId") &&
+              p.getData("scored")
+          )
+      ) {
+        this.pipes.getChildren().forEach((p) => {
+          if (p.getData("rowId") === pipeSprite.getData("rowId")) {
+            p.setData("scored", true);
+          }
+        });
 
-            this.score += 1 * this.scoreMultiplier;
-            if (this.pipeCounter % 5 === 0) {
-                this.scrollSpeed += 0.025;
-                this.distanceThreshold -= 8;
-            }
-            this.totalPipesCleared++;
-            this.scoreText.setText(`Score: ${this.formatScore(this.score)}`);
-            this.onScoreUpdate?.(1);
-
-            if (this.totalPipesCleared % 2 === 0) {
-                this.scoreMultiplier += 0.1;
-            }
+        this.score += 1 * this.scoreMultiplier;
+        if (this.pipeCounter % 5 === 0) {
+          this.scrollSpeed += 0.025;
+          this.distanceThreshold -= 8;
         }
+        this.totalPipesCleared++;
+        this.scoreText.setText(`Score: ${this.formatScore(this.score)}`);
+        this.onScoreUpdate?.(1);
 
-        if (pipeSprite.x + pipeSprite.displayWidth < 0) {
-            this.pipes.killAndHide(pipeSprite);
+        if (this.totalPipesCleared % 2 === 0) {
+          this.scoreMultiplier += 0.1;
+          this.scoreMultiplierText.setText(
+            this.formatScore(this.scoreMultiplier) + "x"
+          );
         }
+      }
 
-        if (Phaser.Geom.Intersects.RectangleToRectangle(this.bird.getBounds(), pipeSprite.getBounds())) {
-            this.endGame(this.score);
-        }
+      if (pipeSprite.x + pipeSprite.displayWidth < 0) {
+        this.pipes.killAndHide(pipeSprite);
+      }
 
-        if (this.canPauseGame()) {
-            this.superClickScene();
-        }
+      if (
+        Phaser.Geom.Intersects.RectangleToRectangle(
+          this.bird.getBounds(),
+          pipeSprite.getBounds()
+        )
+      ) {
+        this.endGame(this.score);
+      }
+
+      if (this.canPauseGame()) {
+        this.superClickScene();
+      }
     });
-}
+  }
 
-private updateCoins(pixelsPerFrame: number) {
+  private updateCoins(pixelsPerFrame: number) {
     this.coins.getChildren().forEach((coin) => {
-        const coinSprite = coin as Phaser.Physics.Arcade.Sprite;
-        coinSprite.x -= pixelsPerFrame;
+      const coinSprite = coin as Phaser.Physics.Arcade.Sprite;
+      coinSprite.x -= pixelsPerFrame;
 
-        if (Phaser.Geom.Intersects.RectangleToRectangle(this.bird.getBounds(), coinSprite.getBounds())) {
-            this.collectCoin(coinSprite);
-        }
+      if (
+        Phaser.Geom.Intersects.RectangleToRectangle(
+          this.bird.getBounds(),
+          coinSprite.getBounds()
+        )
+      ) {
+        this.collectCoin(coinSprite);
+      }
     });
-}
+  }
 
   private endGame(coinAmount: number) {
     this.onGameOver(coinAmount);
