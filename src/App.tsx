@@ -2,7 +2,7 @@ import "./App.css";
 
 import appBg from "./assets/background.webp";
 import { Flex } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Ref } from "./pages/ref";
 import { Tap } from "./pages/tap";
 import { Navigation } from "./components/navigation";
@@ -17,14 +17,14 @@ enum TabIndex {
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
-  const [isMobile, setIsMobile] = useState(true);
+  const [isMobile, ] = useState(true);
 
-  useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.vendor;
-    if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent)) {
-      setIsMobile(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userAgent = navigator.userAgent || navigator.vendor;
+  //   if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent)) {
+  //     setIsMobile(true);
+  //   }
+  // }, []);
 
   return (
     <Flex
