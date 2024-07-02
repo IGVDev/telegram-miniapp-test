@@ -1,11 +1,11 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
 
 import { useEffect, useState } from "react";
 
 export const Tasks = () => {
-  const [, ] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<string[]>([]);
 
   const data = WebApp.initData;
   const params = new URLSearchParams(data);
@@ -26,12 +26,12 @@ export const Tasks = () => {
         }
       )
       .then((res) => {
-        console.log(res.data);
+        setTasks(res.data.available_tasks); // Set tasks in state
       });
   }, []);
 
   return (
-    <Flex align="center" justify="center">
+    <Flex align="center" justify="center" direction="column">
       <Text
         justifyContent="start"
         w="100vw"
@@ -41,6 +41,25 @@ export const Tasks = () => {
       >
         Tasks
       </Text>
+      {Object.keys(tasks).map((key) => (
+        <Box
+          key={key}
+          p={4}
+          borderWidth="1px"
+          borderRadius="lg"
+          w="80vw"
+          mb={4}
+        >
+          <Image
+            src={tasks[key].image.default}
+            alt={tasks[key].title.en}
+            boxSize="50px"
+          />
+          <Text fontWeight="bold">{tasks[key].title.en}</Text>
+          <Text>{tasks[key].instructions[0].en}</Text>
+          <Text>Reward: {tasks[key].reward}</Text>
+        </Box>
+      ))}
     </Flex>
   );
 };
