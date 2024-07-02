@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { Flex, Image, Stack, Text } from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
 
@@ -49,6 +49,7 @@ export const Tasks = () => {
           borderRadius="lg"
           w="80vw"
           mb={4}
+          color="white"
         >
           <Image
             src={tasks[key].image.default}
