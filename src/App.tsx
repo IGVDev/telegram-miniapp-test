@@ -19,10 +19,10 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const userAgent = navigator.userAgent || navigator.vendor;
     if (
       /android/i.test(userAgent) ||
-      (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
+      (/iPad|iPhone|iPod/.test(userAgent))
     ) {
       setIsMobile(true);
     }
