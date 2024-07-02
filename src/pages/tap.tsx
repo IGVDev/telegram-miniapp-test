@@ -15,25 +15,25 @@ export const Tap = () => {
     setCoins((prevCoins) => prevCoins + x);
   };
 
-  // useEffect(() => {
-  //   WebApp.CloudStorage.getItem("coins", (error, result) => {
-  //     if (error) {
-  //       console.error(error);
-  //     } else {
-  //       setCoins(Number(result));
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    WebApp.CloudStorage.getItem("coins", (error, result) => {
+      if (error) {
+        console.error(error);
+      } else {
+        setCoins(Number(result));
+      }
+    });
+  }, []);
 
-  // useEffect(() => {
-  //   WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
-  //     if (error) {
-  //       console.error(error);
-  //     } else {
-  //       console.log(result);
-  //     }
-  //   });
-  // }, [coins]);
+  useEffect(() => {
+    WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log(result);
+      }
+    });
+  }, [coins]);
 
   useEffect(() => {
     if (loggedIn) return;
