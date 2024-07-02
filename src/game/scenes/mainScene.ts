@@ -465,14 +465,14 @@ export default class MainScene extends Phaser.Scene {
         } else {
           frame = 2;
         }
-        this.addPipe(window.outerWidth, i * pipeHeight, frame, rowId);
+        this.addPipe(window.outerWidth + 100, i * pipeHeight, frame, rowId);
       }
     }
     this.pipeCounter++;
 
     const spawnChance = 1;
     if (this.pipeCounter % 3 === 0 && Math.random() < spawnChance) {
-      this.spawnCoin(window.outerWidth, (hole + 1) * pipeHeight);
+      this.spawnCoin(window.outerWidth + 100, (hole + 1) * pipeHeight);
     }
   }
 
