@@ -1,14 +1,8 @@
-import {
-  Flex,
-  Text,
-  Table,
-  Tr,
-  Td,
-  Tbody,
-  Thead,
-} from "@chakra-ui/react";
+import { Flex, Text, Table, Tr, Td, Tbody, Thead } from "@chakra-ui/react";
 import { GiTrophy } from "react-icons/gi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import WebApp from "@twa-dev/sdk";
 
 type LeaderboardType = {
   username: string;
@@ -35,7 +29,28 @@ export const Leaderboard = () => {
     { username: "Henry", score: 10 },
   ];
 
+  const data = WebApp.initData;
+  const params = new URLSearchParams(data);
+  const hash = params.get("hash");
+  const paramsJson = Object.fromEntries(params.entries());
+
   const [leaderboard] = useState<LeaderboardType[]>(mockLeaderboard);
+
+  useEffect(() => {
+    axios.post(
+      `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
+      {
+        initData: paramsJson,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${hash}`,
+        },
+      }
+    ).then((res) => {
+      console.log(res.data);
+    });
+  }, []);
 
   return (
     <Flex
@@ -63,7 +78,11 @@ export const Leaderboard = () => {
           <Tbody w="">
             {leaderboard.map((user, index) => (
               <>
-                <Tr key={index} borderBottom={"1px solid"} borderColor={"gray.600"}>
+                <Tr
+                  key={index}
+                  borderBottom={"1px solid"}
+                  borderColor={"gray.600"}
+                >
                   <Td>
                     {index < 3 ? (
                       <GiTrophy color={TrophyColor[index]} />
