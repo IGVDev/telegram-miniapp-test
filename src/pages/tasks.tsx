@@ -11,15 +11,36 @@ export const Tasks = () => {
   }>({});
   const [taskInProgress, setTaskInProgress] = useState<string | null>(null);
 
-  const handleButtonClick = (key: string, destination: string) => {
-    setTaskInProgress(key);
-    window.open(destination, "_blank");
-  };
-
   const data = WebApp.initData;
   const params = new URLSearchParams(data);
   const hash = params.get("hash");
   const paramsJson = Object.fromEntries(params.entries());
+
+  const handleButtonClick = (key: string, destination: string) => {
+    if (completedTasks[key]) {
+      axios
+        .post(
+          "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_tasks",
+          { initData: paramsJson, taskKey: key },
+          {
+            headers: {
+              Authorization: `Bearer ${hash}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Claim successful", response.data);
+        })
+
+        .catch((error) => {
+          console.error("Error claiming task", error);
+        });
+    } else {
+      setTaskInProgress(key);
+
+      window.open(destination, "_blank");
+    }
+  };
 
   useEffect(() => {
     axios
@@ -43,18 +64,15 @@ export const Tasks = () => {
     const handleFocus = () => {
       if (taskInProgress) {
         setCompletedTasks((prev) => ({ ...prev, [taskInProgress]: true }));
-
         setTaskInProgress(null);
       }
     };
 
     window.addEventListener("focus", handleFocus);
-
     window.addEventListener("blur", handleFocus);
 
     return () => {
       window.removeEventListener("focus", handleFocus);
-
       window.removeEventListener("blur", handleFocus);
     };
   }, [taskInProgress]);
