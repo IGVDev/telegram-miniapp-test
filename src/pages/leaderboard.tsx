@@ -57,7 +57,7 @@ export const Leaderboard = () => {
 
   const userUid = extractUserId(data);
   const userInLeaderboard = leaderboardData?.top_users?.some((user) => {
-    return Number(user.uid) === Number(userUid);
+    return Number(user.uid) === userUid;
   });
 
   return (
@@ -91,11 +91,13 @@ export const Leaderboard = () => {
                 {leaderboardData &&
                   leaderboardData.top_users.map((user, index) => (
                     <Tr
-                      key={user.uid}
+                      key={Number(user.uid)}
                       borderBottom={"1px solid"}
                       borderColor={"gray.600"}
                       bgColor={
-                        user.uid === userUid ? "purple.900" : "transparent"
+                        Number(user.uid) === userUid
+                          ? "purple.900"
+                          : "transparent"
                       }
                     >
                       <Td>
