@@ -2,7 +2,7 @@ import "./App.css";
 
 import appBg from "./assets/background.webp";
 import { Flex, Spinner } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Ref } from "./pages/ref";
 import { Tap } from "./pages/tap";
 import { Navigation } from "./components/navigation";
@@ -34,37 +34,43 @@ function App() {
 
   const initData = WebApp.initData;
 
-  const { isLoading, isError, error } = useQuery({
-    queryKey: ["login"],
-    queryFn: () => {
-      const params = new URLSearchParams(initData);
-      const hash = params.get("hash");
-      const start_param = params.get("start_param");
-      const paramsJson = Object.fromEntries(params.entries());
+  const handleLogin = async () => {
+    const params = new URLSearchParams(initData);
+    const hash = params.get("hash");
+    const start_param = params.get("start_param");
+    const paramsJson = Object.fromEntries(params.entries());
 
-      if (!verifyTelegramWebAppData(initData)) {
-        throw new Error("Invalid init data");
+    if (!verifyTelegramWebAppData(initData)) {
+      throw new Error("Invalid init data");
+    }
+
+    const { data } = await axios.post(
+      `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_login`,
+      {
+        initData: paramsJson,
+        referrer_uid: start_param,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + hash,
+        },
       }
+    );
 
-      return axios
-        .post(
-          `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_login`,
-          {
-            initData: paramsJson,
-            referrer_uid: start_param,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + hash,
-            },
-          }
-        )
-        .then(() => {
-          setLoggedIn(true);
-        });
-    },
+    return data;
+  };
+
+  const { isLoading, isError, error, data } = useQuery({
+    queryKey: ["login"],
+    queryFn: handleLogin,
     enabled: !loggedIn,
   });
+
+  useEffect(() => {
+    if (data && !isError && !isLoading) {
+      setLoggedIn(true);
+    }
+  }, [data, isError, isLoading]);
 
   return (
     <Flex
