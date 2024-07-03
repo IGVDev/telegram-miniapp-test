@@ -46,7 +46,7 @@ function App() {
         throw new Error("Invalid init data");
       }
 
-      axios
+      return axios
         .post(
           `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_login`,
           {
