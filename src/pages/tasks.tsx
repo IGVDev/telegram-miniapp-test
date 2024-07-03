@@ -114,8 +114,25 @@ export const Tasks = () => {
           },
         }
       )
-      .then((res) => {
-        setTasks(res.data.available_tasks);
+      .then(() => {
+        const completed = Object.keys(loginData.tasks_completed || {}).reduce(
+          (acc, key) => {
+            acc[key] = true;
+            return acc;
+          },
+          {} as { [key: string]: boolean }
+        );
+
+        const prevTasks = { ...tasks };
+        setTasks(() => {
+          const newTasks = { ...prevTasks };
+
+          Object.keys(completed).forEach((key) => {
+            delete newTasks[key];
+          });
+
+          return newTasks;
+        });
       });
   }, []);
 
