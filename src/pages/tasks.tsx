@@ -38,8 +38,15 @@ export const Tasks = () => {
             },
           }
         )
-        .then((res) => {
-          setTasks(res.data.available_tasks);
+        .then(() => {
+          setTasks((prevTasks) =>
+            prevTasks.filter((taskKey) => taskKey !== key)
+          );
+
+          setCompletedTasks((prevCompletedTasks) => ({
+            ...prevCompletedTasks,
+            [key]: true,
+          }));
         });
     } else {
       setTaskInProgress(key);
@@ -94,39 +101,43 @@ export const Tasks = () => {
       >
         Tasks
       </Text>
-      {Object.keys(tasks).map((key) => (
-        <Flex
-          key={key}
-          p={4}
-          borderWidth="1px"
-          borderRadius="lg"
-          w="80vw"
-          mb={4}
-          color="white"
-          position="relative"
-        >
-          <Image
-            src={tasks[key].image.default}
-            alt={tasks[key].title.en}
-            boxSize="50px"
-          />
-          <Stack>
-            <Text fontWeight="bold">{tasks[key].title.en}</Text>
-            <Text>{tasks[key].instructions[0].en}</Text>
-            <Text>Reward: {tasks[key].reward}</Text>
-          </Stack>
-          <Button
-            position="absolute"
-            right="2"
-            top="2"
-            onClick={() =>
-              handleButtonClick(key, tasks[key].actions[0].destination)
-            }
+      {Object.keys(tasks).map((key) => {
+        const task = tasks[key];
+        if (!task) return null;
+        return (
+          <Flex
+            key={key}
+            p={4}
+            borderWidth="1px"
+            borderRadius="lg"
+            w="80vw"
+            mb={4}
+            color="white"
+            position="relative"
           >
-            {completedTasks[key] ? "Claim" : "Start"}
-          </Button>
-        </Flex>
-      ))}
+            <Image
+              src={tasks[key].image.default}
+              alt={tasks[key].title.en}
+              boxSize="50px"
+            />
+            <Stack>
+              <Text fontWeight="bold">{tasks[key].title.en}</Text>
+              <Text>{tasks[key].instructions[0].en}</Text>
+              <Text>Reward: {tasks[key].reward}</Text>
+            </Stack>
+            <Button
+              position="absolute"
+              right="2"
+              top="2"
+              onClick={() =>
+                handleButtonClick(key, tasks[key].actions[0].destination)
+              }
+            >
+              {completedTasks[key] ? "Claim" : "Start"}
+            </Button>
+          </Flex>
+        );
+      })}
     </Flex>
   );
 };
