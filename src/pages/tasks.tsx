@@ -22,7 +22,6 @@ export const Tasks = () => {
         tasks_completed: {
           [key]: {
             time: new Date().toLocaleTimeString(),
-
             timestamp: Math.floor(Date.now() / 1000),
           },
         },
@@ -39,12 +38,8 @@ export const Tasks = () => {
             },
           }
         )
-        .then((response) => {
-          console.log("Claim successful", response.data);
-        })
-
-        .catch((error) => {
-          console.error("Error claiming task", error);
+        .then(() => {
+          setCompletedTasks((prev) => ({ ...prev, [key]: true }));
         });
     } else {
       setTaskInProgress(key);
@@ -68,6 +63,7 @@ export const Tasks = () => {
       )
       .then((res) => {
         setTasks(res.data.available_tasks);
+        setCompletedTasks(res.data.tasks_completed);
       });
   }, []);
 
@@ -129,6 +125,38 @@ export const Tasks = () => {
             }
           >
             {completedTasks[key] ? "Claim" : "Start"}
+          </Button>
+        </Flex>
+      ))}
+      Completed tasks:
+      {Object.keys(completedTasks).map((key) => (
+        <Flex
+          key={key}
+          p={4}
+          borderWidth="1px"
+          borderRadius="lg"
+          w="80vw"
+          mb={4}
+          color="white"
+          position="relative"
+        >
+          <Image
+            src={tasks[key].image.default}
+            alt={tasks[key].title.en}
+            boxSize="50px"
+          />
+          <Stack>
+            <Text fontWeight="bold">{tasks[key].title.en}</Text>
+            <Text>{tasks[key].instructions[0].en}</Text>
+            <Text>Reward: {tasks[key].reward}</Text>
+          </Stack>
+          <Button
+            position="absolute"
+            right="2"
+            top="2"
+            disabled
+          >
+            Claimed
           </Button>
         </Flex>
       ))}
