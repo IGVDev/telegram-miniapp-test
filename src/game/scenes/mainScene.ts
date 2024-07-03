@@ -158,7 +158,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private fixedUpdate() {
-    const fixedDelta = this.fixedTimeStep / 1000; // Convert to seconds
+    const fixedDelta = this.fixedTimeStep / 2
     const pixelsPerFrame = this.scrollSpeed * fixedDelta;
     this.distanceMoved += pixelsPerFrame;
 
