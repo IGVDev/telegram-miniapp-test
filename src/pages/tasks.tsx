@@ -39,6 +39,25 @@ export const Tasks = () => {
 
   const { data: loginData } = useQuery<LoginData>({ queryKey: ["login"] });
 
+  const { data: tasksData, isLoading } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: async () => {
+      const response = await axios.post(
+        "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_tasks",
+        {
+          initData: paramsJson,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${hash}`,
+          },
+        }
+      );
+
+      return response.data;
+    },
+  });
+
   const handleButtonClick = (key: string, destination: string) => {
     if (completedTasks[key]) {
       const payload = {
@@ -81,7 +100,7 @@ export const Tasks = () => {
   };
 
   useEffect(() => {
-    if (loginData && Object.keys(tasks).length > 0) {
+    if (loginData && Object.keys(tasksData).length > 0) {
       const completed = Object.keys(loginData.tasks_completed || {}).reduce(
         (acc, key) => {
           acc[key] = true;
@@ -99,25 +118,7 @@ export const Tasks = () => {
         return newTasks;
       });
     }
-  }, [loginData, tasks]);
-
-  useEffect(() => {
-    axios
-      .post(
-        `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_tasks`,
-        {
-          initData: paramsJson,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${hash}`,
-          },
-        }
-      )
-      .then((res) => {
-        setTasks(res.data.available_tasks);
-      });
-  }, []);
+  }, [loginData, tasksData]);
 
   useEffect(() => {
     const handleFocus = () => {
@@ -138,6 +139,7 @@ export const Tasks = () => {
 
   return (
     <Flex align="center" justify="center" direction="column">
+      {isLoading && <Text>Loading...</Text>}
       <Text
         justifyContent="start"
         w="100vw"
