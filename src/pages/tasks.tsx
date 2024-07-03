@@ -148,7 +148,7 @@ export const Tasks = () => {
         Tasks
       </Text>
       {Object.keys(tasks).length === 0 && (
-        <Flex p={4} alignSelf="center">
+        <Flex p={4} alignSelf="center" color="white">
           <Text>No tasks available</Text>
         </Flex>
       )}
