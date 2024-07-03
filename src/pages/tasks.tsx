@@ -147,6 +147,11 @@ export const Tasks = () => {
       >
         Tasks
       </Text>
+      {Object.keys(tasks).length === 0 && (
+        <Flex p={4} alignSelf="center">
+          <Text>No tasks available</Text>
+        </Flex>
+      )}
       {Object.keys(tasks).map((key) => {
         const task = tasks[key];
         if (!task) return null;
