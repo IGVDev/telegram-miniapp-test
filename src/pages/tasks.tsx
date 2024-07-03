@@ -89,7 +89,7 @@ export const Tasks = () => {
         },
         {} as { [key: string]: boolean }
       );
-      setCompletedTasks(completed);
+      console.log("completed", completed);
     }
   }, [loginData]);
 
