@@ -1,8 +1,29 @@
 import { Button, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
 
 import { useEffect, useState } from "react";
+
+interface LoginData {
+  first_name: string;
+  last_name: string;
+  language_code: string;
+  referrals: Record<string, unknown>;
+  referred_by: string;
+  source: string;
+  tasks_completed: {
+    [key: string]: {
+      time: string;
+      timestamp: number;
+    };
+  };
+  timestamp_last_activity: number;
+  timestamp_last_login: number;
+  tokens: number;
+  uid: string;
+  username: string;
+}
 
 export const Tasks = () => {
   const [tasks, setTasks] = useState({});
@@ -15,6 +36,8 @@ export const Tasks = () => {
   const params = new URLSearchParams(data);
   const hash = params.get("hash");
   const paramsJson = Object.fromEntries(params.entries());
+
+  const { data: loginData } = useQuery<LoginData>({ queryKey: ["login"] });
 
   const handleButtonClick = (key: string, destination: string) => {
     if (completedTasks[key]) {
@@ -56,6 +79,19 @@ export const Tasks = () => {
       window.open(destination, "_blank");
     }
   };
+
+  useEffect(() => {
+    if (loginData) {
+      const completed = Object.keys(loginData.tasks_completed || {}).reduce(
+        (acc, key) => {
+          acc[key] = true;
+          return acc;
+        },
+        {} as { [key: string]: boolean }
+      );
+      setCompletedTasks(completed);
+    }
+  }, [loginData]);
 
   useEffect(() => {
     axios
