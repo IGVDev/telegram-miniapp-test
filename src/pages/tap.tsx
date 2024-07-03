@@ -5,6 +5,7 @@ import coinImg from "../assets/coin.png";
 import WebApp from "@twa-dev/sdk";
 import { verifyTelegramWebAppData } from "../utils";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 // import axios from "axios";
 
 export const Tap = () => {
@@ -15,25 +16,31 @@ export const Tap = () => {
     setCoins((prevCoins) => prevCoins + x);
   };
 
-  useEffect(() => {
-    WebApp.CloudStorage.getItem("coins", (error, result) => {
-      if (error) {
-        console.error(error);
-      } else {
-        setCoins(Number(result));
-      }
-    });
-  }, []);
+  const { data } = useQuery({
+    queryKey: ["login"],
+  });
 
-  useEffect(() => {
-    WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log(result);
-      }
-    });
-  }, [coins]);
+  console.log(data);
+
+  // useEffect(() => {
+  //   WebApp.CloudStorage.getItem("coins", (error, result) => {
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       setCoins(Number(result));
+  //     }
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       console.log(result);
+  //     }
+  //   });
+  // }, [coins]);
 
   useEffect(() => {
     if (loggedIn) return;
@@ -66,8 +73,9 @@ export const Tap = () => {
         className="gameContainer"
         position={"relative"}
         w={window.outerWidth}
-        h={window.innerHeight - 150}
-        minH={window.innerHeight - 150}
+        h={window.innerHeight - 120}
+        minH={window.innerHeight - 120}
+        // bgColor="red"
       >
         <Flex
           className="coinContainer"
@@ -91,7 +99,7 @@ export const Tap = () => {
         </Flex>
         <FlappyBirdGame
           width={window.outerWidth}
-          height={window.innerHeight - 150}
+          height={window.innerHeight}
           onScoreUpdate={handleScoreUpdate}
           domId="flappy-bird-game"
         />
