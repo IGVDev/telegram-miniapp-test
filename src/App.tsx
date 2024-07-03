@@ -63,7 +63,7 @@ function App() {
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["login"],
     queryFn: handleLogin,
-    enabled: !loggedIn,
+    enabled: !!loggedIn,
   });
 
   useEffect(() => {
@@ -82,7 +82,7 @@ function App() {
       overflowY="auto"
     >
       {isLoading && (
-        <Flex justify="center" align="center" height="100vh">
+        <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
