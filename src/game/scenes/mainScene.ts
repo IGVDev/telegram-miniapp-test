@@ -147,7 +147,7 @@ export default class MainScene extends Phaser.Scene {
     this.accumulator += delta;
 
     // while (this.accumulator >= this.fixedTimeStep) {
-    this.fixedUpdate(this.fixedTimeStep);
+    this.fixedUpdate();
     //   this.accumulator -= this.fixedTimeStep;
     // }
 
@@ -163,15 +163,15 @@ export default class MainScene extends Phaser.Scene {
     this.distanceMoved += pixelsPerFrame;
 
     if (this.distanceMoved >= this.distanceThreshold) {
-        this.addNewRowOfPipes();
-        this.distanceMoved = 0;
+      this.addNewRowOfPipes();
+      this.distanceMoved = 0;
     }
 
     const background = this.children.getByName(
-        "background"
+      "background"
     ) as Phaser.GameObjects.TileSprite;
     if (background) {
-        background.tilePositionX += pixelsPerFrame;
+      background.tilePositionX += pixelsPerFrame;
     }
 
     this.updatePipes(pixelsPerFrame);
@@ -179,10 +179,10 @@ export default class MainScene extends Phaser.Scene {
 
     // Ground collision
     if (this.bird && this.bird.y >= this.scale.height - 18) {
-        this.saveHighScore();
-        this.endGame(this.score);
+      this.saveHighScore();
+      this.endGame(this.score);
     }
-}
+  }
 
   private updatePipes(pixelsPerFrame: number) {
     this.pipes.getChildren().forEach((pipe: Phaser.GameObjects.GameObject) => {
