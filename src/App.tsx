@@ -23,13 +23,13 @@ enum TabIndex {
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor;
-    if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent)) {
-      setIsMobile(true);
+    if (!/android/i.test(userAgent) && !/iPad|iPhone|iPod/.test(userAgent)) {
+      setIsMobile(false);
     }
   }, []);
 
