@@ -2,70 +2,29 @@ import { Flex, Image, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import FlappyBirdGame from "../game/game";
 import coinImg from "../assets/coin.png";
-import WebApp from "@twa-dev/sdk";
-import { verifyTelegramWebAppData } from "../utils";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 // import axios from "axios";
 
+interface UserData {
+  tokens: number;
+}
+
 export const Tap = () => {
   const [coins, setCoins] = useState(0);
-  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleScoreUpdate = (x: number) => {
     setCoins((prevCoins) => prevCoins + x);
   };
 
-  const { data } = useQuery({
+  const { data } = useQuery<UserData>({
     queryKey: ["login"],
   });
 
-  console.log(data);
-
-  // useEffect(() => {
-  //   WebApp.CloudStorage.getItem("coins", (error, result) => {
-  //     if (error) {
-  //       console.error(error);
-  //     } else {
-  //       setCoins(Number(result));
-  //     }
-  //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   WebApp.CloudStorage.setItem("coins", coins.toString(), (error, result) => {
-  //     if (error) {
-  //       console.error(error);
-  //     } else {
-  //       console.log(result);
-  //     }
-  //   });
-  // }, [coins]);
-
   useEffect(() => {
-    if (loggedIn) return;
-    const data = WebApp.initData;
-
-    if (verifyTelegramWebAppData(data)) {
-      const params = new URLSearchParams(data);
-      const hash = params.get("hash");
-      const start_param = params.get("start_param");
-      const paramsJson = Object.fromEntries(params.entries());
-      axios.post(
-        `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_login`,
-        {
-          initData: paramsJson,
-          referrer_uid: start_param,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + hash,
-          },
-        }
-      );
-      setLoggedIn(true);
+    if (data) {
+      setCoins(data.tokens);
     }
-  }, [loggedIn]);
+  }, [data]);
 
   return (
     <>
