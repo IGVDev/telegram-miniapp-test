@@ -34,7 +34,7 @@ function App() {
 
   const initData = WebApp.initData;
 
-  const { isLoading, isError, error, data } = useQuery({
+  const { isLoading, isError, error } = useQuery({
     queryKey: ["login"],
     queryFn: () => {
       const params = new URLSearchParams(initData);
