@@ -57,8 +57,7 @@ export const Leaderboard = () => {
 
   const userUid = extractUserId(data);
   const userInLeaderboard = leaderboardData?.top_users?.some((user) => {
-    console.log(`Comparing ${user.uid} with ${userUid}`);
-    return user.uid === userUid;
+    return Number(user.uid) === Number(userUid);
   });
 
   return (
