@@ -60,7 +60,7 @@ export const Leaderboard = () => {
     (user) => user.uid === userUid
   );
 
-  console.log(userUid, userInLeaderboard, leaderboardData?.top_users);
+  console.log(paramsJson, userInLeaderboard, leaderboardData?.top_users);
 
   return (
     <Flex
