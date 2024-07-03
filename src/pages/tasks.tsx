@@ -81,7 +81,7 @@ export const Tasks = () => {
   };
 
   useEffect(() => {
-    if (loginData) {
+    if (loginData && tasks) {
       const completed = Object.keys(loginData.tasks_completed || {}).reduce(
         (acc, key) => {
           acc[key] = true;
@@ -99,7 +99,7 @@ export const Tasks = () => {
         return newTasks;
       });
     }
-  }, [loginData]);
+  }, [loginData, tasks]);
 
   useEffect(() => {
     axios
