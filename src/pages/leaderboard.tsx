@@ -5,6 +5,9 @@ import WebApp from "@twa-dev/sdk";
 import { useQuery } from "@tanstack/react-query";
 import { verifyTelegramWebAppData } from "../utils";
 
+interface LeaderboardResponse {
+  data: LeaderboardData;
+}
 interface LeaderboardData {
   global_rank: number;
   league_name: string;
@@ -31,7 +34,7 @@ export const Leaderboard = () => {
   const hash = params.get("hash");
   const paramsJson = Object.fromEntries(params.entries());
 
-  const { data: leaderboardData, isLoading } = useQuery<LeaderboardData>({
+  const { data: leaderboardResponse, isLoading } = useQuery<LeaderboardResponse>({
     queryKey: ["leaderboard"],
     queryFn: () => {
       return axios.post(
@@ -49,12 +52,12 @@ export const Leaderboard = () => {
     enabled: !!verifyTelegramWebAppData(data),
   });
 
+  const leaderboardData = leaderboardResponse?.data;
+
   const userUid = paramsJson.uid;
   const userInLeaderboard = leaderboardData?.top_users?.some(
     (user) => user.uid === userUid
   );
-
-  console.log('LEADER', leaderboardData)
 
   return (
     <Flex
@@ -85,7 +88,7 @@ export const Leaderboard = () => {
               </Thead>
               <Tbody>
                 {leaderboardData &&
-                  leaderboardData.top_users?.map((user, index) => (
+                  leaderboardData.top_users.map((user, index) => (
                     <Tr
                       key={user.uid}
                     borderBottom={"1px solid"}
@@ -94,6 +97,7 @@ export const Leaderboard = () => {
                       user.uid === userUid ? "purple.900" : "transparent"
                     }
                   >
+                    
                     <Td>
                       {index < 3 ? (
                         <GiTrophy color={TrophyColor[index]} />
