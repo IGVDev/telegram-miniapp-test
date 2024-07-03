@@ -18,10 +18,21 @@ export const Tasks = () => {
 
   const handleButtonClick = (key: string, destination: string) => {
     if (completedTasks[key]) {
+      const payload = {
+        tasks_completed: {
+          [key]: {
+            time: new Date().toLocaleTimeString(),
+
+            timestamp: Math.floor(Date.now() / 1000),
+          },
+        },
+
+        initData: paramsJson,
+      };
       axios
         .post(
           "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_tasks",
-          { initData: paramsJson, taskKey: key },
+          payload,
           {
             headers: {
               Authorization: `Bearer ${hash}`,
