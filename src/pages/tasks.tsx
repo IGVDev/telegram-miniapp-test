@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 export const Tasks = () => {
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState({});
   const [completedTasks, setCompletedTasks] = useState<{
     [key: string]: boolean;
   }>({});
@@ -39,9 +39,11 @@ export const Tasks = () => {
           }
         )
         .then(() => {
-          setTasks((prevTasks) =>
-            prevTasks.filter((taskKey) => taskKey !== key)
-          );
+          setTasks((prevTasks) => {
+            const newTasks = { ...prevTasks };
+            delete newTasks[key];
+            return newTasks;
+          });
 
           setCompletedTasks((prevCompletedTasks) => ({
             ...prevCompletedTasks,
