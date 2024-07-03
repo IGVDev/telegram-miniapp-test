@@ -1,4 +1,4 @@
-import { Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { Button, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
 
@@ -6,6 +6,14 @@ import { useEffect, useState } from "react";
 
 export const Tasks = () => {
   const [tasks, setTasks] = useState<string[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const handleButtonClick = (key: string, destination: string) => {
+    window.open(destination, "_blank");
+    setCompletedTasks((prev) => ({ ...prev, [key]: true }));
+  };
 
   const data = WebApp.initData;
   const params = new URLSearchParams(data);
@@ -26,7 +34,7 @@ export const Tasks = () => {
         }
       )
       .then((res) => {
-        setTasks(res.data.available_tasks); // Set tasks in state
+        setTasks(res.data.available_tasks);
       });
   }, []);
 
@@ -50,6 +58,7 @@ export const Tasks = () => {
           w="80vw"
           mb={4}
           color="white"
+          position="relative"
         >
           <Image
             src={tasks[key].image.default}
@@ -61,6 +70,16 @@ export const Tasks = () => {
             <Text>{tasks[key].instructions[0].en}</Text>
             <Text>Reward: {tasks[key].reward}</Text>
           </Stack>
+          <Button
+            position="absolute"
+            right="2"
+            top="2"
+            onClick={() =>
+              handleButtonClick(key, tasks[key].actions[0].destination)
+            }
+          >
+            {completedTasks[key] ? "Claim" : "Start"}
+          </Button>
         </Flex>
       ))}
     </Flex>
