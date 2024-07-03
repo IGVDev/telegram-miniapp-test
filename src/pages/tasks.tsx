@@ -40,18 +40,22 @@ export const Tasks = () => {
   }, []);
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible" && taskInProgress) {
+    const handleFocus = () => {
+      if (taskInProgress) {
         setCompletedTasks((prev) => ({ ...prev, [taskInProgress]: true }));
 
         setTaskInProgress(null);
       }
     };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+
+    window.addEventListener("blur", handleFocus);
 
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+
+      window.removeEventListener("blur", handleFocus);
     };
   }, [taskInProgress]);
 
