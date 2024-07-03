@@ -13,8 +13,8 @@ export const Tasks = () => {
 
 
   const handleButtonClick = (key: string, destination: string) => {
+    setTaskInProgress(key);
     window.open(destination, "_blank");
-    setCompletedTasks((prev) => ({ ...prev, [key]: true }));
   };
 
   const data = WebApp.initData;
