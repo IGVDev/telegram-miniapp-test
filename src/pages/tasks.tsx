@@ -149,12 +149,12 @@ export const Tasks = () => {
       >
         Tasks
       </Text>
-      {Object.keys(tasksData).length === 0 && (
+      {tasksData && Object.keys(tasksData).length === 0 && (
         <Flex p={4} alignSelf="center" color="white">
           <Text>No tasks available</Text>
         </Flex>
       )}
-      {Object.keys(tasksData).map((key) => {
+      {tasksData && Object.keys(tasksData).map((key) => {
         const task = tasksData[key];
         if (!task) return null;
         return (
