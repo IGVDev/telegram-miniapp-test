@@ -1,7 +1,7 @@
 import "./App.css";
 
 import appBg from "./assets/background.webp";
-import { Flex, Spinner } from "@chakra-ui/react";
+import { Flex, Image, Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Ref } from "./pages/ref";
 import { Tap } from "./pages/tap";
@@ -12,6 +12,7 @@ import WebApp from "@twa-dev/sdk";
 import { verifyTelegramWebAppData } from "./utils";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import qrCode from "./assets/qr-code.png";
 
 enum TabIndex {
   Ref = 0,
@@ -22,15 +23,15 @@ enum TabIndex {
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
-  const [isMobile] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // useEffect(() => {
-  //   const userAgent = navigator.userAgent || navigator.vendor;
-  //   if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent)) {
-  //     setIsMobile(true);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor;
+    if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent)) {
+      setIsMobile(true);
+    }
+  }, []);
 
   const initData = WebApp.initData;
 
@@ -81,13 +82,19 @@ function App() {
       height="100vh"
       overflowY="auto"
     >
-      {isLoading && (
+      {!isMobile && (
+        <Flex flex="1" align="center" justify="center" color="white" flexDir="column" gap={2}>
+          Please use a mobile device to access this application.
+          <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20}/>
+        </Flex>
+      )}
+      {isMobile && isLoading && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      {isError && <Flex color="white">Error: {error.message}</Flex>}
-      {!isLoading && !isError && (
+      {isMobile && isError && <Flex color="white">Error: {error.message}</Flex>}
+      {isMobile && !isLoading && !isError && (
         <Flex
           className="mainContainer"
           flexDir="column"
@@ -96,26 +103,17 @@ function App() {
           gap={4}
           // mt={2}
         >
-          {!isMobile ? (
-            <Flex flex="1" align="center" justify="center" color="white">
-              Please use a mobile device to access this application.
-            </Flex>
-          ) : (
-            <>
-              {activeTab === TabIndex.Ref && <Ref />}
-              {activeTab === TabIndex.Tasks && <Tasks />}
-              {activeTab === TabIndex.Tap && <Tap />}
-              {activeTab === TabIndex.Leaderboard && <Leaderboard />}
-              <Flex flex="1" align="end">
-                <Flex className="tabsContainer" justify="center" mb={2}>
-                  <Navigation
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
-                  />
-                </Flex>
+          <>
+            {activeTab === TabIndex.Ref && <Ref />}
+            {activeTab === TabIndex.Tasks && <Tasks />}
+            {activeTab === TabIndex.Tap && <Tap />}
+            {activeTab === TabIndex.Leaderboard && <Leaderboard />}
+            <Flex flex="1" align="end">
+              <Flex className="tabsContainer" justify="center" mb={2}>
+                <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
               </Flex>
-            </>
-          )}
+            </Flex>
+          </>
         </Flex>
       )}
     </Flex>
