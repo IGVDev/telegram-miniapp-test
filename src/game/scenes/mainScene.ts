@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { Pipe } from "../pipe";
 import { Coin } from "../coin";
-import bgImage from "../../assets/blackBg.png";
+import bgImage from "../../assets/bg.png";
 import birdImage from "../../assets/newBird.png";
 import pipeImage from "../../assets/newPipe.png";
 import coinImage from "../../assets/coin.png";
@@ -68,7 +68,6 @@ export default class MainScene extends Phaser.Scene {
     this.clickCount = 0;
     this.lastPauseScore = 0;
     this.pipeCounter = 0;
-    this.scrollSpeed = 0.15;
     this.distanceMoved = 0;
 
     this.clickCountText = this.add
@@ -94,6 +93,7 @@ export default class MainScene extends Phaser.Scene {
       .tileSprite(0, 0, this.scale.width, this.scale.height, "background")
       .setOrigin(0, 0);
     background.setName("background");
+    background.scrollFactorX = 2;
 
     this.input.on("pointerdown", () => {
       if (!this.isPaused) {
@@ -157,20 +157,21 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  private fixedUpdate(delta: number) {
-    const pixelsPerFrame = this.scrollSpeed * delta;
+  private fixedUpdate() {
+    const fixedDelta = this.fixedTimeStep / 1000; // Convert to seconds
+    const pixelsPerFrame = this.scrollSpeed * fixedDelta;
     this.distanceMoved += pixelsPerFrame;
 
     if (this.distanceMoved >= this.distanceThreshold) {
-      this.addNewRowOfPipes();
-      this.distanceMoved = 0;
+        this.addNewRowOfPipes();
+        this.distanceMoved = 0;
     }
 
     const background = this.children.getByName(
-      "background"
+        "background"
     ) as Phaser.GameObjects.TileSprite;
     if (background) {
-      background.tilePositionX += pixelsPerFrame;
+        background.tilePositionX += pixelsPerFrame;
     }
 
     this.updatePipes(pixelsPerFrame);
@@ -178,10 +179,10 @@ export default class MainScene extends Phaser.Scene {
 
     // Ground collision
     if (this.bird && this.bird.y >= this.scale.height - 18) {
-      this.saveHighScore();
-      this.endGame(this.score);
+        this.saveHighScore();
+        this.endGame(this.score);
     }
-  }
+}
 
   private updatePipes(pixelsPerFrame: number) {
     this.pipes.getChildren().forEach((pipe: Phaser.GameObjects.GameObject) => {
