@@ -9,6 +9,8 @@ export const Tasks = () => {
   const [completedTasks, setCompletedTasks] = useState<{
     [key: string]: boolean;
   }>({});
+  const [taskInProgress, setTaskInProgress] = useState<string | null>(null);
+
 
   const handleButtonClick = (key: string, destination: string) => {
     window.open(destination, "_blank");
@@ -37,6 +39,20 @@ export const Tasks = () => {
         setTasks(res.data.available_tasks);
       });
   }, []);
+
+  useEffect(() => {
+    const handleFocus = () => {
+      if (taskInProgress) {
+        setCompletedTasks((prev) => ({ ...prev, [taskInProgress]: true }));
+        setTaskInProgress(null);
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [taskInProgress]);
 
   return (
     <Flex align="center" justify="center" direction="column">
