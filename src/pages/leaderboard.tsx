@@ -1,13 +1,22 @@
 import { Flex, Text, Table, Tr, Td, Tbody, Thead } from "@chakra-ui/react";
 import { GiTrophy } from "react-icons/gi";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import WebApp from "@twa-dev/sdk";
+import { useQuery } from "@tanstack/react-query";
 
-type LeaderboardType = {
-  username: string;
+interface LeaderboardData {
+  global_rank: number;
+  league_name: string;
+  league_rank: number;
+  top_users: LeaderboardType[];
+}
+
+interface LeaderboardType {
+  avatar_photo: string;
   tokens: number;
-};
+  uid: string;
+  username: string;
+}
 
 enum TrophyColor {
   "gold" = 0,
@@ -21,11 +30,10 @@ export const Leaderboard = () => {
   const hash = params.get("hash");
   const paramsJson = Object.fromEntries(params.entries());
 
-  const [leaderboard, setLeaderboard] = useState<LeaderboardType[]>([]);
-
-  useEffect(() => {
-    axios
-      .post(
+  const { data: leaderboardData, isLoading } = useQuery<LeaderboardData>({
+    queryKey: ["leaderboard"],
+    queryFn: () => {
+      return axios.post(
         `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
         {
           initData: paramsJson,
@@ -35,11 +43,14 @@ export const Leaderboard = () => {
             Authorization: `Bearer ${hash}`,
           },
         }
-      )
-      .then((res) => {
-        setLeaderboard(res.data.top_users);
-      });
-  }, []);
+      );
+    },
+  });
+
+  const userUid = paramsJson.uid;
+  const userInLeaderboard = leaderboardData?.top_users.some(
+    (user) => user.uid === userUid
+  );
 
   return (
     <Flex
@@ -51,47 +62,56 @@ export const Leaderboard = () => {
       w="100%"
       overflowX="hidden"
     >
-      <Text fontSize="40px" fontWeight="bold">
-        Leaderboard
-      </Text>
+      {isLoading && <Text>Loading...</Text>}
 
-      <Flex className="tableContainer">
-        <Table size="sm" variant="unstyled" w="90vw">
-          <Thead color="gray.500">
-            <Tr>
-              <Td>Ranking</Td>
-              <Td>Username</Td>
-              <Td>Score</Td>
-            </Tr>
-          </Thead>
-          <Tbody w="">
-            {leaderboard.map((user, index) => (
-              <>
-                <Tr
-                  key={index}
-                  borderBottom={"1px solid"}
-                  borderColor={"gray.600"}
-                >
-                  <Td>
-                    {index < 3 ? (
-                      <GiTrophy color={TrophyColor[index]} />
-                    ) : (
-                      index + 1
-                    )}
-                  </Td>
-                  <Td>@{user.username}</Td>
-                  <Td>{user.tokens.toFixed(1)}</Td>
+      {!isLoading && (
+        <>
+          <Text fontSize="40px" fontWeight="bold">
+            Leaderboard
+          </Text>
+
+          <Flex className="tableContainer">
+            <Table size="sm" variant="unstyled" w="90vw">
+              <Thead color="gray.500">
+                <Tr>
+                  <Td>Ranking</Td>
+                  <Td>Username</Td>
+                  <Td>Score</Td>
                 </Tr>
-              </>
-            ))}
-            <Tr bgColor="purple.900">
-              <Td fontWeight="bold">840</Td>
-              <Td fontWeight="bold">You</Td>
-              <Td fontWeight="bold">0</Td>
-            </Tr>
-          </Tbody>
-        </Table>
-      </Flex>
+              </Thead>
+              <Tbody>
+                {leaderboardData?.top_users.map((user, index) => (
+                  <Tr
+                    key={user.uid}
+                    borderBottom={"1px solid"}
+                    borderColor={"gray.600"}
+                    bgColor={
+                      user.uid === userUid ? "purple.900" : "transparent"
+                    }
+                  >
+                    <Td>
+                      {index < 3 ? (
+                        <GiTrophy color={TrophyColor[index]} />
+                      ) : (
+                        index + 1
+                      )}
+                    </Td>
+                    <Td>@{user.username}</Td>
+                    <Td>{user.tokens.toFixed(1)}</Td>
+                  </Tr>
+                ))}
+                {!userInLeaderboard && (
+                  <Tr bgColor="purple.900">
+                    <Td fontWeight="bold">{leaderboardData?.global_rank}</Td>
+                    <Td fontWeight="bold">You</Td>
+                    <Td fontWeight="bold">0</Td>
+                  </Tr>
+                )}
+              </Tbody>
+            </Table>
+          </Flex>
+        </>
+      )}
     </Flex>
   );
 };
