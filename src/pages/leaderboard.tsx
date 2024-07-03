@@ -34,23 +34,24 @@ export const Leaderboard = () => {
   const hash = params.get("hash");
   const paramsJson = Object.fromEntries(params.entries());
 
-  const { data: leaderboardResponse, isLoading } = useQuery<LeaderboardResponse>({
-    queryKey: ["leaderboard"],
-    queryFn: () => {
-      return axios.post(
-        `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
-        {
-          initData: paramsJson,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${hash}`,
+  const { data: leaderboardResponse, isLoading } =
+    useQuery<LeaderboardResponse>({
+      queryKey: ["leaderboard"],
+      queryFn: () => {
+        return axios.post(
+          `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
+          {
+            initData: paramsJson,
           },
-        }
-      );
-    },
-    enabled: !!verifyTelegramWebAppData(data),
-  });
+          {
+            headers: {
+              Authorization: `Bearer ${hash}`,
+            },
+          }
+        );
+      },
+      enabled: !!verifyTelegramWebAppData(data),
+    });
 
   const leaderboardData = leaderboardResponse?.data;
 
@@ -58,6 +59,8 @@ export const Leaderboard = () => {
   const userInLeaderboard = leaderboardData?.top_users?.some(
     (user) => user.uid === userUid
   );
+
+  console.log(userUid, userInLeaderboard, leaderboardData?.top_users);
 
   return (
     <Flex
@@ -91,24 +94,23 @@ export const Leaderboard = () => {
                   leaderboardData.top_users.map((user, index) => (
                     <Tr
                       key={user.uid}
-                    borderBottom={"1px solid"}
-                    borderColor={"gray.600"}
-                    bgColor={
-                      user.uid === userUid ? "purple.900" : "transparent"
-                    }
-                  >
-                    
-                    <Td>
-                      {index < 3 ? (
-                        <GiTrophy color={TrophyColor[index]} />
-                      ) : (
-                        index + 1
-                      )}
-                    </Td>
-                    <Td>@{user.username}</Td>
-                    <Td>{user.tokens.toFixed(1)}</Td>
-                  </Tr>
-                ))}
+                      borderBottom={"1px solid"}
+                      borderColor={"gray.600"}
+                      bgColor={
+                        user.uid === userUid ? "purple.900" : "transparent"
+                      }
+                    >
+                      <Td>
+                        {index < 3 ? (
+                          <GiTrophy color={TrophyColor[index]} />
+                        ) : (
+                          index + 1
+                        )}
+                      </Td>
+                      <Td>@{user.username}</Td>
+                      <Td>{user.tokens.toFixed(1)}</Td>
+                    </Tr>
+                  ))}
                 {!userInLeaderboard && (
                   <Tr bgColor="purple.900">
                     <Td fontWeight="bold">{leaderboardData?.global_rank}</Td>
