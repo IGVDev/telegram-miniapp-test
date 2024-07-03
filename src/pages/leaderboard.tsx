@@ -48,7 +48,7 @@ export const Leaderboard = () => {
   });
 
   const userUid = paramsJson.uid;
-  const userInLeaderboard = leaderboardData?.top_users.some(
+  const userInLeaderboard = leaderboardData?.top_users?.some(
     (user) => user.uid === userUid
   );
 
@@ -64,7 +64,7 @@ export const Leaderboard = () => {
     >
       {isLoading && <Text>Loading...</Text>}
 
-      {!isLoading && (
+      {!isLoading && leaderboardData && (
         <>
           <Text fontSize="40px" fontWeight="bold">
             Leaderboard
@@ -80,7 +80,7 @@ export const Leaderboard = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {leaderboardData?.top_users.map((user, index) => (
+                {leaderboardData?.top_users?.map((user, index) => (
                   <Tr
                     key={user.uid}
                     borderBottom={"1px solid"}
