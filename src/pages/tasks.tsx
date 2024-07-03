@@ -114,7 +114,9 @@ export const Tasks = () => {
           },
         }
       )
-      .then(() => {
+      .then((res) => {
+        const availableTasks = res.data.available_tasks;
+
         const completed = Object.keys(loginData.tasks_completed || {}).reduce(
           (acc, key) => {
             acc[key] = true;
@@ -123,9 +125,9 @@ export const Tasks = () => {
           {} as { [key: string]: boolean }
         );
 
-        const prevTasks = { ...tasks };
+        
         setTasks(() => {
-          const newTasks = { ...prevTasks };
+          const newTasks = { ...availableTasks };
 
           Object.keys(completed).forEach((key) => {
             delete newTasks[key];
