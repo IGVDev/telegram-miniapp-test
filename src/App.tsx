@@ -86,8 +86,8 @@ function App() {
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      {isError && <Flex>Error: {error.message}</Flex>}
-      {!isLoading && (
+      {isError && <Flex color="white">Error: {error.message}</Flex>}
+      {!isLoading && !isError && (
         <Flex
           className="mainContainer"
           flexDir="column"
