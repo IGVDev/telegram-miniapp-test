@@ -56,11 +56,10 @@ export const Leaderboard = () => {
   const leaderboardData = leaderboardResponse?.data;
 
   const userUid = extractUserId(data);
-  const userInLeaderboard = leaderboardData?.top_users?.some(
-    (user) => user.uid === userUid
-  );
-
-  console.log(userUid, userInLeaderboard, leaderboardData?.top_users);
+  const userInLeaderboard = leaderboardData?.top_users?.some((user) => {
+    console.log(`Comparing ${user.uid} with ${userUid}`);
+    return user.uid === userUid;
+  });
 
   return (
     <Flex
