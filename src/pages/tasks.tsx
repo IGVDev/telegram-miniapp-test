@@ -177,20 +177,24 @@ export const Tasks = () => {
         return (
           <Flex
             key={key}
-            p={4}
-            borderWidth="1px"
+            p={2}
+            // borderWidth="1px"
             borderRadius="lg"
-            w="80vw"
+            w="90vw"
             mb={4}
             color="white"
             position="relative"
+            gap={2}
+            bgColor="whiteAlpha.300"
           >
             <Image
               src={tasks[key].image.default}
               alt={tasks[key].title.en}
               boxSize="50px"
+              objectFit="contain"
+              alignSelf="center"
             />
-            <Stack>
+            <Stack fontSize="sm">
               <Text fontWeight="bold">{tasks[key].title.en}</Text>
               <Text>{tasks[key].instructions[0].en}</Text>
               <Text>Reward: {tasks[key].reward}</Text>
@@ -199,6 +203,12 @@ export const Tasks = () => {
               position="absolute"
               right="2"
               top="2"
+              color="white"
+              bgGradient="linear(to-bl, white 0%, purple.600 40%)"
+              _hover={{
+                color: "black",
+                bgGradient: "linear(to-bl, purple.600 0%, white 40%)",
+              }}
               onClick={() =>
                 handleButtonClick(key, tasks[key].actions[0].destination)
               }
