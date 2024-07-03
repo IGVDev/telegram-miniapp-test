@@ -146,10 +146,10 @@ export default class MainScene extends Phaser.Scene {
 
     this.accumulator += delta;
 
-    // while (this.accumulator >= this.fixedTimeStep) {
-      this.fixedUpdate();
-    //   this.accumulator -= this.fixedTimeStep;
-    // }
+    while (this.accumulator >= this.fixedTimeStep) {
+      this.fixedUpdate(this.fixedTimeStep);
+      this.accumulator -= this.fixedTimeStep;
+    }
 
     // Frame-by-frame updates
     if (this.bird && this.bird.angle < 20) {
@@ -157,9 +157,8 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  private fixedUpdate() {
-    const fixedDelta = this.fixedTimeStep
-    const pixelsPerFrame = this.scrollSpeed * fixedDelta;
+  private fixedUpdate(fixedDelta: number) {
+    const pixelsPerFrame = this.scrollSpeed * (fixedDelta / 1000); // Convert to seconds
     this.distanceMoved += pixelsPerFrame;
 
     if (this.distanceMoved >= this.distanceThreshold) {
