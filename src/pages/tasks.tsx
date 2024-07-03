@@ -11,7 +11,6 @@ export const Tasks = () => {
   }>({});
   const [taskInProgress, setTaskInProgress] = useState<string | null>(null);
 
-
   const handleButtonClick = (key: string, destination: string) => {
     setTaskInProgress(key);
     window.open(destination, "_blank");
@@ -41,16 +40,18 @@ export const Tasks = () => {
   }, []);
 
   useEffect(() => {
-    const handleFocus = () => {
-      if (taskInProgress) {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && taskInProgress) {
         setCompletedTasks((prev) => ({ ...prev, [taskInProgress]: true }));
+
         setTaskInProgress(null);
       }
     };
 
-    window.addEventListener('focus', handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
-      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [taskInProgress]);
 
