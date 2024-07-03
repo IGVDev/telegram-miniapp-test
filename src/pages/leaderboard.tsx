@@ -52,6 +52,8 @@ export const Leaderboard = () => {
     (user) => user.uid === userUid
   );
 
+  console.log('LEADER', leaderboardData)
+
   return (
     <Flex
       className="leaderboardContainer"
@@ -81,7 +83,7 @@ export const Leaderboard = () => {
               </Thead>
               <Tbody>
                 {leaderboardData &&
-                  leaderboardData.top_users.map((user, index) => (
+                  leaderboardData.top_users?.map((user, index) => (
                     <Tr
                       key={user.uid}
                     borderBottom={"1px solid"}
