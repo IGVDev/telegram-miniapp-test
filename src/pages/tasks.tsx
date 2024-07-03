@@ -89,7 +89,15 @@ export const Tasks = () => {
         },
         {} as { [key: string]: boolean }
       );
-      console.log("completed", completed);
+      setTasks((prevTasks) => {
+        const newTasks = { ...prevTasks };
+
+        Object.keys(completed).forEach((key) => {
+          delete newTasks[key];
+        });
+
+        return newTasks;
+      });
     }
   }, [loginData]);
 
