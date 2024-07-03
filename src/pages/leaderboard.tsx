@@ -3,6 +3,7 @@ import { GiTrophy } from "react-icons/gi";
 import axios from "axios";
 import WebApp from "@twa-dev/sdk";
 import { useQuery } from "@tanstack/react-query";
+import { verifyTelegramWebAppData } from "../utils";
 
 interface LeaderboardData {
   global_rank: number;
@@ -45,6 +46,7 @@ export const Leaderboard = () => {
         }
       );
     },
+    enabled: !!verifyTelegramWebAppData(data),
   });
 
   const userUid = paramsJson.uid;
