@@ -80,9 +80,10 @@ export const Leaderboard = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {leaderboardData?.top_users?.map((user, index) => (
-                  <Tr
-                    key={user.uid}
+                {leaderboardData &&
+                  leaderboardData.top_users.map((user, index) => (
+                    <Tr
+                      key={user.uid}
                     borderBottom={"1px solid"}
                     borderColor={"gray.600"}
                     bgColor={
