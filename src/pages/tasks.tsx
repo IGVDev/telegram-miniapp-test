@@ -149,13 +149,13 @@ export const Tasks = () => {
       >
         Tasks
       </Text>
-      {Object.keys(tasks).length === 0 && (
+      {Object.keys(tasksData).length === 0 && (
         <Flex p={4} alignSelf="center" color="white">
           <Text>No tasks available</Text>
         </Flex>
       )}
-      {Object.keys(tasks).map((key) => {
-        const task = tasks[key];
+      {Object.keys(tasksData).map((key) => {
+        const task = tasksData[key];
         if (!task) return null;
         return (
           <Flex
@@ -169,14 +169,14 @@ export const Tasks = () => {
             position="relative"
           >
             <Image
-              src={tasks[key].image.default}
-              alt={tasks[key].title.en}
+              src={task.image.default}
+              alt={task.title.en}
               boxSize="50px"
             />
             <Stack>
               <Text fontWeight="bold">{tasks[key].title.en}</Text>
-              <Text>{tasks[key].instructions[0].en}</Text>
-              <Text>Reward: {tasks[key].reward}</Text>
+              <Text>{task.instructions[0].en}</Text>
+              <Text>Reward: {task.reward}</Text>
             </Stack>
             <Button
               position="absolute"
