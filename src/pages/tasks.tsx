@@ -81,7 +81,7 @@ export const Tasks = () => {
   };
 
   useEffect(() => {
-    if (loginData && tasks) {
+    if (loginData && Object.keys(tasks).length > 0) {
       const completed = Object.keys(loginData.tasks_completed || {}).reduce(
         (acc, key) => {
           acc[key] = true;
