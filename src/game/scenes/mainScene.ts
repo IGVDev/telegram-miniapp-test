@@ -89,8 +89,8 @@ export default class MainScene extends Phaser.Scene {
     this.bird.setCollideWorldBounds(true);
     this.bird.setDepth(1);
 
-    this.coins = this.physics.add.staticGroup({ classType: Coin });
-    this.pipes = this.physics.add.staticGroup({ classType: Pipe });
+    // this.coins = this.physics.add.staticGroup({ classType: Coin });
+    // this.pipes = this.physics.add.staticGroup({ classType: Pipe });
 
     this.pipePool = this.add.group({
       classType: Pipe,
