@@ -1,28 +1,14 @@
 export class Pipe extends Phaser.Physics.Arcade.Sprite {
-  constructor(params: {
-    scene: Phaser.Scene;
-    x: number;
-    y: number;
-    key: string;
-    frame?: string | number;
-  }) {
-    super(params.scene, params.x, params.y, params.key, params.frame);
-
-    params.scene.add.existing(this);
-
-    params.scene.physics.world.enable(this, Phaser.Physics.Arcade.STATIC_BODY);
-
-    this.setScale(2);
-    this.setOrigin(0, 0);
-
-    const body = this.body as Phaser.Physics.Arcade.StaticBody;
-    body.setSize(20, 20);
-    //   body.allowGravity = false;
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
+    super(scene, x, y, texture, frame);
+    scene.add.existing(this);
+    scene.physics.add.existing(this, true);
   }
 
-  reset(x: number, y: number, frame: number): void {
+  reset(x: number, y: number, frame: number) {
     this.setPosition(x, y);
     this.setFrame(frame);
-    this.setData("scored", false);
+    this.setActive(true);
+    this.setVisible(true);
   }
 }

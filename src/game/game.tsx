@@ -70,7 +70,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         gameRef.current = null;
       }
     };
-  }, [width, height, domId, onScoreUpdate]);
+  }, [width, height, domId]);
 
   return (
     <div
