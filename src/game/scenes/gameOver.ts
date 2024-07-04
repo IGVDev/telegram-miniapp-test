@@ -6,8 +6,8 @@ export default class GameOverScene extends Phaser.Scene {
   create() {
     this.add
       .text(
-        this.scale.width / 2,
-        this.scale.height / 2 + 20,
+        this.game.scale.width / 2,
+        this.game.scale.height / 2 - 50,
         "Game Over\nTouch to Restart",
         {
           fontSize: "32px",

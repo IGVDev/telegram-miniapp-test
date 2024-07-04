@@ -31,7 +31,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
       width: window.innerWidth,
-      height: window.innerHeight - 150,
+      height: window.innerHeight,
       parent: domId,
       scene: [
         new StartScene(),
@@ -73,6 +73,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
   }, [width, height, domId]);
 
   return (
+    
     <div
       id={domId}
       style={{ borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px", overflow: "hidden" }}
