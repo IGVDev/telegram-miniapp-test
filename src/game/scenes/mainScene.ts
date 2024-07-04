@@ -18,7 +18,7 @@ interface MainSceneConfig {
 
 export default class MainScene extends Phaser.Scene {
   private bird!: Phaser.Physics.Arcade.Sprite;
-  private pipes!: Phaser.Physics.Arcade.StaticGroup;
+  // private pipes!: Phaser.Physics.Arcade.StaticGroup;
   // private coins!: Phaser.Physics.Arcade.StaticGroup;
   private score: number = 0;
   private scoreText!: Phaser.GameObjects.Text;
