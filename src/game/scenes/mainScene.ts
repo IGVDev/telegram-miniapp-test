@@ -18,7 +18,7 @@ interface MainSceneConfig {
 
 export default class MainScene extends Phaser.Scene {
   private bird!: Phaser.Physics.Arcade.Sprite;
-  private pipes!: Phaser.Physics.Arcade.StaticGroup;
+  // private pipes!: Phaser.Physics.Arcade.StaticGroup;
   // private coins!: Phaser.Physics.Arcade.StaticGroup;
   private score: number = 0;
   private scoreText!: Phaser.GameObjects.Text;
@@ -92,7 +92,7 @@ export default class MainScene extends Phaser.Scene {
     this.bird.setDepth(1);
 
     // this.coins = this.physics.add.staticGroup({ classType: Coin });
-    this.pipes = this.physics.add.staticGroup({ classType: Pipe });
+    // this.pipes = this.physics.add.staticGroup({ classType: Pipe });
 
     this.pipePool = this.add.group({
       classType: Pipe,
