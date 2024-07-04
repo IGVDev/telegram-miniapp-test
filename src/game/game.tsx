@@ -3,9 +3,9 @@ import React, { useEffect, useRef } from "react";
 import GameOverScene from "./scenes/gameOver";
 import MainScene from "./scenes/mainScene";
 import StartScene from "./scenes/startScene";
-import backgroundImage from "../assets/bg.png";
-import pipeImage from "../assets/pipe.png";
-import birdImage from "../assets/bird.png";
+// import backgroundImage from "../assets/bg.png";
+// import pipeImage from "../assets/pipe.png";
+// import birdImage from "../assets/bird.png";
 
 interface FlappyBirdGameProps {
   width: number;
