@@ -49,10 +49,6 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
           gravity: { y: gameGravity, x: 0 },
           fixedStep: true,
           fps: 60,
-          debug: true,
-          debugShowBody: true,
-          debugShowStaticBody: true,
-          debugShowVelocity: true,
         },
       },
       render: {
