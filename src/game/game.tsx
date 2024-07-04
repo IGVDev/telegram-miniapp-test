@@ -53,9 +53,14 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
       },
       render: {
         pixelArt: true,
-        antialias: false,
-        roundPixels: true,
       },
+      fps: {
+        target: 60,
+        min: 30,
+        // forceSetTimeOut: true,
+        smoothStep: true,
+      },
+      powerPreference: "high-performance",
     };
 
     gameRef.current = new Phaser.Game(config);
