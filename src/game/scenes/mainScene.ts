@@ -111,6 +111,9 @@ export default class MainScene extends Phaser.Scene {
         coin.setVisible(false);
       },
     });
+
+    this.prespawnObjects();
+
     const background = this.add
       .tileSprite(0, 0, this.scale.width, this.scale.height, "background")
       .setOrigin(0, 0);
@@ -206,6 +209,21 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
+  private prespawnObjects() {
+    for (let i = 0; i < 30; i++) {
+      const pipe = new Pipe(this, 0, 0, "pipe", 0);
+      pipe.setActive(false);
+      pipe.setVisible(false);
+      this.pipePool.add(pipe);
+    }
+    for (let i = 0; i < 10; i++) {
+      const coin = new Coin(this, 0, 0);
+      coin.setActive(false);
+      coin.setVisible(false);
+      this.coinPool.add(coin);
+    }
+  }
+
   private updatePipes(pixelsPerFrame: number) {
     let scoreAdded = false;
 
@@ -219,7 +237,6 @@ export default class MainScene extends Phaser.Scene {
         if (pipeSprite.x + pipeSprite.displayWidth < 0) {
           pipeSprite.setActive(false);
           pipeSprite.setVisible(false);
-          // pipeSprite.setData("scored", false);
         }
 
         if (!scoreAdded && !pipeSprite.getData("scored")) {
@@ -292,8 +309,10 @@ export default class MainScene extends Phaser.Scene {
     pipe.setData("rowId", rowId);
     pipe.setData("scored", false);
     pipe.setScale(3, this.scale.height / 200);
+    pipe.setOrigin(0.5);
     pipe.setActive(true);
     pipe.setVisible(true);
+    pipe.setDepth(1);
   }
 
   private endGame(coinAmount: number) {
@@ -468,7 +487,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private animateCoinCollection(startX: number, startY: number) {
-    const endX = 350;
+    const endX = this.scale.width - 50;
     const endY = 20;
     const coinSprite = this.add.sprite(startX, startY, "coin").setScale(4);
 
@@ -492,7 +511,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     this.totalPipesCleared = Math.floor(this.score);
-  
+
     if (this.totalPipesCleared % 5 === 0 && this.totalPipesCleared > 0) {
       this.scrollSpeed += 0.025;
       this.distanceThreshold = Math.max(this.distanceThreshold - 8, 100);
@@ -519,6 +538,7 @@ export default class MainScene extends Phaser.Scene {
 
     coin.setActive(true);
     coin.setVisible(true);
+    coin.setDepth(1);
   }
 
   private addNewRowOfPipes() {

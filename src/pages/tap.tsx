@@ -44,7 +44,7 @@ export const Tap = () => {
           gap={1}
           bgColor="white"
           borderRadius={18}
-          borderTopLeftRadius={0}
+          borderTopRadius={0}
           borderBottomRightRadius={0}
           p={2}
         >
