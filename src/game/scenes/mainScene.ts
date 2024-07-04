@@ -291,7 +291,7 @@ export default class MainScene extends Phaser.Scene {
 
     pipe.setData("rowId", rowId);
     pipe.setData("scored", false);
-    pipe.setScale(2, this.scale.height / 200);
+    pipe.setScale(3, this.scale.height / 200);
     pipe.setActive(true);
     pipe.setVisible(true);
   }
@@ -541,7 +541,6 @@ export default class MainScene extends Phaser.Scene {
 
         let y;
         if (i === totalPipes - 1) {
-          // Spawn the bottom pipe right at the bottom of the screen
           y = this.scale.height - pipeHeight / 2;
         } else {
           y = i * pipeHeight + pipeHeight / 2;
