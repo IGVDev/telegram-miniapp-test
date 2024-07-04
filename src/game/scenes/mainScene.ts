@@ -43,6 +43,7 @@ export default class MainScene extends Phaser.Scene {
   private accumulator: number = 0;
   private pipePool: Phaser.GameObjects.Group;
   private coinPool: Phaser.GameObjects.Group;
+  private pipeValue: number = 10;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
@@ -122,7 +123,13 @@ export default class MainScene extends Phaser.Scene {
 
     this.input.on("pointerdown", () => {
       if (!this.isPaused) {
-        this.bird.setVelocityY(-this.gameGravity * this.jumpStrength);
+        if (this.bird.body.velocity.y > 0) {
+          this.bird.body.velocity.y = 0;
+        }
+
+        this.bird.setVelocityY(
+          this.bird.body.velocity.y / 2 - this.gameGravity * this.jumpStrength
+        );
         this.tweens.add({
           targets: this.bird,
           props: { angle: -20 },
@@ -249,8 +256,8 @@ export default class MainScene extends Phaser.Scene {
 
           if (pipeSet.every((p) => this.bird.x > p.x + p.displayWidth)) {
             pipeSet.forEach((p) => p.setData("scored", true));
-            this.score += 1 * this.scoreMultiplier;
-            this.updateScore(1);
+            this.score += this.pipeValue * this.scoreMultiplier;
+            this.updateScore(this.pipeValue * this.scoreMultiplier);
             scoreAdded = true;
           }
         }
@@ -371,14 +378,24 @@ export default class MainScene extends Phaser.Scene {
       this.score - this.lastPauseScore >= 50
     ) {
       const safeDistance = 100;
-      const nearestPipe = this.pipes.getChildren().reduce((nearest, pipe) => {
+
+      const activePipes = this.pipePool
+        .getChildren()
+        .filter((pipe) => pipe.active);
+
+      if (activePipes.length === 0) {
+        this.lastPauseScore = this.score;
+        return true;
+      }
+
+      const nearestPipe = activePipes.reduce((nearest, pipe) => {
         const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
         const nearestSprite = nearest as Phaser.Physics.Arcade.Sprite;
         return Math.abs(this.bird.x - pipeSprite.x) <
           Math.abs(this.bird.x - nearestSprite.x)
           ? pipeSprite
           : nearestSprite;
-      }, this.pipes.getFirstAlive() as Phaser.Physics.Arcade.Sprite) as Phaser.Physics.Arcade.Sprite;
+      }, activePipes[0]) as Phaser.Physics.Arcade.Sprite;
 
       if (Math.abs(this.bird.x - nearestPipe.x) > safeDistance) {
         this.lastPauseScore = this.score;
