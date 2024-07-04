@@ -44,6 +44,8 @@ export default class MainScene extends Phaser.Scene {
   private pipePool: Phaser.GameObjects.Group;
   private coinPool: Phaser.GameObjects.Group;
   private pipeValue: number = 10;
+  private lastSuperClickTime: number = 0;
+  private superClickCooldown: number = 20000;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
@@ -373,6 +375,11 @@ export default class MainScene extends Phaser.Scene {
   };
 
   private canPauseGame(): boolean {
+    const currentTime = this.time.now;
+    if (currentTime - this.lastSuperClickTime < this.superClickCooldown) {
+      return false;
+    }
+
     if (
       this.score % 5 === 0 &&
       this.score > 30 &&
@@ -386,6 +393,7 @@ export default class MainScene extends Phaser.Scene {
 
       if (activePipes.length === 0) {
         this.lastPauseScore = this.score;
+        this.lastSuperClickTime = currentTime;
         return true;
       }
 
@@ -400,6 +408,7 @@ export default class MainScene extends Phaser.Scene {
 
       if (Math.abs(this.bird.x - nearestPipe.x) > safeDistance) {
         this.lastPauseScore = this.score;
+        this.lastSuperClickTime = currentTime;
         return true;
       }
     }
