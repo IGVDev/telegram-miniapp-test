@@ -146,10 +146,10 @@ export default class MainScene extends Phaser.Scene {
 
     this.accumulator += delta;
 
-    // while (this.accumulator >= this.fixedTimeStep) {
-      this.fixedUpdate();
-    //   this.accumulator -= this.fixedTimeStep;
-    // }
+    while (this.accumulator >= this.fixedTimeStep) {
+    this.fixedUpdate();
+      this.accumulator -= this.fixedTimeStep;
+    }
 
     // Frame-by-frame updates
     if (this.bird && this.bird.angle < 20) {
@@ -158,7 +158,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private fixedUpdate() {
-    const fixedDelta = this.fixedTimeStep
+    const fixedDelta = this.fixedTimeStep;
     const pixelsPerFrame = this.scrollSpeed * fixedDelta;
     this.distanceMoved += pixelsPerFrame;
 
@@ -187,12 +187,14 @@ export default class MainScene extends Phaser.Scene {
   private updatePipes(pixelsPerFrame: number) {
     this.pipes.getChildren().forEach((pipe: Phaser.GameObjects.GameObject) => {
       const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
+      if (!pipeSprite.active) return;
       pipeSprite.x -= pixelsPerFrame;
 
       if (pipeSprite.x + pipeSprite.displayWidth < 0) {
-        this.pipes.killAndHide(pipeSprite);
+        // Instead of removing the pipe, move it off-screen
         pipeSprite.setActive(false);
         pipeSprite.setVisible(false);
+        pipeSprite.x = this.scale.width + pipeSprite.displayWidth;
       }
 
       if (
@@ -258,6 +260,22 @@ export default class MainScene extends Phaser.Scene {
         this.collectCoin(coinSprite);
       }
     });
+  }
+
+  private addOrReusePipe(x: number, y: number, frame: number, rowId: number) {
+    let pipe = this.pipes.getFirstDead() as Pipe | undefined;
+
+    if (pipe) {
+      pipe.reset(x, y, frame);
+    } else {
+      pipe = new Pipe({ scene: this, x, y, frame, key: "pipe" });
+      this.pipes.add(pipe);
+    }
+
+    pipe.setData("rowId", rowId);
+    pipe.setScale(2, this.scale.height / 200);
+    pipe.setActive(true);
+    pipe.setVisible(true);
   }
 
   private endGame(coinAmount: number) {
@@ -470,7 +488,7 @@ export default class MainScene extends Phaser.Scene {
         } else {
           frame = 2;
         }
-        this.addPipe(window.innerWidth, i * pipeHeight, frame, rowId);
+        this.addOrReusePipe(window.innerWidth, i * pipeHeight, frame, rowId);
       }
     }
     this.pipeCounter++;

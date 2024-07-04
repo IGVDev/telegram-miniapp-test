@@ -47,8 +47,8 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         default: "arcade",
         arcade: {
           gravity: { y: gameGravity, x: 0 },
-          fixedStep: false,
-          fps: 300
+          fixedStep: true,
+          fps: 300,
         },
       },
       pixelArt: true,

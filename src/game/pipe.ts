@@ -19,4 +19,10 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite {
     body.setSize(20, 20);
     //   body.allowGravity = false;
   }
+
+  reset(x: number, y: number, frame: number): void {
+    this.setPosition(x, y);
+    this.setFrame(frame);
+    this.setData("scored", false);
+  }
 }
