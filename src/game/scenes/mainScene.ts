@@ -499,12 +499,12 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  private addPipe(x: number, y: number, frame: number, rowId: number) {
-    const pipe = new Pipe({ scene: this, x, y, frame, key: "pipe" });
-    pipe.setData("rowId", rowId);
-    pipe.setScale(2, this.scale.height / 200);
-    this.pipes.add(pipe);
-  }
+  // private addPipe(x: number, y: number, frame: number, rowId: number) {
+  //   const pipe = new Pipe({ scene: this, x, y, frame, key: "pipe" });
+  //   pipe.setData("rowId", rowId);
+  //   pipe.setScale(2, this.scale.height / 200);
+  //   this.pipes.add(pipe);
+  // }
 
   private async saveHighScore() {
     const highScore = Number(WebApp.CloudStorage.getItem("highScore")) || 0;
