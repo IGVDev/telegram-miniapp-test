@@ -55,7 +55,11 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
           debugShowVelocity: true,
         },
       },
-      pixelArt: true,
+      render: {
+        pixelArt: true,
+        antialias: false,
+        roundPixels: true,
+      },
     };
 
     gameRef.current = new Phaser.Game(config);
@@ -66,7 +70,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         gameRef.current = null;
       }
     };
-  }, [width, height, birdImage, pipeImage, backgroundImage, domId]);
+  }, [width, height, domId, onScoreUpdate]);
 
   return (
     <div
