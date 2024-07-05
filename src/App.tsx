@@ -135,15 +135,15 @@ function App() {
           <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20} />
         </Flex>
       )}
-      {isMobile && (isLoading || tasksIsLoading || leaderboardIsLoading) && (
+      {isMobile && (isLoading) && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      {isMobile && !(isLoading || tasksIsLoading || leaderboardIsLoading) && isError && (
+      {isMobile && !(isLoading) && isError && (
         <Flex color="white">Error: {error.message}</Flex>
       )}
-      {isMobile && !(isLoading || tasksIsLoading || leaderboardIsLoading) && !isError && (
+      {isMobile && !(isLoading) && !isError && (
         <Flex
           className="mainContainer"
           flexDir="column"
