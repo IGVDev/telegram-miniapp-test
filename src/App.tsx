@@ -62,18 +62,17 @@ function App() {
   };
 
   const handleTasks = async () => {
-    const { data } = await axios
-      .post(
-        `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_tasks`,
-        {
-          initData: paramsJson,
+    const { data } = await axios.post(
+      `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_tasks`,
+      {
+        initData: paramsJson,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${hash}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${hash}`,
-          },
-        }
-      )
+      }
+    );
 
     return data;
   };
@@ -84,9 +83,7 @@ function App() {
     enabled: !!loggedIn,
   });
 
-  const {
-    isLoading: tasksIsLoading,
-  } = useQuery({
+  const { isLoading: tasksIsLoading } = useQuery({
     queryKey: ["tasks"],
     queryFn: handleTasks,
     enabled: !!loggedIn,
@@ -120,13 +117,15 @@ function App() {
           <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20} />
         </Flex>
       )}
-      {isMobile && (isLoading || tasksIsLoading)  && (
+      {isMobile && (isLoading || tasksIsLoading) && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      {isMobile && isError && <Flex color="white">Error: {error.message}</Flex>}
-      {isMobile && (
+      {isMobile && !(isLoading || tasksIsLoading) && isError && (
+        <Flex color="white">Error: {error.message}</Flex>
+      )}
+      {isMobile && !(isLoading || tasksIsLoading) && !isError && (
         <Flex
           className="mainContainer"
           flexDir="column"
