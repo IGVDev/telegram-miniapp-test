@@ -2,7 +2,7 @@ import "./App.css";
 
 import appBg from "./assets/background.webp";
 import { Flex, Image, Spinner } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Ref } from "./pages/ref";
 import { Tap } from "./pages/tap";
 import { Navigation } from "./components/navigation";
@@ -117,6 +117,18 @@ function App() {
       setLoggedIn(true);
     }
   }, [data, isError, isLoading]);
+
+  const mainContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (mainContainerRef.current) {
+      WebApp.viewportHeight = mainContainerRef.current.clientHeight;
+      WebApp.expand();
+      WebApp.onEvent('viewportChanged', () => {
+        WebApp.expand();
+      });
+    }
+  }, []);
 
   return (
     <Flex
