@@ -136,6 +136,13 @@ export const Tasks = () => {
       }
     };
 
+    setTasks((prevTasks) => {
+      if (!prevTasks) return prevTasks;
+      const newTasks = { ...prevTasks };
+      delete newTasks[taskInProgress];
+      return newTasks;
+    });
+
     window.addEventListener("focus", handleFocus);
     window.addEventListener("blur", handleFocus);
 
