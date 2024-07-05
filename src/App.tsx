@@ -23,7 +23,7 @@ enum TabIndex {
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
-  const [isMobile] = useState(true);
+  const [isMobile, setIsMobile] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
