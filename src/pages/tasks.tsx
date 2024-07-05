@@ -100,7 +100,10 @@ export const Tasks = () => {
         });
     } else {
       setTaskInProgress(key);
-
+      setCompletedTasks((prevCompletedTasks) => ({
+        ...prevCompletedTasks,
+        [key]: true,
+      }));
       window.open(destination, "_blank");
     }
   };
@@ -135,13 +138,6 @@ export const Tasks = () => {
         setTaskInProgress(null);
       }
     };
-
-    setTasks((prevTasks) => {
-      if (!prevTasks) return prevTasks;
-      const newTasks = { ...prevTasks };
-      delete newTasks[taskInProgress];
-      return newTasks;
-    });
 
     window.addEventListener("focus", handleFocus);
     window.addEventListener("blur", handleFocus);
