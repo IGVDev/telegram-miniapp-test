@@ -39,7 +39,7 @@ export default class MainScene extends Phaser.Scene {
   private scrollSpeed: number;
   private distanceMoved: number = 0;
   private distanceThreshold: number = window.outerWidth;
-  private fixedTimeStep: number = 16.67;
+  private fixedTimeStep: number = 1000/55;
   private accumulator: number = 0;
   private pipePool: Phaser.GameObjects.Group;
   private coinPool: Phaser.GameObjects.Group;
@@ -182,7 +182,7 @@ export default class MainScene extends Phaser.Scene {
     this.accumulator += delta;
 
     while (this.accumulator >= this.fixedTimeStep) {
-      this.fixedUpdate();
+      this.fixedUpdate(this.fixedTimeStep);
       this.accumulator -= this.fixedTimeStep;
     }
 
@@ -192,8 +192,7 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  private fixedUpdate() {
-    const fixedDelta = this.fixedTimeStep;
+  private fixedUpdate(fixedDelta: number) {
     const pixelsPerFrame = this.scrollSpeed * fixedDelta;
     this.distanceMoved += pixelsPerFrame;
 
