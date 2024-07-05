@@ -147,16 +147,10 @@ export const Tasks = () => {
 
   return (
     <Flex align="center" justify="center" direction="column">
-      <Text
-        justifyContent="start"
-        w="100vw"
-        fontWeight="bold"
-        color="white"
-        p={2}
-      >
+      <Text fontSize="40px" fontWeight="bold" color="white" align="center">
         Tasks
       </Text>
-      {(isLoading && tasks === null) && (
+      {isLoading && tasks === null && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
