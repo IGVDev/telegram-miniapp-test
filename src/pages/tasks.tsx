@@ -51,7 +51,7 @@ interface TaskData {
 }
 
 export const Tasks = () => {
-  const [tasks, setTasks] = useState({});
+  const [tasks, setTasks] = useState(null);
   const [completedTasks, setCompletedTasks] = useState<{
     [key: string]: boolean;
   }>({});
