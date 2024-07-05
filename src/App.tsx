@@ -23,24 +23,24 @@ enum TabIndex {
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
-  const [isMobile, setIsMobile] = useState(true);
+  const [isMobile] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.vendor;
-    if (!/android/i.test(userAgent) && !/iPad|iPhone|iPod/.test(userAgent)) {
-      setIsMobile(false);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userAgent = navigator.userAgent || navigator.vendor;
+  //   if (!/android/i.test(userAgent) && !/iPad|iPhone|iPod/.test(userAgent)) {
+  //     setIsMobile(false);
+  //   }
+  // }, []);
 
   const initData = WebApp.initData;
 
-  const handleLogin = async () => {
-    const params = new URLSearchParams(initData);
-    const hash = params.get("hash");
-    const start_param = params.get("start_param");
-    const paramsJson = Object.fromEntries(params.entries());
+  const params = new URLSearchParams(initData);
+  const hash = params.get("hash");
+  const start_param = params.get("start_param");
+  const paramsJson = Object.fromEntries(params.entries());
 
+  const handleLogin = async () => {
     if (!verifyTelegramWebAppData(initData)) {
       throw new Error("Invalid init data");
     }
@@ -61,9 +61,34 @@ function App() {
     return data;
   };
 
+  const handleTasks = async () => {
+    const { data } = await axios
+      .post(
+        `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_tasks`,
+        {
+          initData: paramsJson,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${hash}`,
+          },
+        }
+      )
+
+    return data;
+  };
+
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["login"],
     queryFn: handleLogin,
+    enabled: !!loggedIn,
+  });
+
+  const {
+    isLoading: tasksIsLoading,
+  } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: handleTasks,
     enabled: !!loggedIn,
   });
 
@@ -83,18 +108,25 @@ function App() {
       overflowY="auto"
     >
       {!isMobile && (
-        <Flex flex="1" align="center" justify="center" color="white" flexDir="column" gap={2}>
+        <Flex
+          flex="1"
+          align="center"
+          justify="center"
+          color="white"
+          flexDir="column"
+          gap={2}
+        >
           Please use a mobile device to access this application.
-          <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20}/>
+          <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20} />
         </Flex>
       )}
-      {isMobile && isLoading && (
+      {isMobile && (isLoading || tasksIsLoading)  && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
       {isMobile && isError && <Flex color="white">Error: {error.message}</Flex>}
-      {isMobile && !isLoading && !isError && (
+      {isMobile && (
         <Flex
           className="mainContainer"
           flexDir="column"
