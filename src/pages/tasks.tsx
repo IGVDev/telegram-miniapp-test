@@ -156,7 +156,7 @@ export const Tasks = () => {
       >
         Tasks
       </Text>
-      {(isLoading || tasks === null) && (
+      {(isLoading && tasks === null) && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
