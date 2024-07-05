@@ -1,4 +1,12 @@
-import { Button, Flex, Image, Spinner, Stack, Text, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Image,
+  Spinner,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
@@ -184,31 +192,30 @@ export const Tasks = () => {
             <Flex
               key={key}
               p={2}
-              // borderWidth="1px"
               borderRadius="lg"
               w="90vw"
               mb={4}
               color="white"
-              position="relative"
               gap={2}
               bgColor="whiteAlpha.300"
             >
-              <Image
-                src={tasks[key].image.default}
-                alt={tasks[key].title.en}
-                boxSize="50px"
-                objectFit="contain"
-                alignSelf="center"
-              />
-              <Stack fontSize="sm">
-                <Text fontWeight="bold">{tasks[key].title.en}</Text>
-                <Text>{tasks[key].instructions[0].en}</Text>
-                <Text>Reward: {tasks[key].reward}</Text>
-              </Stack>
+              <Flex flex={1} gap={2}>
+                <Image
+                  src={tasks[key].image.default}
+                  alt={tasks[key].title.en}
+                  boxSize="50px"
+                  objectFit="contain"
+                  alignSelf="flex-start"
+                />
+                <Stack fontSize="sm" flex={1}>
+                  <Text fontWeight="bold">{tasks[key].title.en}</Text>
+                  <Text>{tasks[key].instructions[0].en}</Text>
+                  <Text>Reward: {tasks[key].reward}</Text>
+                </Stack>
+              </Flex>
               <Button
-                // position="absolute"
                 alignSelf="flex-start"
-                justifySelf="flex-end"
+                flexShrink={0}
                 color="white"
                 bgGradient="linear(to-bl, white 0%, purple.600 40%)"
                 _hover={{
