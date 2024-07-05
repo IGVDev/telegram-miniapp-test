@@ -39,7 +39,7 @@ export default class MainScene extends Phaser.Scene {
   private scrollSpeed: number;
   private distanceMoved: number = 0;
   private distanceThreshold: number = window.outerWidth;
-  private fixedTimeStep: number = 1000/55;
+  private fixedTimeStep: number = 1000/60;
   private accumulator: number = 0;
   private pipePool: Phaser.GameObjects.Group;
   private coinPool: Phaser.GameObjects.Group;

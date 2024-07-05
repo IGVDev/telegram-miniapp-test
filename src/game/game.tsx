@@ -55,7 +55,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         pixelArt: true,
       },
       fps: {
-        target: 55,
+        target: 60,
         min: 30,
         // forceSetTimeOut: true,
         smoothStep: true,
