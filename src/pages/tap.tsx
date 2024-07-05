@@ -1,5 +1,5 @@
 import { Flex, Image, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FlappyBirdGame from "../game/game";
 import coinImg from "../assets/coin.png";
 import { useQuery } from "@tanstack/react-query";
@@ -25,6 +25,27 @@ export const Tap = () => {
       setCoins(data.tokens);
     }
   }, [data]);
+
+  const preventSwipeDown = useCallback((e: TouchEvent) => {
+    if (e.touches[0].clientY < 10) {
+      e.preventDefault();
+    }
+  }, []);
+
+  useEffect(() => {
+    const gameContainer = document.querySelector('.gameContainer');
+    if (gameContainer) {
+      gameContainer.addEventListener('touchstart', preventSwipeDown, { passive: false });
+      gameContainer.addEventListener('touchmove', preventSwipeDown, { passive: false });
+    }
+
+    return () => {
+      if (gameContainer) {
+        gameContainer.removeEventListener('touchstart', preventSwipeDown);
+        gameContainer.removeEventListener('touchmove', preventSwipeDown);
+      }
+    };
+  }, [preventSwipeDown]);
 
   return (
     <>
