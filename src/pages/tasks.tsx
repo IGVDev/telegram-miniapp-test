@@ -131,42 +131,6 @@ export const Tasks = () => {
   }, [loginData, tasksData]);
 
   useEffect(() => {
-    axios
-      .post(
-        `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_tasks`,
-        {
-          initData: paramsJson,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${hash}`,
-          },
-        }
-      )
-      .then((res) => {
-        const availableTasks = res.data.available_tasks;
-
-        const completed = Object.keys(loginData.tasks_completed || {}).reduce(
-          (acc, key) => {
-            acc[key] = true;
-            return acc;
-          },
-          {} as { [key: string]: boolean }
-        );
-
-        setTasks(() => {
-          const newTasks = { ...availableTasks };
-
-          Object.keys(completed).forEach((key) => {
-            delete newTasks[key];
-          });
-
-          return newTasks;
-        });
-      });
-  }, []);
-
-  useEffect(() => {
     const handleFocus = () => {
       if (taskInProgress) {
         setCompletedTasks((prev) => ({ ...prev, [taskInProgress]: true }));
