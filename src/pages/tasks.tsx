@@ -118,15 +118,13 @@ export const Tasks = () => {
         },
         {} as { [key: string]: boolean }
       );
-      setTasks(() => {
-        const newTasks = { ...tasksData.available_tasks };
+      const newTasks = { ...tasksData.available_tasks };
 
-        Object.keys(completed).forEach((key) => {
-          delete newTasks[key];
-        });
-
-        return newTasks;
+      Object.keys(completed).forEach((key) => {
+        delete newTasks[key];
       });
+
+      setTasks(newTasks);
     }
   }, [loginData, tasksData]);
 
@@ -158,63 +156,65 @@ export const Tasks = () => {
       >
         Tasks
       </Text>
-      {isLoading && (
+      {(isLoading || tasks === null) && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      {!isLoading && Object.keys(tasks).length === 0 && (
+      {!isLoading && tasks && Object.keys(tasks).length === 0 && (
         <Flex p={4} alignSelf="center" color="white">
           <Text>No tasks available</Text>
         </Flex>
       )}
-      {!isLoading && Object.keys(tasks).map((key) => {
-        const task = tasks[key];
-        if (!task) return null;
-        return (
-          <Flex
-            key={key}
-            p={2}
-            // borderWidth="1px"
-            borderRadius="lg"
-            w="90vw"
-            mb={4}
-            color="white"
-            position="relative"
-            gap={2}
-            bgColor="whiteAlpha.300"
-          >
-            <Image
-              src={tasks[key].image.default}
-              alt={tasks[key].title.en}
-              boxSize="50px"
-              objectFit="contain"
-              alignSelf="center"
-            />
-            <Stack fontSize="sm">
-              <Text fontWeight="bold">{tasks[key].title.en}</Text>
-              <Text>{tasks[key].instructions[0].en}</Text>
-              <Text>Reward: {tasks[key].reward}</Text>
-            </Stack>
-            <Button
-              position="absolute"
-              right="2"
-              top="2"
+      {!isLoading &&
+        tasks &&
+        Object.keys(tasks).map((key) => {
+          const task = tasks[key];
+          if (!task) return null;
+          return (
+            <Flex
+              key={key}
+              p={2}
+              // borderWidth="1px"
+              borderRadius="lg"
+              w="90vw"
+              mb={4}
               color="white"
-              bgGradient="linear(to-bl, white 0%, purple.600 40%)"
-              _hover={{
-                color: "black",
-                bgGradient: "linear(to-bl, purple.600 0%, white 40%)",
-              }}
-              onClick={() =>
-                handleButtonClick(key, tasks[key].actions[0].destination)
-              }
+              position="relative"
+              gap={2}
+              bgColor="whiteAlpha.300"
             >
-              {completedTasks[key] ? "Claim" : "Start"}
-            </Button>
-          </Flex>
-        );
-      })}
+              <Image
+                src={tasks[key].image.default}
+                alt={tasks[key].title.en}
+                boxSize="50px"
+                objectFit="contain"
+                alignSelf="center"
+              />
+              <Stack fontSize="sm">
+                <Text fontWeight="bold">{tasks[key].title.en}</Text>
+                <Text>{tasks[key].instructions[0].en}</Text>
+                <Text>Reward: {tasks[key].reward}</Text>
+              </Stack>
+              <Button
+                position="absolute"
+                right="2"
+                top="2"
+                color="white"
+                bgGradient="linear(to-bl, white 0%, purple.600 40%)"
+                _hover={{
+                  color: "black",
+                  bgGradient: "linear(to-bl, purple.600 0%, white 40%)",
+                }}
+                onClick={() =>
+                  handleButtonClick(key, tasks[key].actions[0].destination)
+                }
+              >
+                {completedTasks[key] ? "Claim" : "Start"}
+              </Button>
+            </Flex>
+          );
+        })}
     </Flex>
   );
 };
