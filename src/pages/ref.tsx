@@ -15,7 +15,6 @@ export const Ref = () => {
 
   useEffect(() => {
     const initData = WebApp.initData;
-    console.log(initData);
     if (initData) {
       const token = initData;
       setToken(token);
