@@ -1,4 +1,4 @@
-import { Button, Flex, Image, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Button, Flex, Image, Spinner, Stack, Text, useToast } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
@@ -57,6 +57,8 @@ export const Tasks = () => {
   }>({});
   const [taskInProgress, setTaskInProgress] = useState<string | null>(null);
 
+  const toast = useToast();
+
   const data = WebApp.initData;
   const params = new URLSearchParams(data);
   const hash = params.get("hash");
@@ -97,6 +99,16 @@ export const Tasks = () => {
             ...prevCompletedTasks,
             [key]: true,
           }));
+
+          toast({
+            id: "task-completed",
+            title: "Task completed!",
+            description: `You have completed a task! You get a reward of ${tasks[key].reward} tokens.`,
+            status: "success",
+            position: "top",
+            duration: 5000,
+            isClosable: true,
+          });
         });
     } else {
       setTaskInProgress(key);
