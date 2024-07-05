@@ -10,7 +10,7 @@ import { Leaderboard } from "./pages/leaderboard";
 import { Tasks } from "./pages/tasks";
 import WebApp from "@twa-dev/sdk";
 import { verifyTelegramWebAppData } from "./utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import qrCode from "./assets/qr-code.png";
 
@@ -83,30 +83,33 @@ function App() {
     enabled: !!loggedIn,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { isLoading: tasksIsLoading } = useQuery({
-    queryKey: ["tasks"],
-    queryFn: handleTasks,
-    enabled: !!loggedIn,
+  const queries = useQueries({
+    queries: [
+      {
+        queryKey: ["tasks"],
+        queryFn: handleTasks,
+        enabled: !!loggedIn,
+        staleTime: Infinity,
+        refetchOnMount: false,
+      },
+      {
+        queryKey: ["leaderboard"],
+        queryFn: () => axios.post(
+          `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
+          { initData: paramsJson },
+          { headers: { Authorization: `Bearer ${hash}` } }
+        ),
+        enabled: !!loggedIn,
+        staleTime: Infinity,
+        refetchOnMount: false,
+      }
+    ]
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { isLoading: leaderboardIsLoading } = useQuery({
-    queryKey: ["leaderboard"],
-    queryFn: () => {
-      return axios.post(
-        `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
-        {
-          initData: paramsJson,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${hash}`,
-          },
-        }
-      );
-    },
-    enabled: !!loggedIn,
+  queries.forEach((query) => {
+    if (query.isError) {
+      console.error(query.error);
+    }
   });
 
   useEffect(() => {
@@ -137,15 +140,15 @@ function App() {
           <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20} />
         </Flex>
       )}
-      {isMobile && isLoading && (
+      {isMobile && (isLoading) && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      {isMobile && !isLoading && isError && (
+      {isMobile && !(isLoading) && isError && (
         <Flex color="white">Error: {error.message}</Flex>
       )}
-      {isMobile && !isLoading && !isError && (
+      {isMobile && !(isLoading) && !isError && (
         <Flex
           className="mainContainer"
           flexDir="column"
