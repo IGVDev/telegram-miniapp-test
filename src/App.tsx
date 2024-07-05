@@ -83,12 +83,14 @@ function App() {
     enabled: !!loggedIn,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isLoading: tasksIsLoading } = useQuery({
     queryKey: ["tasks"],
     queryFn: handleTasks,
     enabled: !!loggedIn,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isLoading: leaderboardIsLoading } = useQuery({
     queryKey: ["leaderboard"],
     queryFn: () => {
@@ -135,15 +137,15 @@ function App() {
           <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20} />
         </Flex>
       )}
-      {isMobile && (isLoading) && (
+      {isMobile && isLoading && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      {isMobile && !(isLoading) && isError && (
+      {isMobile && !isLoading && isError && (
         <Flex color="white">Error: {error.message}</Flex>
       )}
-      {isMobile && !(isLoading) && !isError && (
+      {isMobile && !isLoading && !isError && (
         <Flex
           className="mainContainer"
           flexDir="column"
