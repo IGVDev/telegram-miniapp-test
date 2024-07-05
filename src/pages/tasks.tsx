@@ -1,4 +1,4 @@
-import { Button, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { Button, Flex, Image, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
@@ -105,7 +105,7 @@ export const Tasks = () => {
     }
   };
 
-  const { data: tasksData } = useQuery<TaskData>({
+  const { data: tasksData, isLoading } = useQuery<TaskData>({
     queryKey: ["tasks"],
   });
 
@@ -158,12 +158,17 @@ export const Tasks = () => {
       >
         Tasks
       </Text>
-      {Object.keys(tasks).length === 0 && (
+      {isLoading && (
+        <Flex justify="center" align="center" height="100vh" w="100vw">
+          <Spinner size="xl" color="white" />
+        </Flex>
+      )}
+      {!isLoading && Object.keys(tasks).length === 0 && (
         <Flex p={4} alignSelf="center" color="white">
           <Text>No tasks available</Text>
         </Flex>
       )}
-      {Object.keys(tasks).map((key) => {
+      {!isLoading && Object.keys(tasks).map((key) => {
         const task = tasks[key];
         if (!task) return null;
         return (
