@@ -26,12 +26,12 @@ function App() {
   const [isMobile] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // useEffect(() => {
-  //   const userAgent = navigator.userAgent || navigator.vendor;
-  //   if (!/android/i.test(userAgent) && !/iPad|iPhone|iPod/.test(userAgent)) {
-  //     setIsMobile(false);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor;
+    if (!/android/i.test(userAgent) && !/iPad|iPhone|iPod/.test(userAgent)) {
+      setIsMobile(false);
+    }
+  }, []);
 
   const initData = WebApp.initData;
 
@@ -89,6 +89,24 @@ function App() {
     enabled: !!loggedIn,
   });
 
+  const { isLoading: leaderboardIsLoading } = useQuery({
+    queryKey: ["leaderboard"],
+    queryFn: () => {
+      return axios.post(
+        `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
+        {
+          initData: paramsJson,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${hash}`,
+          },
+        }
+      );
+    },
+    enabled: !!loggedIn,
+  });
+
   useEffect(() => {
     if (data && !isError && !isLoading) {
       setLoggedIn(true);
@@ -117,15 +135,15 @@ function App() {
           <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20} />
         </Flex>
       )}
-      {isMobile && (isLoading || tasksIsLoading) && (
+      {isMobile && (isLoading || tasksIsLoading || leaderboardIsLoading) && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      {isMobile && !(isLoading || tasksIsLoading) && isError && (
+      {isMobile && !(isLoading || tasksIsLoading || leaderboardIsLoading) && isError && (
         <Flex color="white">Error: {error.message}</Flex>
       )}
-      {isMobile && !(isLoading || tasksIsLoading) && !isError && (
+      {isMobile && !(isLoading || tasksIsLoading || leaderboardIsLoading) && !isError && (
         <Flex
           className="mainContainer"
           flexDir="column"
