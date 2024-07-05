@@ -47,8 +47,8 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
         default: "arcade",
         arcade: {
           gravity: { y: gameGravity, x: 0 },
-          fixedStep: true,
-          fps: 60,
+          fixedStep: false,
+          // fps: 60,
         },
       },
       render: {
@@ -57,7 +57,7 @@ const FlappyBirdGame: React.FC<FlappyBirdGameProps> = ({
       fps: {
         target: 55,
         min: 30,
-        forceSetTimeOut: true,
+        // forceSetTimeOut: true,
         smoothStep: true,
       },
       powerPreference: "high-performance",
