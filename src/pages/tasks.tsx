@@ -207,7 +207,7 @@ export const Tasks = () => {
               </Stack>
               <Button
                 // position="absolute"
-                alignSelf="flex-start"
+                alignSelf="flex-end"
                 color="white"
                 bgGradient="linear(to-bl, white 0%, purple.600 40%)"
                 _hover={{
