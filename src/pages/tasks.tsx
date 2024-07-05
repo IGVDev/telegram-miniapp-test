@@ -110,10 +110,7 @@ export const Tasks = () => {
   });
 
   useEffect(() => {
-    if (tasksData) {
-      setTasks(tasksData.available_tasks);
-    }
-    if (loginData && Object.keys(tasks).length > 0) {
+    if (loginData && tasksData) {
       const completed = Object.keys(loginData.tasks_completed || {}).reduce(
         (acc, key) => {
           acc[key] = true;
@@ -121,8 +118,8 @@ export const Tasks = () => {
         },
         {} as { [key: string]: boolean }
       );
-      setTasks((prevTasks) => {
-        const newTasks = { ...prevTasks };
+      setTasks(() => {
+        const newTasks = { ...tasksData.available_tasks };
 
         Object.keys(completed).forEach((key) => {
           delete newTasks[key];
@@ -131,7 +128,7 @@ export const Tasks = () => {
         return newTasks;
       });
     }
-  }, [loginData, tasks]);
+  }, [loginData, tasksData]);
 
   useEffect(() => {
     axios
