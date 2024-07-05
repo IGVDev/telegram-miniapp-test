@@ -148,9 +148,10 @@ function App() {
       {isMobile && !(isLoading) && isError && (
         <Flex color="white">Error: {error.message}</Flex>
       )}
-      {isMobile && !(isLoading) && !isError && (
+      {
+        isMobile && !(isLoading) && !isError && (
         <Flex
-          className="mainContainer"
+          className="mainContainer scrollable-content"
           flexDir="column"
           w="100%"
           alignItems="center"
