@@ -25,6 +25,31 @@ interface LoginData {
   username: string;
 }
 
+interface TaskData {
+  available_tasks: {
+    [key: string]: {
+      actions: Array<{
+        destination: string;
+        type: string;
+      }>;
+      image: {
+        default: string;
+      };
+      instructions: Array<{
+        en: string;
+        fr: string;
+      }>;
+      reward: number;
+      title: {
+        en: string;
+        fr: string;
+      };
+      type: string;
+    };
+  };
+  recorded_tasks_completed: Record<string, never>;
+}
+
 export const Tasks = () => {
   const [tasks, setTasks] = useState({});
   const [completedTasks, setCompletedTasks] = useState<{
@@ -80,7 +105,14 @@ export const Tasks = () => {
     }
   };
 
+  const { data: tasksData } = useQuery<TaskData>({
+    queryKey: ["tasks"],
+  });
+
   useEffect(() => {
+    if (tasksData) {
+      setTasks(tasksData.available_tasks);
+    }
     if (loginData && Object.keys(tasks).length > 0) {
       const completed = Object.keys(loginData.tasks_completed || {}).reduce(
         (acc, key) => {
@@ -125,7 +157,6 @@ export const Tasks = () => {
           {} as { [key: string]: boolean }
         );
 
-        
         setTasks(() => {
           const newTasks = { ...availableTasks };
 
