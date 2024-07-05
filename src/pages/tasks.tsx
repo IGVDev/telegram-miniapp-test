@@ -206,9 +206,8 @@ export const Tasks = () => {
                 <Text>Reward: {tasks[key].reward}</Text>
               </Stack>
               <Button
-                position="absolute"
-                right="2"
-                top="2"
+                // position="absolute"
+                alignSelf="flex-start"
                 color="white"
                 bgGradient="linear(to-bl, white 0%, purple.600 40%)"
                 _hover={{
