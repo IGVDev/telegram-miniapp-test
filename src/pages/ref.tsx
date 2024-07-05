@@ -104,8 +104,8 @@ export const Ref = () => {
         </Text>
         <Button
           position="absolute"
-          right={1}
-          top={1}
+          right={2}
+          top={2}
           size="sm"
           color="white"
           bgGradient="linear(to-bl, white 0%, purple.600 40%)"
