@@ -15,13 +15,29 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 interface QueryData {
-  referrals: { id: string }[];
+  avatar_photo: string;
+  first_name: string;
+  language_code: string;
+  last_name: string;
+  referrals: { [key: string]: number };
+  referred_by: null | string;
+  source: string;
+  tasks_completed: {
+    [key: string]: {
+      time: string;
+      timestamp: number;
+    };
+  };
+  timestamp_last_activity: number;
+  timestamp_last_login: number;
+  tokens: number;
+  uid: string;
+  username: string;
 }
 
 export const Ref = () => {
   const [refCount] = useState(0);
   const [userId, setUserId] = useState("");
-  const [referralList] = useState([]);
 
   const [, setToken] = useState("");
 
@@ -147,11 +163,13 @@ export const Ref = () => {
       >
         <Text fontWeight="bold">My Referrals:</Text>
         {!isLoading && data.referrals.length > 0 ? (
-          referralList.map((referral) => (
-            <Flex key={referral.id}>
-              <Text>{referral.id}</Text>
-            </Flex>
-          ))
+          <Flex>
+            <Text>You have {data.referrals.length} referrals!</Text>
+            <Text>
+              Your referrals have earned you {data.referrals.length * 3000}
+              tokens!
+            </Text>
+          </Flex>
         ) : (
           <Flex p={4} alignSelf="center">
             <Image h="200px" w="200px" src={noReferrals} alt="No referrals" />
