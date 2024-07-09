@@ -163,16 +163,15 @@ export const Ref = () => {
       >
         <Text fontWeight="bold">My Referrals:</Text>
         {!isLoading && data.referrals ? (
-          <Flex>
+          <Flex flexDir="column" gap={2}>
             <Text>
               You have {Object.keys(data.referrals).length} referrals!
             </Text>
             <Text>
-              Your referrals have earned you{" "}
-              {Object.keys(data.referrals).reduce(
-                (acc, curr) => acc + data.referrals[curr],
-                0
-              ) * 3000}
+              Your referrals have earned you
+              <Text fontWeight="bold">
+                {Object.keys(data.referrals).length * 3000}
+              </Text>
               tokens!
             </Text>
           </Flex>
