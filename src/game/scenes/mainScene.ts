@@ -2,7 +2,8 @@ import Phaser from "phaser";
 import { Pipe } from "../pipe";
 import { Coin } from "../coin";
 import bgImage from "../../assets/bg.png";
-import birdImage from "../../assets/newBird.png";
+// import birdImage from "../../assets/newBird.png";
+import patataImage from "../../assets/patata.png";
 import pipeImage from "../../assets/newPipe.png";
 import coinImage from "../../assets/coin.png";
 import openMouthBirdImage from "../../assets/open-mouth-birdpng.png";
@@ -17,7 +18,7 @@ interface MainSceneConfig {
 }
 
 export default class MainScene extends Phaser.Scene {
-  private bird!: Phaser.Physics.Arcade.Sprite;
+  private patata!: Phaser.Physics.Arcade.Sprite;
   private score: number = 0;
   private scoreText!: Phaser.GameObjects.Text;
   private onScoreUpdate?: (score: number) => void;
@@ -56,7 +57,7 @@ export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.image("background", bgImage);
     this.load.image("openMouthBird", openMouthBirdImage);
-    this.load.image("bird", birdImage);
+    this.load.image("patata", patataImage);
     this.load.image("coin", coinImage);
     this.load.spritesheet("pipe", pipeImage, {
       frameWidth: 20,
@@ -85,12 +86,12 @@ export default class MainScene extends Phaser.Scene {
       .setVisible(false)
       .setDepth(3);
 
-    this.bird = this.physics.add
-      .sprite(100, this.scale.height / 4, "bird")
-      .setScale(0.3);
+    this.patata = this.physics.add
+      .sprite(100, this.scale.height / 4, "patata")
+      .setScale(.35);
 
-    this.bird.setCollideWorldBounds(true);
-    this.bird.setDepth(1);
+    this.patata.setCollideWorldBounds(true);
+    this.patata.setDepth(1);
 
     this.pipePool = this.add.group({
       classType: Pipe,
@@ -122,15 +123,15 @@ export default class MainScene extends Phaser.Scene {
 
     this.input.on("pointerdown", () => {
       if (!this.isPaused) {
-        if (this.bird.body.velocity.y > 0) {
-          this.bird.body.velocity.y = 0;
+        if (this.patata.body.velocity.y > 0) {
+          this.patata.body.velocity.y = 0;
         }
 
-        this.bird.setVelocityY(
-          this.bird.body.velocity.y / 2 - this.gameGravity * this.jumpStrength
+        this.patata.setVelocityY(
+          this.patata.body.velocity.y / 2 - this.gameGravity * this.jumpStrength
         );
         this.tweens.add({
-          targets: this.bird,
+          targets: this.patata,
           props: { angle: -20 },
           duration: 150,
           ease: "Power0",
@@ -183,8 +184,8 @@ export default class MainScene extends Phaser.Scene {
     }
 
     // Frame-by-frame updates
-    if (this.bird && this.bird.angle < 20) {
-      this.bird.angle += 1;
+    if (this.patata && this.patata.angle < 20) {
+      this.patata.angle += 1;
     }
   }
 
@@ -208,7 +209,7 @@ export default class MainScene extends Phaser.Scene {
     this.updateCoins(pixelsPerFrame);
 
     // Ground collision
-    if (this.bird && this.bird.y >= this.scale.height - 18) {
+    if (this.patata && this.patata.y >= this.scale.height - 18) {
       this.saveHighScore();
       this.endGame(this.score);
     }
@@ -252,7 +253,7 @@ export default class MainScene extends Phaser.Scene {
               (p) => p.getData("rowId") === rowId
             ) as Phaser.Physics.Arcade.Sprite[];
 
-          if (pipeSet.every((p) => this.bird.x > p.x + p.displayWidth)) {
+          if (pipeSet.every((p) => this.patata.x > p.x + p.displayWidth)) {
             pipeSet.forEach((p) => p.setData("scored", true));
             this.score += this.pipeValue * this.scoreMultiplier;
             this.updateScore(this.pipeValue * this.scoreMultiplier);
@@ -262,7 +263,7 @@ export default class MainScene extends Phaser.Scene {
 
         if (
           Phaser.Geom.Intersects.RectangleToRectangle(
-            this.bird.getBounds(),
+            this.patata.getBounds(),
             pipeSprite.getBounds()
           )
         ) {
@@ -285,7 +286,7 @@ export default class MainScene extends Phaser.Scene {
 
         if (
           Phaser.Geom.Intersects.RectangleToRectangle(
-            this.bird.getBounds(),
+            this.patata.getBounds(),
             coin.getBounds()
           )
         ) {
@@ -395,13 +396,13 @@ export default class MainScene extends Phaser.Scene {
       const nearestPipe = activePipes.reduce((nearest, pipe) => {
         const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
         const nearestSprite = nearest as Phaser.Physics.Arcade.Sprite;
-        return Math.abs(this.bird.x - pipeSprite.x) <
-          Math.abs(this.bird.x - nearestSprite.x)
+        return Math.abs(this.patata.x - pipeSprite.x) <
+          Math.abs(this.patata.x - nearestSprite.x)
           ? pipeSprite
           : nearestSprite;
       }, activePipes[0]) as Phaser.Physics.Arcade.Sprite;
 
-      if (Math.abs(this.bird.x - nearestPipe.x) > safeDistance) {
+      if (Math.abs(this.patata.x - nearestPipe.x) > safeDistance) {
         this.lastPauseScore = this.score;
         this.lastSuperClickTime = currentTime;
         return true;
@@ -411,10 +412,10 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private superClickScene() {
-    this.savedVelocityY = this.bird.body.velocity.y;
+    this.savedVelocityY = this.patata.body.velocity.y;
     this.physics.world.gravity.y = 0;
-    this.bird.setVelocityY(0);
-    this.bird.setAngle(0);
+    this.patata.setVelocityY(0);
+    this.patata.setAngle(0);
 
     this.input.on("pointerdown", this.countClick, this);
 
@@ -488,7 +489,7 @@ export default class MainScene extends Phaser.Scene {
   private resumeGame() {
     this.isPaused = false;
     this.physics.world.gravity.y = this.gameGravity;
-    this.bird.setVelocityY(this.savedVelocityY);
+    this.patata.setVelocityY(this.savedVelocityY);
     this.countdownText.setVisible(false);
     console.log("Clicks during pause:", this.clickCount);
 
