@@ -75,6 +75,7 @@ export default class MainScene extends Phaser.Scene {
     this.pipeCounter = 0;
     this.distanceMoved = 0;
     this.scrollSpeed = 0.15;
+    this.distanceThreshold = window.outerWidth;
 
     this.clickCountText = this.add
       .text(this.scale.width / 2, this.scale.height / 2, "", {
