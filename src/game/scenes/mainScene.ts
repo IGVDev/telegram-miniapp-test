@@ -593,7 +593,7 @@ export default class MainScene extends Phaser.Scene {
     this.pipeCounter++;
 
     const spawnChance = 0.25;
-    if (this.pipeCounter % 3 === 0 && Math.random() < spawnChance) {
+    if (Math.random() < spawnChance) {
       this.spawnCoin(pipeX, (hole + 1) * pipeHeight);
     }
   }
