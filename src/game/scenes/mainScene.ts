@@ -18,8 +18,6 @@ interface MainSceneConfig {
 
 export default class MainScene extends Phaser.Scene {
   private bird!: Phaser.Physics.Arcade.Sprite;
-  // private pipes!: Phaser.Physics.Arcade.StaticGroup;
-  // private coins!: Phaser.Physics.Arcade.StaticGroup;
   private score: number = 0;
   private scoreText!: Phaser.GameObjects.Text;
   private onScoreUpdate?: (score: number) => void;
@@ -39,7 +37,7 @@ export default class MainScene extends Phaser.Scene {
   private scrollSpeed: number;
   private distanceMoved: number = 0;
   private distanceThreshold: number = window.outerWidth;
-  private fixedTimeStep: number = 1000/60;
+  private fixedTimeStep: number = 1000 / 60;
   private accumulator: number = 0;
   private pipePool: Phaser.GameObjects.Group;
   private coinPool: Phaser.GameObjects.Group;
@@ -93,9 +91,6 @@ export default class MainScene extends Phaser.Scene {
 
     this.bird.setCollideWorldBounds(true);
     this.bird.setDepth(1);
-
-    // this.coins = this.physics.add.staticGroup({ classType: Coin });
-    // this.pipes = this.physics.add.staticGroup({ classType: Pipe });
 
     this.pipePool = this.add.group({
       classType: Pipe,
@@ -381,9 +376,9 @@ export default class MainScene extends Phaser.Scene {
     }
 
     if (
-      this.score % 5 === 0 &&
-      this.score > 30 &&
-      this.score - this.lastPauseScore >= 50
+      this.score % 150 === 0 &&
+      this.score > 100 &&
+      this.score - this.lastPauseScore >= 100
     ) {
       const safeDistance = 100;
 
@@ -526,7 +521,7 @@ export default class MainScene extends Phaser.Scene {
       duration: 800,
       ease: "Power3",
       onComplete: () => {
-        coinSprite.destroy(); // Clean up the sprite after animation
+        coinSprite.destroy();
       },
     });
   }
@@ -597,18 +592,11 @@ export default class MainScene extends Phaser.Scene {
     }
     this.pipeCounter++;
 
-    const spawnChance = 1;
+    const spawnChance = 0.25;
     if (this.pipeCounter % 3 === 0 && Math.random() < spawnChance) {
       this.spawnCoin(pipeX, (hole + 1) * pipeHeight);
     }
   }
-
-  // private addPipe(x: number, y: number, frame: number, rowId: number) {
-  //   const pipe = new Pipe({ scene: this, x, y, frame, key: "pipe" });
-  //   pipe.setData("rowId", rowId);
-  //   pipe.setScale(2, this.scale.height / 200);
-  //   this.pipes.add(pipe);
-  // }
 
   private async saveHighScore() {
     const highScore = Number(WebApp.CloudStorage.getItem("highScore")) || 0;
