@@ -9,7 +9,7 @@ import axios from "axios";
 export const Ref = () => {
   const [refCount] = useState(0);
   const [userId, setUserId] = useState("");
-  const [referralList, setReferralList] = useState([]);
+  const [referralList] = useState([]);
 
   const [, setToken] = useState("");
 
@@ -22,7 +22,6 @@ export const Ref = () => {
   }, []);
 
   const toast = useToast();
-
   const handleCopy = () => {
     if (toast.isActive("copied")) {
       return;
