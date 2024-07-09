@@ -162,11 +162,17 @@ export const Ref = () => {
         w="100%"
       >
         <Text fontWeight="bold">My Referrals:</Text>
-        {!isLoading && data.referrals.length > 0 ? (
+        {!isLoading && data.referrals ? (
           <Flex>
-            <Text>You have {data.referrals.length} referrals!</Text>
             <Text>
-              Your referrals have earned you {data.referrals.length * 3000}
+              You have {Object.keys(data.referrals).length} referrals!
+            </Text>
+            <Text>
+              Your referrals have earned you{" "}
+              {Object.keys(data.referrals).reduce(
+                (acc, curr) => acc + data.referrals[curr],
+                0
+              ) * 3000}
               tokens!
             </Text>
           </Flex>
