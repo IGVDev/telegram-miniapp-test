@@ -1,10 +1,18 @@
-import { Flex, Text, Button, Divider, Image, useToast } from "@chakra-ui/react";
+import {
+  Flex,
+  Text,
+  Button,
+  Divider,
+  Image,
+  useToast,
+  Spinner,
+} from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
 import { extractUserId, verifyTelegramWebAppData } from "../utils";
 import noReferrals from "../assets/noreferrals.webp";
 import axios from "axios";
-// import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 export const Ref = () => {
   const [refCount] = useState(0);
@@ -39,6 +47,10 @@ export const Ref = () => {
     });
   };
 
+  const { data, isLoading } = useQuery({
+    queryKey: ["login"],
+  });
+
   useEffect(() => {
     if (WebApp.initData) {
       const data = WebApp.initData;
@@ -49,8 +61,6 @@ export const Ref = () => {
         const params = new URLSearchParams(data);
         const hash = params.get("hash");
         const paramsJson = Object.fromEntries(params.entries());
-        console.log("DATA", data);
-        console.log("PARAMS", paramsJson);
         axios
           .post(
             "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
@@ -88,7 +98,11 @@ export const Ref = () => {
       <Text fontSize="40px" fontWeight="bold" color="white" align="center">
         {refCount} Referrals
       </Text>
-
+      {isLoading && (
+        <Flex justify="center" align="center" height="100vh" w="100vw">
+          <Spinner size="xl" color="white" />
+        </Flex>
+      )}
       <Flex
         bgColor="whiteAlpha.300"
         flexDir="column"
@@ -128,7 +142,7 @@ export const Ref = () => {
         w="100%"
       >
         <Text fontWeight="bold">My Referrals:</Text>
-        {referralList.length > 0 ? (
+        {!isLoading && data.referrals.length > 0 ? (
           referralList.map((referral) => (
             <Flex key={referral.id}>
               <Text>{referral.id}</Text>
