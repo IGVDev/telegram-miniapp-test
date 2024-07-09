@@ -14,6 +14,10 @@ import noReferrals from "../assets/noreferrals.webp";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
+interface QueryData {
+  referrals: { id: string }[];
+}
+
 export const Ref = () => {
   const [refCount] = useState(0);
   const [userId, setUserId] = useState("");
@@ -47,7 +51,7 @@ export const Ref = () => {
     });
   };
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<QueryData>({
     queryKey: ["login"],
   });
 
