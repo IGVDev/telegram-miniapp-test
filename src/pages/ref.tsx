@@ -36,7 +36,6 @@ interface QueryData {
 }
 
 export const Ref = () => {
-  const [refCount] = useState(0);
   const [userId, setUserId] = useState("");
 
   const [, setToken] = useState("");
@@ -115,72 +114,77 @@ export const Ref = () => {
       color="white"
       align="center"
     >
-      <Text fontSize="40px" fontWeight="bold" color="white" align="center">
-        {refCount} Referrals
-      </Text>
       {isLoading && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      <Flex
-        bgColor="whiteAlpha.300"
-        flexDir="column"
-        w={{ base: "90vw", md: "40vw" }}
-        minH="50px"
-        position="relative"
-        borderRadius={8}
-        p={2}
-        gap={2}
-      >
-        <Text fontWeight="bold">My invite link:</Text>
-        <Text fontSize="xs" color="gray.400">
-          https://t.me/PatataCoin_Bot/tap2earn?startapp={userId}
+      {!isLoading && data && (
+        <Text fontSize="40px" fontWeight="bold" color="white" align="center">
+          {Object.keys(data.referrals).length} Referrals
         </Text>
-        <Button
-          position="absolute"
-          right={2}
-          top={2}
-          size="sm"
-          color="white"
-          bgGradient="linear(to-bl, white 0%, purple.600 40%)"
-          _hover={{
-            color: "black",
-            bgGradient: "linear(to-bl, purple.600 0%, white 40%)",
-          }}
-          onClick={() => handleCopy()}
+      )}
+      {!isLoading && data && (
+        <Flex
+          bgColor="whiteAlpha.300"
+          flexDir="column"
+          w={{ base: "90vw", md: "40vw" }}
+          minH="50px"
+          position="relative"
+          borderRadius={8}
+          p={2}
+          gap={2}
         >
-          Copy
-        </Button>
-      </Flex>
+          <Text fontWeight="bold">My invite link:</Text>
+          <Text fontSize="xs" color="gray.400">
+            https://t.me/PatataCoin_Bot/tap2earn?startapp={userId}
+          </Text>
+          <Button
+            position="absolute"
+            right={2}
+            top={2}
+            size="sm"
+            color="white"
+            bgGradient="linear(to-bl, white 0%, purple.600 40%)"
+            _hover={{
+              color: "black",
+              bgGradient: "linear(to-bl, purple.600 0%, white 40%)",
+            }}
+            onClick={() => handleCopy()}
+          >
+            Copy
+          </Button>
+        </Flex>
+      )}
       <Divider w="98%" alignSelf="center" borderColor="gray.600" mt={2} />
-      <Flex
-        className="referralListContainer"
-        flexDir="column"
-        gap={2}
-        p={0}
-        w="100%"
-      >
-        <Text fontWeight="bold">My Referrals:</Text>
-        {!isLoading && data.referrals ? (
-          <Flex flexDir="column" gap={2}>
-            <Text>
-              You have {Object.keys(data.referrals).length} referrals!
-            </Text>
-            <Text>
-              Your referrals have earned you
-              <Text fontWeight="bold">
-                {Object.keys(data.referrals).length * 3000}
+      {!isLoading && data && (
+        <Flex
+          className="referralListContainer"
+          flexDir="column"
+          gap={2}
+          p={0}
+          w="100%"
+        >
+          <Text fontWeight="bold">My Referrals:</Text>
+          {!isLoading && data.referrals ? (
+            <Flex flexDir="column" gap={2}>
+              <Text>
+                You have {Object.keys(data.referrals).length} referrals!
               </Text>
-              tokens!
-            </Text>
-          </Flex>
-        ) : (
-          <Flex p={4} alignSelf="center">
-            <Image h="200px" w="200px" src={noReferrals} alt="No referrals" />
-          </Flex>
-        )}
-      </Flex>
+              <Text>
+                Your referrals have earned you
+                <Text fontWeight="bold">
+                  {Object.keys(data.referrals).length * 3000} tokens!
+                </Text>
+              </Text>
+            </Flex>
+          ) : (
+            <Flex p={4} alignSelf="center">
+              <Image h="200px" w="200px" src={noReferrals} alt="No referrals" />
+            </Flex>
+          )}
+        </Flex>
+      )}
     </Flex>
   );
 };
