@@ -2,7 +2,7 @@ import "./App.css";
 
 import appBg from "./assets/background.webp";
 import { Flex, Image, Spinner } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Ref } from "./pages/ref";
 import { Tap } from "./pages/tap";
 import { Navigation } from "./components/navigation";
@@ -39,6 +39,18 @@ function App() {
   const hash = params.get("hash");
   const start_param = params.get("start_param");
   const paramsJson = Object.fromEntries(params.entries());
+  const [, setClickCount] = useState(0);
+
+  // Just for debugging. Allows to enter the app from the desktop version.
+  const handleClick = () => {
+    setClickCount((prev) => {
+      if (prev + 1 === 6) {
+        setIsMobile(true);
+        return 0;
+      }
+      return prev + 1;
+    });
+  };
 
   const handleLogin = async () => {
     if (!verifyTelegramWebAppData(initData)) {
@@ -94,16 +106,17 @@ function App() {
       },
       {
         queryKey: ["leaderboard"],
-        queryFn: () => axios.post(
-          `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
-          { initData: paramsJson },
-          { headers: { Authorization: `Bearer ${hash}` } }
-        ),
+        queryFn: () =>
+          axios.post(
+            `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_ranking`,
+            { initData: paramsJson },
+            { headers: { Authorization: `Bearer ${hash}` } }
+          ),
         enabled: !!loggedIn,
         staleTime: Infinity,
         refetchOnMount: false,
-      }
-    ]
+      },
+    ],
   });
 
   queries.forEach((query) => {
@@ -117,18 +130,6 @@ function App() {
       setLoggedIn(true);
     }
   }, [data, isError, isLoading]);
-
-  const mainContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (mainContainerRef.current) {
-      WebApp.viewportHeight = mainContainerRef.current.clientHeight;
-      WebApp.expand();
-      WebApp.onEvent('viewportChanged', () => {
-        WebApp.expand();
-      });
-    }
-  }, []);
 
   return (
     <Flex
@@ -147,21 +148,21 @@ function App() {
           color="white"
           flexDir="column"
           gap={2}
+          onClick={handleClick}
         >
           Please use a mobile device to access this application.
           <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20} />
         </Flex>
       )}
-      {isMobile && (isLoading) && (
+      {isMobile && isLoading && (
         <Flex justify="center" align="center" height="100vh" w="100vw">
           <Spinner size="xl" color="white" />
         </Flex>
       )}
-      {isMobile && !(isLoading) && isError && (
+      {isMobile && !isLoading && isError && (
         <Flex color="white">Error: {error.message}</Flex>
       )}
-      {
-        isMobile && !(isLoading) && !isError && (
+      {isMobile && !isLoading && !isError && (
         <Flex
           className="mainContainer scrollable-content"
           flexDir="column"
