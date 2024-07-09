@@ -9,7 +9,7 @@ import axios from "axios";
 export const Ref = () => {
   const [refCount] = useState(0);
   const [userId, setUserId] = useState("");
-  const [referralList] = useState([]);
+  const [referralList, setReferralList] = useState([]);
 
   const [, setToken] = useState("");
 
@@ -27,6 +27,9 @@ export const Ref = () => {
     if (toast.isActive("copied")) {
       return;
     }
+    navigator.clipboard.writeText(
+      `https://t.me/PatataCoin_Bot/tap2earn?startapp=${userId}`
+    );
     toast({
       id: "copied",
       title: "Copied to clipboard",
@@ -99,7 +102,7 @@ export const Ref = () => {
       >
         <Text fontWeight="bold">My invite link:</Text>
         <Text fontSize="xs" color="gray.400">
-          https://t.me/PatataCoin_Bot/start?startapp={userId}
+          https://t.me/PatataCoin_Bot/tap2earn?startapp={userId}
         </Text>
         <Button
           position="absolute"
