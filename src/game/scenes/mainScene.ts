@@ -595,44 +595,64 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private addNewRowOfPipes() {
-    this.pipeCounter++;
     const hole = Math.floor(Math.random() * 5) + 1;
     const rowId = Date.now();
     const pipeHeight = this.scale.height / 10;
     const totalPipes = 10;
     const pipeX = this.scale.width + 50;
 
-    let decorAdded = false;
+    this.pipeCounter++;
 
-    for (let i = 0; i < 10; i++) {
-      if (i !== hole && i !== hole + 1 && i !== hole + 2) {
-        let frame;
-        if (i === hole - 1) {
-          frame = 0;
-        } else if (i === hole + 3) {
-          frame = 1;
-        } else {
-          frame = 2;
+    if (this.pipeCounter % this.decorInterval === 0) {
+
+      // Determine the largest segment
+      const topSegmentSize = hole - 1;
+      const bottomSegmentSize = totalPipes - (hole + 3);
+
+      let decorPipeIndex;
+      if (topSegmentSize >= bottomSegmentSize && topSegmentSize > 1) {
+        decorPipeIndex = Math.floor(topSegmentSize / 2);
+      } else if (bottomSegmentSize > 1) {
+        decorPipeIndex = hole + 3 + Math.floor(bottomSegmentSize / 2);
+      }
+
+      for (let i = 0; i < totalPipes; i++) {
+        if (i !== hole && i !== hole + 1 && i !== hole + 2) {
+          let y = i * pipeHeight + pipeHeight / 2;
+          if (i === totalPipes - 1) {
+            y = this.scale.height - pipeHeight / 2;
+          }
+
+          const pipe = this.addOrReusePipe(
+            pipeX,
+            y,
+            this.getPipeFrame(i, hole),
+            rowId
+          );
+
+          if (i === decorPipeIndex) {
+            this.addPipeDecor(y, pipeHeight, pipeX, pipe);
+          }
         }
-
-        let y;
-        if (i === totalPipes - 1) {
-          y = this.scale.height - pipeHeight / 2;
-        } else {
-          y = i * pipeHeight + pipeHeight / 2;
-        }
-        const pipe = this.addOrReusePipe(pipeX, y, frame, rowId);
-
-        if (!decorAdded && this.pipeCounter % this.decorInterval === 0) {
-          decorAdded = this.addPipeDecor(y, pipeHeight, pipeX, pipe);
+      }
+    } else {
+      // Add pipes without decor
+      for (let i = 0; i < totalPipes; i++) {
+        if (i !== hole && i !== hole + 1 && i !== hole + 2) {
+          let y = i * pipeHeight + pipeHeight / 2;
+          if (i === totalPipes - 1) {
+            y = this.scale.height - pipeHeight / 2;
+          }
+          this.addOrReusePipe(pipeX, y, this.getPipeFrame(i, hole), rowId);
         }
       }
     }
+  }
 
-    const spawnChance = 0.25;
-    if (Math.random() < spawnChance) {
-      this.spawnCoin(pipeX, (hole + 1) * pipeHeight);
-    }
+  private getPipeFrame(index: number, hole: number): number {
+    if (index === hole - 1) return 0; // top cap
+    if (index === hole + 3) return 1; // bottom cap
+    return 2; // middle segment
   }
 
   private addPipeDecor(
@@ -655,11 +675,10 @@ export default class MainScene extends Phaser.Scene {
 
     const decor = this.add
       .sprite(pipeX, decorY, "decor", randomFrame)
-      .setScale(0.5)
+      .setScale(0.6)
       .setDepth(2);
 
     pipe.setData("decor", decor);
-    console.log("Decor added:", { x: decor.x, y: decorY, frame: randomFrame });
     return true;
   }
 
