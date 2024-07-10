@@ -46,6 +46,7 @@ export default class MainScene extends Phaser.Scene {
   private pipeValue: number = 10;
   private lastSuperClickTime: number = 0;
   private superClickCooldown: number = 20000;
+  private decorInterval: number = 3;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
@@ -67,15 +68,6 @@ export default class MainScene extends Phaser.Scene {
     this.load.spritesheet("decor", decorImage, {
       frameWidth: 80,
       frameHeight: 80,
-    });
-
-  
-    this.load.on("filecomplete-spritesheet-decor", () => {
-      console.log("Decor spritesheet loaded successfully");
-    });
-  
-    this.load.on("loaderror", (file) => {
-      console.error("Error loading file:", file.src);
     });
   }
 
@@ -103,9 +95,6 @@ export default class MainScene extends Phaser.Scene {
     this.patata = this.physics.add
       .sprite(100, this.scale.height / 4, "patata")
       .setScale(0.35);
-
-      console.log("Decor texture exists:", this.textures.exists("decor"));
-
 
     this.patata.setCollideWorldBounds(true);
     this.patata.setDepth(1);
@@ -301,9 +290,14 @@ export default class MainScene extends Phaser.Scene {
         const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
         if (!pipeSprite.active) return;
 
-        const pipeDecor = pipeSprite.getData("decor");
-        if (pipeDecor) {
-          pipeDecor.x -= pixelsPerFrame;
+        const decor = pipeSprite.getData("decor") as Phaser.GameObjects.Image;
+        if (decor) {
+          decor.x -= pixelsPerFrame;
+
+          if (decor.x + decor.width < 0) {
+            decor.destroy();
+            pipeSprite.setData("decor", null);
+          }
         }
       }
     );
@@ -599,6 +593,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private addNewRowOfPipes() {
+    this.pipeCounter++;
     const hole = Math.floor(Math.random() * 5) + 1;
     const rowId = Date.now();
     const pipeHeight = this.scale.height / 10;
@@ -626,14 +621,12 @@ export default class MainScene extends Phaser.Scene {
         }
         const pipe = this.addOrReusePipe(pipeX, y, frame, rowId);
 
-        if (!decorAdded && Math.random() < 0.5) {
-          // 50% chance to add decor
+        if (!decorAdded && this.pipeCounter % this.decorInterval === 0) {
           decorAdded = this.addPipeDecor(y, pipeHeight, pipeX, pipe);
-          console.log("Decor added:", decorAdded); // Debug log
+          this.decorInterval = Math.random() < 0.5 ? 3 : 4;
         }
       }
     }
-    this.pipeCounter++;
 
     const spawnChance = 0.25;
     if (Math.random() < spawnChance) {
@@ -652,11 +645,10 @@ export default class MainScene extends Phaser.Scene {
     const randomFrame = Math.floor(Math.random() * 8);
     const decor = this.add
       .sprite(pipeX, decorY, "decor", randomFrame)
-      .setScale(.6)
+      .setScale(0.6)
       .setDepth(1)
       .setFlipX(true);
     pipe.setData("decor", decor);
-    console.log("Decor sprite added:", decor); // Debug log
     return true;
   }
   private async saveHighScore() {
