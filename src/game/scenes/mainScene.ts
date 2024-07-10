@@ -47,6 +47,8 @@ export default class MainScene extends Phaser.Scene {
   private lastSuperClickTime: number = 0;
   private superClickCooldown: number = 20000;
   private decorInterval: number = 3;
+  private recentlyUsedFrames: number[] = [];
+  private totalDecorFrames: number = 8;
 
   constructor(config: MainSceneConfig) {
     super("MainScene");
@@ -623,7 +625,6 @@ export default class MainScene extends Phaser.Scene {
 
         if (!decorAdded && this.pipeCounter % this.decorInterval === 0) {
           decorAdded = this.addPipeDecor(y, pipeHeight, pipeX, pipe);
-          this.decorInterval = Math.random() < 0.5 ? 3 : 4;
         }
       }
     }
@@ -640,17 +641,49 @@ export default class MainScene extends Phaser.Scene {
     pipeX: number,
     pipe: Phaser.Physics.Arcade.Sprite
   ): boolean {
-    const decorPosition = Math.random();
-    const decorY = y + (decorPosition - 0.5) * pipeHeight;
-    const randomFrame = Math.floor(Math.random() * 8);
+    const safeMargin = 20;
+    const minY = Math.max(safeMargin, y - pipeHeight / 2 + safeMargin);
+    const maxY = Math.min(
+      this.scale.height - safeMargin,
+      y + pipeHeight / 2 - safeMargin
+    );
+
+    const decorY = Phaser.Math.Between(minY, maxY);
+
+    // Get a frame that hasn't been recently used
+    const randomFrame = this.getUniqueFrame();
+
     const decor = this.add
       .sprite(pipeX, decorY, "decor", randomFrame)
-      .setScale(0.6)
-      .setDepth(1)
-      .setFlipX(true);
+      .setScale(0.5)
+      .setDepth(2);
+
     pipe.setData("decor", decor);
+    console.log("Decor added:", { x: decor.x, y: decorY, frame: randomFrame });
     return true;
   }
+
+  private getUniqueFrame(): number {
+    let availableFrames = Array.from(
+      Array(this.totalDecorFrames).keys()
+    ).filter((frame) => !this.recentlyUsedFrames.includes(frame));
+
+    if (availableFrames.length === 0) {
+      // If all frames have been used, remove the oldest one
+      this.recentlyUsedFrames.shift();
+      availableFrames = [this.recentlyUsedFrames[0]];
+    }
+
+    const randomFrame = Phaser.Math.RND.pick(availableFrames);
+
+    this.recentlyUsedFrames.push(randomFrame);
+    if (this.recentlyUsedFrames.length > 6) {
+      this.recentlyUsedFrames.shift();
+    }
+
+    return randomFrame;
+  }
+
   private async saveHighScore() {
     const highScore = Number(WebApp.CloudStorage.getItem("highScore")) || 0;
     if (highScore) {
