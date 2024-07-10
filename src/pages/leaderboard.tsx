@@ -107,7 +107,7 @@ export const Leaderboard = () => {
                           index + 1
                         )}
                       </Td>
-                      <Td>@{user.username}</Td>
+                      <Td>{user.username || "Anonymous"}</Td>
                       <Td>{user.tokens}</Td>
                     </Tr>
                   ))}
