@@ -3,6 +3,7 @@ import { Pipe } from "../pipe";
 import { Coin } from "../coin";
 import bgImage from "../../assets/bg.png";
 // import birdImage from "../../assets/newBird.png";
+import decorImage from "../../assets/decor.png";
 import patataImage from "../../assets/patata.png";
 import pipeImage from "../../assets/newPipe.png";
 import coinImage from "../../assets/coin.png";
@@ -63,6 +64,19 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 20,
       frameHeight: 20,
     });
+    this.load.spritesheet("decor", decorImage, {
+      frameWidth: 80,
+      frameHeight: 80,
+    });
+
+  
+    this.load.on("filecomplete-spritesheet-decor", () => {
+      console.log("Decor spritesheet loaded successfully");
+    });
+  
+    this.load.on("loaderror", (file) => {
+      console.error("Error loading file:", file.src);
+    });
   }
 
   create() {
@@ -89,6 +103,9 @@ export default class MainScene extends Phaser.Scene {
     this.patata = this.physics.add
       .sprite(100, this.scale.height / 4, "patata")
       .setScale(0.35);
+
+      console.log("Decor texture exists:", this.textures.exists("decor"));
+
 
     this.patata.setCollideWorldBounds(true);
     this.patata.setDepth(1);
@@ -144,7 +161,7 @@ export default class MainScene extends Phaser.Scene {
         fontSize: "32px",
         color: "#FFF",
       })
-      .setDepth(1);
+      .setDepth(3);
 
     this.scoreMultiplierText = this.add
       .text(16, 48, "", {
@@ -207,7 +224,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.updatePipes(pixelsPerFrame);
     this.updateCoins(pixelsPerFrame);
-    this.updatePipePatatas(pixelsPerFrame);
+    this.updatePipeDecor(pixelsPerFrame);
 
     // Ground collision
     if (this.patata && this.patata.y >= this.scale.height - 18) {
@@ -278,15 +295,15 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  private updatePipePatatas(pixelsPerFrame: number) {
+  private updatePipeDecor(pixelsPerFrame: number) {
     this.pipePool.children.entries.forEach(
       (pipe: Phaser.GameObjects.GameObject) => {
         const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
         if (!pipeSprite.active) return;
 
-        const patata = pipeSprite.getData("patata");
-        if (patata) {
-          patata.x -= pixelsPerFrame;
+        const pipeDecor = pipeSprite.getData("decor");
+        if (pipeDecor) {
+          pipeDecor.x -= pixelsPerFrame;
         }
       }
     );
@@ -588,7 +605,7 @@ export default class MainScene extends Phaser.Scene {
     const totalPipes = 10;
     const pipeX = this.scale.width + 50;
 
-    let patataAdded = false;
+    let decorAdded = false;
 
     for (let i = 0; i < 10; i++) {
       if (i !== hole && i !== hole + 1 && i !== hole + 2) {
@@ -609,17 +626,10 @@ export default class MainScene extends Phaser.Scene {
         }
         const pipe = this.addOrReusePipe(pipeX, y, frame, rowId);
 
-        if (!patataAdded && Math.random() < 0.1) {
-          // 30% chance to add patata
-          const patataPosition = Math.random();
-          const patataY = y + (patataPosition - 0.5) * pipeHeight;
-          const patata = this.add
-            .image(pipeX, patataY, "patata")
-            .setScale(0.5)
-            .setDepth(2)
-            .setFlipX(true)
-          pipe.setData("patata", patata);
-          patataAdded = true;
+        if (!decorAdded && Math.random() < 0.5) {
+          // 50% chance to add decor
+          decorAdded = this.addPipeDecor(y, pipeHeight, pipeX, pipe);
+          console.log("Decor added:", decorAdded); // Debug log
         }
       }
     }
@@ -631,6 +641,24 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
+  private addPipeDecor(
+    y: number,
+    pipeHeight: number,
+    pipeX: number,
+    pipe: Phaser.Physics.Arcade.Sprite
+  ): boolean {
+    const decorPosition = Math.random();
+    const decorY = y + (decorPosition - 0.5) * pipeHeight;
+    const randomFrame = Math.floor(Math.random() * 8);
+    const decor = this.add
+      .sprite(pipeX, decorY, "decor", randomFrame)
+      .setScale(.6)
+      .setDepth(1)
+      .setFlipX(true);
+    pipe.setData("decor", decor);
+    console.log("Decor sprite added:", decor); // Debug log
+    return true;
+  }
   private async saveHighScore() {
     const highScore = Number(WebApp.CloudStorage.getItem("highScore")) || 0;
     if (highScore) {
