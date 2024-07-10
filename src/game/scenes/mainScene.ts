@@ -604,7 +604,6 @@ export default class MainScene extends Phaser.Scene {
     this.pipeCounter++;
 
     if (this.pipeCounter % this.decorInterval === 0) {
-
       // Determine the largest segment
       const topSegmentSize = hole - 1;
       const bottomSegmentSize = totalPipes - (hole + 3);
@@ -646,6 +645,11 @@ export default class MainScene extends Phaser.Scene {
           this.addOrReusePipe(pipeX, y, this.getPipeFrame(i, hole), rowId);
         }
       }
+    }
+
+    const spawnChance = 0.25;
+    if (Math.random() < spawnChance) {
+      this.spawnCoin(pipeX, (hole + 1) * pipeHeight);
     }
   }
 
