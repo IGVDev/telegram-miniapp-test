@@ -6,7 +6,7 @@ import bgImage from "../../assets/bg.png";
 import patataImage from "../../assets/patata.png";
 import pipeImage from "../../assets/newPipe.png";
 import coinImage from "../../assets/coin.png";
-import openMouthBirdImage from "../../assets/open-mouth-birdpng.png";
+import openMouthPatataImage from "../../assets/open-mouth-patata.png";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
 
@@ -56,7 +56,7 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     this.load.image("background", bgImage);
-    this.load.image("openMouthBird", openMouthBirdImage);
+    this.load.image("openMouthPatata", openMouthPatataImage);
     this.load.image("patata", patataImage);
     this.load.image("coin", coinImage);
     this.load.spritesheet("pipe", pipeImage, {
@@ -88,7 +88,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.patata = this.physics.add
       .sprite(100, this.scale.height / 4, "patata")
-      .setScale(.35);
+      .setScale(0.35);
 
     this.patata.setCollideWorldBounds(true);
     this.patata.setDepth(1);
@@ -207,6 +207,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.updatePipes(pixelsPerFrame);
     this.updateCoins(pixelsPerFrame);
+    this.updatePipePatatas(pixelsPerFrame);
 
     // Ground collision
     if (this.patata && this.patata.y >= this.scale.height - 18) {
@@ -277,6 +278,20 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
+  private updatePipePatatas(pixelsPerFrame: number) {
+    this.pipePool.children.entries.forEach(
+      (pipe: Phaser.GameObjects.GameObject) => {
+        const pipeSprite = pipe as Phaser.Physics.Arcade.Sprite;
+        if (!pipeSprite.active) return;
+
+        const patata = pipeSprite.getData("patata");
+        if (patata) {
+          patata.x -= pixelsPerFrame;
+        }
+      }
+    );
+  }
+
   private updateCoins(pixelsPerFrame: number) {
     this.coinPool.children.entries.forEach(
       (coinObject: Phaser.GameObjects.GameObject) => {
@@ -319,6 +334,8 @@ export default class MainScene extends Phaser.Scene {
     pipe.setActive(true);
     pipe.setVisible(true);
     pipe.setDepth(1);
+
+    return pipe;
   }
 
   private endGame(coinAmount: number) {
@@ -432,11 +449,11 @@ export default class MainScene extends Phaser.Scene {
     ) as Phaser.GameObjects.TileSprite;
     background.setAlpha(0.5);
 
-    const openMouthBird = this.physics.add
-      .sprite(80, window.innerHeight - 200, "openMouthBird")
+    const openMouthPatata = this.physics.add
+      .sprite(80, window.innerHeight - 200, "openMouthPatata")
       .setScale(3)
       .setAngle(-45);
-    openMouthBird.setDepth(2);
+    openMouthPatata.setDepth(2);
 
     this.input.on("pointerdown", this.handleCoinSpawn);
 
@@ -444,7 +461,7 @@ export default class MainScene extends Phaser.Scene {
       5000,
       () => {
         this.startCountdown();
-        openMouthBird.destroy();
+        openMouthPatata.destroy();
         this.input.off("pointerdown", this.handleCoinSpawn);
       },
       [],
@@ -571,6 +588,8 @@ export default class MainScene extends Phaser.Scene {
     const totalPipes = 10;
     const pipeX = this.scale.width + 50;
 
+    let patataAdded = false;
+
     for (let i = 0; i < 10; i++) {
       if (i !== hole && i !== hole + 1 && i !== hole + 2) {
         let frame;
@@ -588,7 +607,20 @@ export default class MainScene extends Phaser.Scene {
         } else {
           y = i * pipeHeight + pipeHeight / 2;
         }
-        this.addOrReusePipe(pipeX, y, frame, rowId);
+        const pipe = this.addOrReusePipe(pipeX, y, frame, rowId);
+
+        if (!patataAdded && Math.random() < 0.1) {
+          // 30% chance to add patata
+          const patataPosition = Math.random();
+          const patataY = y + (patataPosition - 0.5) * pipeHeight;
+          const patata = this.add
+            .image(pipeX, patataY, "patata")
+            .setScale(0.5)
+            .setDepth(2)
+            .setFlipX(true)
+          pipe.setData("patata", patata);
+          patataAdded = true;
+        }
       }
     }
     this.pipeCounter++;
