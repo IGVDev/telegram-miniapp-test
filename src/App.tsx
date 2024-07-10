@@ -13,6 +13,7 @@ import { verifyTelegramWebAppData } from "./utils";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import qrCode from "./assets/qr-code.png";
+import { usePreventSwipeDown } from "./hooks/usePreventSwipeDown";
 
 enum TabIndex {
   Ref = 0,
@@ -25,6 +26,8 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
   const [isMobile, setIsMobile] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
+
+  const scrollableElRef = usePreventSwipeDown();
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor;
@@ -139,6 +142,7 @@ function App() {
       bgPosition="center"
       height="100vh"
       overflowY="auto"
+      ref={scrollableElRef}
     >
       {!isMobile && (
         <Flex
