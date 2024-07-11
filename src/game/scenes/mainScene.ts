@@ -377,8 +377,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private formatScore(score: number): string {
-    return score % 1 === 0 ? score.toString() : score.toFixed(1);
-  }
+    return score.toLocaleString();
+}
 
   private handleCoinSpawn = () => {
     const coinX = this.input.activePointer.worldX;
