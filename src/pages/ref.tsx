@@ -154,6 +154,9 @@ export const Ref = () => {
           >
             Copy
           </Button>
+          <Text fontSize="xs" color="gray.400" fontWeight="bold">
+            Psst! You get 10.000 tokens per referral!
+          </Text>
         </Flex>
       )}
       <Divider w="98%" alignSelf="center" borderColor="gray.600" mt={2} />
@@ -166,7 +169,7 @@ export const Ref = () => {
           w="100%"
         >
           <Text fontWeight="bold">My Referrals:</Text>
-          {!isLoading && data.referrals ? (
+          {!isLoading && Object.keys(data.referrals).length > 0 ? (
             <Flex flexDir="column" gap={2}>
               <Text>
                 You have {Object.keys(data.referrals).length} referrals!
