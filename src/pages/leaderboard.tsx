@@ -4,7 +4,6 @@ import axios from "axios";
 import WebApp from "@twa-dev/sdk";
 import { useQuery } from "@tanstack/react-query";
 import { extractUserId, verifyTelegramWebAppData } from "../utils";
-import { usePreventSwipeDown } from "../hooks/usePreventSwipeDown";
 
 interface LeaderboardResponse {
   data: LeaderboardData;
@@ -39,8 +38,6 @@ export const Leaderboard = () => {
   const params = new URLSearchParams(data);
   const hash = params.get("hash");
   const paramsJson = Object.fromEntries(params.entries());
-
-  const scrollableElRef = usePreventSwipeDown();
 
   const {data: userData, isLoading: isUserLoading} = useQuery<UserData>({
     queryKey: ["login"]
@@ -81,7 +78,7 @@ export const Leaderboard = () => {
       align="center"
       w="100%"
       overflowX="hidden"
-      ref={scrollableElRef}
+      overflowY="scroll"
     >
       {isLoading && <Text>Loading...</Text>}
 
