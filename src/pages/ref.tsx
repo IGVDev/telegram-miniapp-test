@@ -177,7 +177,7 @@ export const Ref = () => {
               <Text>
                 Your referrals have earned you
                 <Text fontWeight="bold">
-                  {Object.keys(data.referrals).length * 3000} tokens!
+                  {Object.keys(data.referrals).length * 10000} tokens!
                 </Text>
               </Text>
             </Flex>
