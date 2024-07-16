@@ -90,7 +90,7 @@ export const Leaderboard = () => {
             Leaderboard
           </Text>
 
-          <Flex className="tableContainer" ref={scrollableElRef}>
+          <Flex className="tableContainer" ref={scrollableElRef} overflowY="scroll">
             <Table size="sm" variant="unstyled" w="90vw">
               <Thead color="gray.500">
                 <Tr>
