@@ -28,11 +28,20 @@ enum TrophyColor {
   "sienna" = 2,
 }
 
+interface UserData {
+  tokens: number;
+}
+
+
 export const Leaderboard = () => {
   const data = WebApp.initData;
   const params = new URLSearchParams(data);
   const hash = params.get("hash");
   const paramsJson = Object.fromEntries(params.entries());
+
+  const {data: userData, isLoading: isUserLoading} = useQuery<UserData>({
+    queryKey: ["login"]
+  })
 
   const { data: leaderboardResponse, isLoading } =
     useQuery<LeaderboardResponse>({
@@ -72,7 +81,7 @@ export const Leaderboard = () => {
     >
       {isLoading && <Text>Loading...</Text>}
 
-      {!isLoading && leaderboardData && (
+      {!isLoading && !isUserLoading && leaderboardData && (
         <>
           <Text fontSize="40px" fontWeight="bold">
             Leaderboard
@@ -115,7 +124,7 @@ export const Leaderboard = () => {
                   <Tr bgColor="purple.900">
                     <Td fontWeight="bold">{leaderboardData?.global_rank}</Td>
                     <Td fontWeight="bold">You</Td>
-                    <Td fontWeight="bold">0</Td>
+                    <Td fontWeight="bold">{userData?.tokens}</Td>
                   </Tr>
                 )}
               </Tbody>
