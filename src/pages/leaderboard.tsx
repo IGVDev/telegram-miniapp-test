@@ -1,12 +1,9 @@
-import { Flex, Text, Table, Tr, Td, Tbody, Thead, Button } from "@chakra-ui/react";
+import { Flex, Text, Table, Tr, Td, Tbody, Thead } from "@chakra-ui/react";
 import { GiTrophy } from "react-icons/gi";
 import axios from "axios";
 import WebApp from "@twa-dev/sdk";
 import { useQuery } from "@tanstack/react-query";
 import { extractUserId, verifyTelegramWebAppData } from "../utils";
-import { useEffect, useState } from "react";
-import { usePreventSwipeDown } from "../hooks/usePreventSwipeDown";
-import { FaArrowUp } from "react-icons/fa";
 
 interface LeaderboardResponse {
   data: LeaderboardData;
@@ -72,34 +69,6 @@ export const Leaderboard = () => {
     return Number(user.uid) === userUid;
   });
 
-  const scrollableElRef = usePreventSwipeDown();
-  const [showScrollButton, setShowScrollButton] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (scrollableElRef.current) {
-        setShowScrollButton(scrollableElRef.current.scrollTop > 100);
-      }
-    };
-
-    const currentRef = scrollableElRef.current;
-    if (currentRef) {
-      currentRef.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (currentRef) {
-        currentRef.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, []);
-
-  const scrollToTop = () => {
-    if (scrollableElRef.current) {
-      scrollableElRef.current.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
   return (
     <Flex
       className="leaderboardContainer"
@@ -109,7 +78,6 @@ export const Leaderboard = () => {
       align="center"
       w="100%"
       overflowX="hidden"
-      position="relative"
     >
       {isLoading && <Text>Loading...</Text>}
 
@@ -119,7 +87,7 @@ export const Leaderboard = () => {
             Leaderboard
           </Text>
 
-          <Flex className="tableContainer" ref={scrollableElRef} overflowY="scroll" position="relative">
+          <Flex className="tableContainer" overflowY="scroll">
             <Table size="sm" variant="unstyled" w="90vw">
               <Thead color="gray.500">
                 <Tr>
@@ -162,19 +130,6 @@ export const Leaderboard = () => {
               </Tbody>
             </Table>
           </Flex>
-          {showScrollButton && (
-            <Button
-              position="fixed"
-              top="20px"
-              right="20px"
-              size="sm"
-              colorScheme="purple"
-              onClick={scrollToTop}
-              zIndex={10}
-            >
-              <FaArrowUp />
-            </Button>
-          )}
         </>
       )}
     </Flex>
