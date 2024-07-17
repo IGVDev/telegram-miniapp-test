@@ -566,7 +566,7 @@ export default class MainScene extends Phaser.Scene {
     this.totalPipesCleared = Math.floor(this.score);
 
     if (this.totalPipesCleared % 5 === 0 && this.totalPipesCleared > 0) {
-      this.scrollSpeed += 0.025;
+      this.scrollSpeed += 0.01;
       this.distanceThreshold = Math.max(this.distanceThreshold - 8, 100);
     }
 
