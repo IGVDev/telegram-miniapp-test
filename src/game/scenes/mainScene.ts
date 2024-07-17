@@ -411,7 +411,7 @@ export default class MainScene extends Phaser.Scene {
       this.score > 100 &&
       this.score - this.lastPauseScore >= 100
     ) {
-      const safeDistance = 100;
+      const safeDistance = 50;
 
       const activePipes = this.pipePool
         .getChildren()
