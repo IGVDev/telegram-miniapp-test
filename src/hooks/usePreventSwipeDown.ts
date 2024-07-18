@@ -22,8 +22,8 @@ export const usePreventSwipeDown = () => {
       if (scrollableEl) {
         const scroll = scrollableEl.scrollTop;
         const te = e.changedTouches[0].clientY;
-        if (scroll <= 0 && ts! < te) {
-          e.preventDefault();
+        if (scroll > 0 || ts! > te) {
+          return;
         }
       } else {
         e.preventDefault();
