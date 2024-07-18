@@ -98,6 +98,28 @@ export const Ref = () => {
       )}
       {!isLoading && data && (
         <Flex
+          bgGradient="linear(to-bl, white 0%, rgb(255, 200, 0) 40%)"
+          color="black"
+          flexDir="column"
+          w={{ base: "90vw", md: "40vw" }}
+          minH="50px"
+          position="relative"
+          borderRadius={8}
+          p={2}
+          gap={2}
+          textAlign="center"
+        >
+          <Text fontWeight="bold" textAlign="center">
+            GREAT NEWS!!
+          </Text>
+          <Text fontSize="sm">Get $0.10 USDT for each referral!! 💰</Text>
+          <Text fontSize="xs">
+            You can claim your earnings once you get 20 referrals!
+          </Text>
+        </Flex>
+      )}
+      {true && (
+        <Flex
           bgColor="whiteAlpha.300"
           flexDir="column"
           w={{ base: "90vw", md: "40vw" }}
