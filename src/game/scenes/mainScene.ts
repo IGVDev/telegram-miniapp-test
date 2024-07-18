@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { Pipe } from "../pipe";
 import { Coin } from "../coin";
-import bgImage from "../../assets/bg.png";
+import bgImage from "../../assets/bg.webp";
 // import birdImage from "../../assets/newBird.png";
 import decorImage from "../../assets/decor.png";
 import patataImage from "../../assets/patata.png";
@@ -45,7 +45,7 @@ export default class MainScene extends Phaser.Scene {
   private coinPool: Phaser.GameObjects.Group;
   private pipeValue: number = 10;
   private lastSuperClickTime: number = 0;
-  private superClickCooldown: number = 20000;
+  private superClickCooldown: number = 40000;
   private decorInterval: number = 3;
   private recentlyUsedFrames: number[] = [];
   private totalDecorFrames: number = 8;
@@ -378,7 +378,7 @@ export default class MainScene extends Phaser.Scene {
 
   private formatScore(score: number): string {
     return score.toLocaleString();
-}
+  }
 
   private handleCoinSpawn = () => {
     const coinX = this.input.activePointer.worldX;
@@ -401,16 +401,12 @@ export default class MainScene extends Phaser.Scene {
   };
 
   private canPauseGame(): boolean {
-    const currentTime = this.time.now;
-    if (currentTime - this.lastSuperClickTime < this.superClickCooldown) {
-      return false;
-    }
-
     if (
-      this.score % 150 === 0 &&
-      this.score > 100 &&
-      this.score - this.lastPauseScore >= 100
+      this.score > 150 &&
+      this.score - this.lastPauseScore >= 150 &&
+      this.time.now - this.lastSuperClickTime >= this.superClickCooldown
     ) {
+      const currentTime = this.time.now;
       const safeDistance = 50;
 
       const activePipes = this.pipePool
