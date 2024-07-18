@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { Pipe } from "../pipe";
 import { Coin } from "../coin";
-import bgImage from "../../assets/bg.webp";
+import bgImage from "../../assets/bg.png";
 // import birdImage from "../../assets/newBird.png";
 import decorImage from "../../assets/decor.png";
 import patataImage from "../../assets/patata.png";
