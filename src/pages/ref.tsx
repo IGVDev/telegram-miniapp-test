@@ -112,7 +112,7 @@ export const Ref = () => {
           <Text fontWeight="bold" textAlign="center">
             GREAT NEWS!!
           </Text>
-          <Text fontSize="sm">Get $0.10 USDT for each referral!! 💰</Text>
+          <Text fontSize="sm">Get $0.25 USDT for each referral!! 💰</Text>
           <Text fontSize="xs">
             You can claim your earnings once you get 20 referrals!
           </Text>
