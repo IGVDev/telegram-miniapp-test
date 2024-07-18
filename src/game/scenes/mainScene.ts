@@ -446,9 +446,9 @@ export default class MainScene extends Phaser.Scene {
     this.input.on("pointerdown", this.countClick, this);
 
     this.clickCountText
-      .setText(`Click to eat coins!!!\nClicks: ${this.clickCount}`)
+      .setText(`Click to eat coins!!!`)
       .setDepth(5)
-      .setPosition(200, 100);
+      .setPosition(this.scale.width / 2, this.scale.height / 2 - 100);
     this.clickCountText.setVisible(true);
 
     this.isPaused = true;
