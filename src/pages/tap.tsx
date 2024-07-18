@@ -4,6 +4,7 @@ import FlappyBirdGame from "../game/game";
 import coinImg from "../assets/coin.png";
 import { useQuery } from "@tanstack/react-query";
 // import axios from "axios";
+import ReactGA from "react-ga4";
 
 interface UserData {
   tokens: number;
@@ -25,6 +26,10 @@ export const Tap = () => {
       setCoins(data.tokens);
     }
   }, [data]);
+
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: "/game" });
+  }, []);
 
   return (
     <>

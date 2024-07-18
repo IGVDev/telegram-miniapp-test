@@ -10,6 +10,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
+import ReactGA from "react-ga4";
 
 import { useEffect, useState } from "react";
 
@@ -117,6 +118,12 @@ export const Tasks = () => {
             duration: 5000,
             isClosable: true,
           });
+
+          ReactGA.event({
+            category: "Task",
+            action: "Task Completed",
+            label: key,
+          });
         });
     } else {
       setTaskInProgress(key);
@@ -167,6 +174,10 @@ export const Tasks = () => {
       window.removeEventListener("blur", handleFocus);
     };
   }, [taskInProgress]);
+
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: "/tasks" });
+  }, []);
 
   return (
     <Flex align="center" justify="center" direction="column">

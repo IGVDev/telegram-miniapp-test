@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { extractUserId } from "../utils";
 import noReferrals from "../assets/noreferrals.webp";
 import { useQuery } from "@tanstack/react-query";
+import ReactGA from "react-ga4";
 
 interface QueryData {
   avatar_photo: string;
@@ -63,6 +64,12 @@ export const Ref = () => {
       duration: 2000,
       isClosable: true,
     });
+
+    ReactGA.event({
+      category: "User",
+      action: "Copied Referral Link",
+      label: userId,
+    });
   };
 
   const { data, isLoading } = useQuery<QueryData>({
@@ -75,6 +82,7 @@ export const Ref = () => {
       const data = WebApp.initData;
       const id = extractUserId(data);
       setUserId(id);
+      ReactGA.send({ hitType: "pageview", page: "/referrals" });
     }
   }, []);
 

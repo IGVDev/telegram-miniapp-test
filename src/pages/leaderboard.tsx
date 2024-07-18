@@ -5,6 +5,8 @@ import WebApp from "@twa-dev/sdk";
 import { useQuery } from "@tanstack/react-query";
 import { extractUserId } from "../utils";
 import { usePreventSwipeDown } from "../hooks/usePreventSwipeDown";
+import { useEffect } from "react";
+import ReactGA from "react-ga4";
 
 interface LeaderboardResponse {
   data: LeaderboardData;
@@ -33,7 +35,6 @@ interface UserData {
   tokens: number;
 }
 
-
 export const Leaderboard = () => {
   const data = WebApp.initData;
   const params = new URLSearchParams(data);
@@ -42,10 +43,9 @@ export const Leaderboard = () => {
 
   const scrollableElRef = usePreventSwipeDown();
 
-
-  const {data: userData, isLoading: isUserLoading} = useQuery<UserData>({
-    queryKey: ["login"]
-  })
+  const { data: userData, isLoading: isUserLoading } = useQuery<UserData>({
+    queryKey: ["login"],
+  });
 
   const { data: leaderboardResponse, isLoading } =
     useQuery<LeaderboardResponse>({
@@ -63,7 +63,7 @@ export const Leaderboard = () => {
           }
         );
       },
-      enabled: !!hash
+      enabled: !!hash,
     });
 
   const leaderboardData = leaderboardResponse?.data;
@@ -72,6 +72,10 @@ export const Leaderboard = () => {
   const userInLeaderboard = leaderboardData?.top_users?.some((user) => {
     return Number(user.uid) === userUid;
   });
+
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: "/leaderboard" });
+  }, []);
 
   return (
     <Flex
