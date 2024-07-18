@@ -25,6 +25,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabIndex>(TabIndex.Tap);
   const [isMobile, setIsMobile] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [, setClickCount] = useState(0);
 
   const scrollableElRef = usePreventSwipeDown();
 
@@ -44,15 +45,15 @@ function App() {
   // const [, setClickCount] = useState(0);
 
   // Just for debugging. Allows to enter the app from the desktop version.
-  // const handleClick = () => {
-  //   setClickCount((prev) => {
-  //     if (prev + 1 === 6) {
-  //       setIsMobile(true);
-  //       return 0;
-  //     }
-  //     return prev + 1;
-  //   });
-  // };
+  const handleClick = () => {
+    setClickCount((prev) => {
+      if (prev + 1 === 6) {
+        setIsMobile(true);
+        return 0;
+      }
+      return prev + 1;
+    });
+  };
 
   const handleLogin = async () => {
     const { data } = await axios.post(
@@ -91,6 +92,8 @@ function App() {
     queryKey: ["login"],
     queryFn: handleLogin,
     enabled: !!loggedIn,
+    staleTime: Infinity,
+    refetchOnMount: false,
   });
 
   const queries = useQueries({
@@ -147,7 +150,7 @@ function App() {
           color="white"
           flexDir="column"
           gap={2}
-          // onClick={handleClick}
+          onClick={handleClick}
         >
           Please use a mobile device to access this application.
           <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20} />
