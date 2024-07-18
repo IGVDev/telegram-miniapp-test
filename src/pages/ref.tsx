@@ -11,7 +11,6 @@ import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
 import { extractUserId } from "../utils";
 import noReferrals from "../assets/noreferrals.webp";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 interface QueryData {
@@ -68,35 +67,13 @@ export const Ref = () => {
 
   const { data, isLoading } = useQuery<QueryData>({
     queryKey: ["login"],
+    staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
     if (WebApp.initData) {
       const data = WebApp.initData;
       const id = extractUserId(data);
-
-      const params = new URLSearchParams(data);
-      const hash = params.get("hash");
-      const paramsJson = Object.fromEntries(params.entries());
-      axios
-        .post(
-          "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
-          {
-            initData: paramsJson,
-            foo: "bar",
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + hash,
-            },
-          }
-        )
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
       setUserId(id);
     }
   }, []);
