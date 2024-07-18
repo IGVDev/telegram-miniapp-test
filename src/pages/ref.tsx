@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
-import { extractUserId, verifyTelegramWebAppData } from "../utils";
+import { extractUserId } from "../utils";
 import noReferrals from "../assets/noreferrals.webp";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
@@ -73,36 +73,31 @@ export const Ref = () => {
   useEffect(() => {
     if (WebApp.initData) {
       const data = WebApp.initData;
+      const id = extractUserId(data);
 
-      if (verifyTelegramWebAppData(data)) {
-        const id = extractUserId(data);
-
-        const params = new URLSearchParams(data);
-        const hash = params.get("hash");
-        const paramsJson = Object.fromEntries(params.entries());
-        axios
-          .post(
-            "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
-            {
-              initData: paramsJson,
-              foo: "bar",
+      const params = new URLSearchParams(data);
+      const hash = params.get("hash");
+      const paramsJson = Object.fromEntries(params.entries());
+      axios
+        .post(
+          "https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_add_score",
+          {
+            initData: paramsJson,
+            foo: "bar",
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + hash,
             },
-            {
-              headers: {
-                Authorization: "Bearer " + hash,
-              },
-            }
-          )
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        setUserId(id);
-      } else {
-        console.error("Invalid initData signature.");
-      }
+          }
+        )
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      setUserId(id);
     }
   }, []);
 

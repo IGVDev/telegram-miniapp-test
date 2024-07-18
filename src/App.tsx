@@ -9,7 +9,6 @@ import { Navigation } from "./components/navigation";
 import { Leaderboard } from "./pages/leaderboard";
 import { Tasks } from "./pages/tasks";
 import WebApp from "@twa-dev/sdk";
-import { verifyTelegramWebAppData } from "./utils";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import qrCode from "./assets/qr-code.png";
@@ -42,24 +41,20 @@ function App() {
   const hash = params.get("hash");
   const start_param = params.get("start_param");
   const paramsJson = Object.fromEntries(params.entries());
-  const [, setClickCount] = useState(0);
+  // const [, setClickCount] = useState(0);
 
   // Just for debugging. Allows to enter the app from the desktop version.
-  const handleClick = () => {
-    setClickCount((prev) => {
-      if (prev + 1 === 6) {
-        setIsMobile(true);
-        return 0;
-      }
-      return prev + 1;
-    });
-  };
+  // const handleClick = () => {
+  //   setClickCount((prev) => {
+  //     if (prev + 1 === 6) {
+  //       setIsMobile(true);
+  //       return 0;
+  //     }
+  //     return prev + 1;
+  //   });
+  // };
 
   const handleLogin = async () => {
-    if (!verifyTelegramWebAppData(initData)) {
-      throw new Error("Invalid init data");
-    }
-
     const { data } = await axios.post(
       `https://europe-west6-stage-music-backend.cloudfunctions.net/memecoin_user_login`,
       {
@@ -152,7 +147,7 @@ function App() {
           color="white"
           flexDir="column"
           gap={2}
-          onClick={handleClick}
+          // onClick={handleClick}
         >
           Please use a mobile device to access this application.
           <Image src={qrCode} alt="QR Code" h="200px" borderRadius={20} />

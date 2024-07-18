@@ -3,7 +3,7 @@ import { GiTrophy } from "react-icons/gi";
 import axios from "axios";
 import WebApp from "@twa-dev/sdk";
 import { useQuery } from "@tanstack/react-query";
-import { extractUserId, verifyTelegramWebAppData } from "../utils";
+import { extractUserId } from "../utils";
 
 interface LeaderboardResponse {
   data: LeaderboardData;
@@ -59,7 +59,7 @@ export const Leaderboard = () => {
           }
         );
       },
-      enabled: !!verifyTelegramWebAppData(data),
+      enabled: !!hash
     });
 
   const leaderboardData = leaderboardResponse?.data;
