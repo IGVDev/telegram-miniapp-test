@@ -44,7 +44,7 @@ export const Navigation = ({
 }) => {
   const [hasVisitedRef, setHasVisitedRef] = useState(false);
 
-  const { data } = useQuery<QueryData>({
+  const { data, isLoading } = useQuery<QueryData>({
     queryKey: ["login"],
   });
 
@@ -79,7 +79,7 @@ export const Navigation = ({
             <RiHeartsFill size="30px" />
             <Text fontSize="xs">Ref</Text>
           </Flex>
-          {activeTab !== 0 && !hasVisitedRef && (
+          {activeTab !== 0 && !hasVisitedRef && !isLoading && (
             <Text
               position="absolute"
               top="-50px"
