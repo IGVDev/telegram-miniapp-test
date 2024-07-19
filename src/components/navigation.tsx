@@ -1,4 +1,5 @@
 import { Flex, Tab, TabList, Tabs, Text, keyframes } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
   RiBarChartFill,
@@ -6,6 +7,28 @@ import {
   RiCopperCoinFill,
   RiHeartsFill,
 } from "react-icons/ri";
+
+interface QueryData {
+  avatar_photo: string;
+  first_name: string;
+  language_code: string;
+  last_name: string;
+  referrals: { [key: string]: number };
+  referred_by: null | string;
+  source: string;
+  tasks_completed: {
+    [key: string]: {
+      time: string;
+      timestamp: number;
+    };
+  };
+  timestamp_last_activity: number;
+  timestamp_last_login: number;
+  tokens: number;
+  uid: string;
+  username: string;
+  n_logins?: number;
+}
 
 const bounceAnimation = keyframes`
   0%, 100% { transform: translateY(0); }
@@ -21,12 +44,15 @@ export const Navigation = ({
 }) => {
   const [hasVisitedRef, setHasVisitedRef] = useState(false);
 
+  const { data } = useQuery<QueryData>({
+    queryKey: ["login"],
+  });
+
   useEffect(() => {
-    console.log(activeTab);
-    if (activeTab === 0) {
+    if (activeTab === 0 || data?.n_logins > 1) {
       setHasVisitedRef(true);
     }
-  }, [activeTab]);
+  }, [data]);
 
   return (
     <Tabs
@@ -63,7 +89,6 @@ export const Navigation = ({
               👇
             </Text>
           )}
-          
         </Tab>
         <Tab
           borderRadius={16}
