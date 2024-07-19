@@ -49,7 +49,7 @@ export const Navigation = ({
   });
 
   useEffect(() => {
-    if (activeTab === 0 || data?.n_logins > 1 || data?.tokens > 50) {
+    if (activeTab === 0 || data?.n_logins > 1 || data?.tokens > 1) {
       setHasVisitedRef(true);
     }
   }, [data, activeTab]);
