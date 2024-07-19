@@ -49,10 +49,10 @@ export const Navigation = ({
   });
 
   useEffect(() => {
-    if (activeTab === 0 || data?.n_logins > 1) {
+    if (activeTab === 0 || data?.n_logins > 1 || data?.tokens > 50) {
       setHasVisitedRef(true);
     }
-  }, [data]);
+  }, [data, activeTab]);
 
   return (
     <Tabs
