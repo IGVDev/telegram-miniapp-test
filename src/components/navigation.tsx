@@ -42,13 +42,17 @@ export const Navigation = ({
   activeTab: number;
   setActiveTab: (index: number) => void;
 }) => {
-  const [hasVisitedRef, setHasVisitedRef] = useState(false);
+  const [hasVisitedRef, setHasVisitedRef] = useState(true);
 
   const { data, isLoading } = useQuery<QueryData>({
     queryKey: ["login"],
   });
 
   useEffect(() => {
+    if (data?.n_logins === 1 && data?.tokens === 0) {
+      setHasVisitedRef(false);
+    }
+
     if (activeTab === 0 || data?.n_logins > 1 || data?.tokens > 1) {
       setHasVisitedRef(true);
     }
