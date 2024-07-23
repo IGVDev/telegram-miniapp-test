@@ -10,6 +10,7 @@ import coinImage from "../../assets/coin.png";
 import openMouthPatataImage from "../../assets/open-mouth-patata.png";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
+import ReactGA from "react-ga4";
 
 interface MainSceneConfig {
   onScoreUpdate?: (score: number) => void;
@@ -352,6 +353,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private endGame(coinAmount: number) {
+    ReactGA.event({
+      category: "game",
+      action: "finish_game",
+      label: "finish_game",
+      value: coinAmount,
+    });
     this.onGameOver(coinAmount);
     this.scene.start("GameOverScene");
   }
