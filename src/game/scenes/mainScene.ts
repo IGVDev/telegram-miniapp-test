@@ -363,6 +363,7 @@ export default class MainScene extends Phaser.Scene {
       category: "game",
       action: "finish_game",
       label: "finish_game",
+      value: coinAmount,
     });
     this.onGameOver(coinAmount);
     this.scene.start("GameOverScene");
