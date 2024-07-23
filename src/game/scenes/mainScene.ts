@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { Pipe } from "../pipe";
 import { Coin } from "../coin";
-import bgImage from "../../assets/bg.png";
+import bgImage from "../../assets/bg.gif";
 // import birdImage from "../../assets/newBird.png";
 import decorImage from "../../assets/decor.png";
 import patataImage from "../../assets/patata.png";
@@ -125,8 +125,14 @@ export default class MainScene extends Phaser.Scene {
     this.prespawnObjects();
 
     const background = this.add
-      .tileSprite(0, 0, this.scale.width, this.scale.height, "background")
-      .setOrigin(0, 0);
+      .tileSprite(
+        0,
+        this.scale.height,
+        this.scale.width,
+        this.scale.height,
+        "background"
+      )
+      .setOrigin(0, 1);
     background.setName("background");
     background.scrollFactorX = 2;
 
@@ -357,7 +363,6 @@ export default class MainScene extends Phaser.Scene {
       category: "game",
       action: "finish_game",
       label: "finish_game",
-      value: coinAmount,
     });
     this.onGameOver(coinAmount);
     this.scene.start("GameOverScene");
